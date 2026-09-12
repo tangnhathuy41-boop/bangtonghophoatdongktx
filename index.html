@@ -100,10 +100,10 @@
           <span class="hidden md:inline">Sao lưu</span>
         </button>
 
-        <!-- Nút Trợ lý AI: Tối ưu nhỏ gọn trên mobile -->
-        <button onclick="openAIAssistantModal()" class="flex items-center gap-1.5 text-xs font-bold p-2 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white shadow-sm shadow-indigo-200 transition shrink-0" title="Mở Trợ Lý Gemini AI">
-          <i class="fa-solid fa-wand-magic-sparkles text-amber-200 animate-pulse text-xs sm:text-sm"></i>
-          <span class="hidden sm:inline">Trợ Lý AI</span>
+        <!-- Nút Quét Bill AI: Tối ưu nhỏ gọn trên mobile -->
+        <button onclick="openScanBillModal()" class="flex items-center gap-1.5 text-xs font-bold p-2 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white shadow-sm shadow-indigo-200 transition shrink-0" title="Quét hóa đơn bằng AI">
+          <i class="fa-solid fa-camera text-amber-200 text-xs sm:text-sm"></i>
+          <span class="hidden sm:inline">Quét Bill AI</span>
         </button>
 
         <!-- Nút Zalo: Gọn gàng không chiếm diện tích -->
@@ -202,9 +202,9 @@
         <i class="fa-solid fa-cloud-arrow-down text-slate-500"></i>
         <span>Sao Lưu Dữ Liệu (JSON)</span>
       </button>
-      <button onclick="toggleSidebar(false); openAIAssistantModal();" class="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2">
-        <i class="fa-solid fa-wand-magic-sparkles text-amber-200"></i>
-        <span>Mở Trợ Lý Gemini AI</span>
+      <button onclick="toggleSidebar(false); openScanBillModal();" class="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2">
+        <i class="fa-solid fa-camera text-amber-200"></i>
+        <span>Quét Hóa Đơn Bằng AI</span>
       </button>
       <button onclick="toggleSidebar(false); openShareReportModal();" class="w-full py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 flex items-center justify-center gap-2">
         <i class="fa-solid fa-share-nodes text-indigo-600"></i>
@@ -474,6 +474,10 @@
             <p class="text-xs text-slate-500">Chi tiết minh bạch từng món mua sắm</p>
           </div>
           <div class="flex items-center gap-2">
+            <button onclick="openScanBillModal()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 text-white hover:opacity-90 transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-camera text-amber-200"></i>
+              <span>Quét Bill AI</span>
+            </button>
             <div class="relative">
               <i class="fa-solid fa-filter absolute left-3 top-2.5 text-xs text-slate-400"></i>
               <select id="expenseFilterCategory" onchange="renderExpenseTable()" class="pl-8 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-600 focus:outline-none">
@@ -489,16 +493,22 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto -mx-5 sm:mx-0">
+        <!-- Mobile Card View: Hiển thị từng khoản chi dạng thẻ thoáng mắt trên điện thoại -->
+        <div id="expenseCardsMobile" class="sm:hidden space-y-3">
+          <!-- Dynamically populated cards on mobile -->
+        </div>
+
+        <!-- Desktop Table View: Hiển thị bảng chi tiết trên máy tính/máy tính bảng -->
+        <div class="hidden sm:block overflow-x-auto -mx-5 sm:mx-0">
           <table class="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase text-[11px] bg-slate-50/70">
-                <th class="py-3 px-4 rounded-l-xl">Khoản chi</th>
+                <th class="py-3 px-4 rounded-l-xl min-w-[200px]">Khoản chi</th>
                 <th class="py-3 px-3">Loại</th>
-                <th class="py-3 px-3">Số tiền</th>
-                <th class="py-3 px-3">Người ứng trước</th>
-                <th class="py-3 px-3">Người cùng chia</th>
-                <th class="py-3 px-4 rounded-r-xl text-right">Xoá</th>
+                <th class="py-3 px-3 whitespace-nowrap">Số tiền</th>
+                <th class="py-3 px-3 whitespace-nowrap">Người ứng trước</th>
+                <th class="py-3 px-3 whitespace-nowrap">Người cùng chia</th>
+                <th class="py-3 px-4 rounded-r-xl text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
             <tbody id="expenseTableBody" class="divide-y divide-slate-100 text-slate-700">
@@ -1026,115 +1036,193 @@
     <div class="text-xs font-semibold pr-2" id="toastMessage">Thông báo</div>
   </div>
 
-  <!-- MODAL: Gemini AI Assistant for KTX (Zalo Reminders & Dispute Mediator) -->
-  <div id="modalAIAssistant" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
-    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+  <!-- MODAL: Quét Hóa Đơn AI (Gemini 3 Flash Bill Scanner) -->
+  <div id="modalScanBill" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100">
-            <i class="fa-solid fa-brain text-sm"></i>
+            <i class="fa-solid fa-camera text-sm"></i>
           </div>
           <div>
             <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-              <span>Trợ Lý KTX Thông Minh</span>
-              <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold">Gemini 3 Flash</span>
+              <span>Quét Hóa Đơn Tự Động</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold">Gemini AI</span>
             </h3>
-            <p class="text-[11px] text-slate-400">Soạn tin nhắn khéo léo & Hòa giải tranh chấp phòng</p>
+            <p class="text-[11px] text-slate-400">Tải ảnh hóa đơn siêu thị, tiền điện, nước để AI tự bóc tách số tiền</p>
           </div>
         </div>
-        <button onclick="closeModal('modalAIAssistant')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+        <button onclick="closeModal('modalScanBill')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- Tabs inside AI modal -->
-      <div class="flex gap-2 pt-3 pb-2 border-b border-slate-100 shrink-0">
-        <button onclick="switchAITab('reminder')" id="btnAITabReminder" class="px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5">
-          <i class="fa-solid fa-paper-plane"></i>
-          <span>Soạn Tin Nhắc Nhở Zalo</span>
-        </button>
-        <button onclick="switchAITab('mediator')" id="btnAITabMediator" class="px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-scale-balanced"></i>
-          <span>Tòa Án Hòa Giải KTX</span>
-        </button>
-      </div>
-
       <div class="overflow-y-auto flex-grow py-3 space-y-4">
-        <!-- Sub-view 1: Reminder Generator -->
-        <div id="aiSubViewReminder" class="space-y-3.5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Mục đích nhắc nhở</label>
-              <select id="aiReminderTopic" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none">
-                <option value="debt">Đòi tiền nợ / Quyết toán cuối tháng</option>
-                <option value="cleaning">Nhắc dọn phòng / Trực nhật hôm nay</option>
-                <option value="dishes">Nhắc rửa bát đũa cá nhân</option>
-                <option value="quiet">Nhắc giữ yên lặng sau 23h00</option>
-                <option value="water">Nhắc đóng tiền bình nước 20L</option>
-              </select>
+        <!-- Upload receipt photo area -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Chụp hoặc Tải ảnh hóa đơn / Biên lai:</label>
+          <div class="relative border-2 border-dashed border-indigo-200 hover:border-indigo-400 rounded-2xl p-4 sm:p-6 text-center bg-indigo-50/30 transition cursor-pointer group">
+            <input type="file" id="aiBillFileInput" accept="image/*" onchange="handleBillImageSelected(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+            <div class="flex flex-col items-center justify-center gap-1.5">
+              <div class="w-12 h-12 rounded-2xl bg-white shadow-sm border border-indigo-100 text-indigo-600 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <p class="text-xs font-bold text-slate-800 mt-1">Bấm để chụp ảnh hoặc chọn ảnh hóa đơn</p>
+              <p class="text-[11px] text-slate-400">Hỗ trợ ảnh bill siêu thị, biên lai điện thoại, tiền điện tử JPG, PNG</p>
             </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Phong cách giọng điệu</label>
-              <select id="aiReminderTone" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none">
-                <option value="funny">Hài hước, lầy lội, không quạu</option>
-                <option value="poem">Thơ lục bát / Vè chế đòi nợ</option>
-                <option value="genz">Ngôn ngữ Gen Z bắt trend</option>
-                <option value="serious">Nghiêm túc, trách nhiệm, rõ ràng</option>
-                <option value="polite">Cực kỳ tế nhị & nhỏ nhẹ</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Nhắc đích danh ai? (Tùy chọn)</label>
-            <input type="text" id="aiReminderTarget" placeholder="VD: Hoàng Long, hoặc Cả phòng..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
-          </div>
-
-          <button onclick="generateAIReminder()" id="btnGenerateAIReminder" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
-            <span id="btnGenerateAIReminderText">Tạo Tin Nhắn Tức Thì Với Gemini AI</span>
-          </button>
-
-          <!-- Result box -->
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <label class="text-xs font-bold text-slate-700">Nội dung Gemini vừa tạo:</label>
-              <button onclick="copyGeneratedAIText()" id="btnCopyAIReminder" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                <i class="fa-solid fa-copy"></i> <span>Sao chép gửi Zalo</span>
-              </button>
-            </div>
-            <textarea id="aiGeneratedReminderText" rows="4" placeholder="Tin nhắn sáng tạo sẽ hiển thị tại đây..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none leading-relaxed"></textarea>
           </div>
         </div>
 
-        <!-- Sub-view 2: Roommate Dispute Mediator -->
-        <div id="aiSubViewMediator" class="hidden space-y-3.5">
-          <p class="text-xs text-slate-500">Gặp mâu thuẫn tiền bạc hoặc sinh hoạt trong phòng? Hãy miêu tả ngắn gọn, Gemini sẽ đóng vai Hòa Giải Viên phân xử công tâm dựa trên văn hóa sống tập thể:</p>
+        <!-- Preview & Scanning Animation Area -->
+        <div id="aiScanPreviewContainer" class="hidden space-y-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/80">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+              <i id="aiScanStatusIcon" class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i>
+              <span id="aiScanStatusMsg">Đang phân tích hóa đơn...</span>
+            </span>
+          </div>
+
+          <div class="relative max-h-56 overflow-hidden rounded-xl bg-slate-900 flex items-center justify-center">
+            <img id="aiScanBillPreviewImg" src="" alt="Hóa đơn tải lên" class="max-h-56 w-auto object-contain opacity-85">
+            <!-- Laser scan beam animation -->
+            <div id="aiScanningLaser" class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#22d3ee] animate-pulse"></div>
+          </div>
+        </div>
+
+        <!-- Extracted form from AI -->
+        <div id="aiExtractedForm" class="hidden space-y-3 p-4 bg-slate-50 rounded-2xl border border-indigo-100">
+          <div class="text-xs font-bold text-indigo-900 border-b border-indigo-100 pb-1.5 flex items-center justify-between">
+            <span>Thông tin Gemini AI nhận diện được:</span>
+            <span class="text-[10px] text-emerald-600 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Đã đọc xong</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Nội dung chi tiêu</label>
+              <input type="text" id="aiExtractedName" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Tổng số tiền (VNĐ)</label>
+              <input type="number" id="aiExtractedAmount" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-rose-600">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Loại chi tiêu</label>
+              <select id="aiExtractedCategory" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold">
+                <option value="Sinh hoạt">Sinh hoạt chung</option>
+                <option value="Điện nước">Điện / Nước</option>
+                <option value="Ăn uống">Ăn uống / Gia vị</option>
+                <option value="Vệ sinh">Đồ dọn phòng KTX</option>
+                <option value="Sửa chữa">Sửa đồ phòng</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">Người đã ứng tiền trước</label>
+              <select id="aiExtractedPayer" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-indigo-700">
+                <!-- Injected via JavaScript -->
+              </select>
+            </div>
+          </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Vấn đề hoặc mâu thuẫn phát sinh</label>
-            <textarea id="aiDisputeInput" rows="3" placeholder="VD: Bạn A về quê thực tập 10 ngày trong tháng, cuối tháng bạn A có phải chia tiền bình nước 20L và tiền wifi không?" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 leading-relaxed"></textarea>
-          </div>
-
-          <button onclick="solveDisputeWithAI()" id="btnSolveDispute" class="w-full py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-scale-balanced text-amber-300"></i>
-            <span id="btnSolveDisputeText">Nhờ Gemini Phân Xử Công Tâm</span>
-          </button>
-
-          <div id="aiDisputeResultCard" class="hidden p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs leading-relaxed space-y-2">
-            <div class="font-bold text-indigo-900 flex items-center gap-1.5">
-              <i class="fa-solid fa-gavel text-amber-500"></i>
-              <span>Phán Quyết & Lời Khuyên Hòa Giải:</span>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-bold text-slate-600">Những ai cùng chia khoản này?</label>
+              <div class="flex items-center gap-2 text-[10px] font-semibold text-indigo-600">
+                <button type="button" onclick="toggleAIBeneficiaries(true)" class="hover:underline">Chọn hết</button>
+                <span>|</span>
+                <button type="button" onclick="toggleAIBeneficiaries(false)" class="text-slate-400 hover:underline">Bỏ hết</button>
+              </div>
             </div>
-            <div id="aiDisputeResultText" class="text-slate-700 whitespace-pre-line"></div>
+            <div id="aiExtractedBeneficiaries" class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              <!-- Checkboxes injected -->
+            </div>
           </div>
+
+          <button type="button" onclick="confirmAICreatedExpense()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 mt-2">
+            <i class="fa-solid fa-check"></i>
+            <span>Xác Nhận Lưu Vào Danh Sách Chi Tiêu</span>
+          </button>
         </div>
       </div>
 
       <div class="pt-3 border-t border-slate-100 flex items-center justify-end shrink-0">
-        <button onclick="closeModal('modalAIAssistant')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 transition">Đóng</button>
+        <button onclick="closeModal('modalScanBill')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 transition">Đóng</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Chỉnh Sửa Khoản Chi (Sửa Sai Sót) -->
+  <div id="modalEditExpense" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+          <span>Chỉnh Sửa Khoản Chi</span>
+        </h3>
+        <button onclick="closeModal('modalEditExpense')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formEditExpense" onsubmit="handleSaveEditedExpense(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="editExpenseId">
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nội dung chi tiêu <span class="text-rose-500">*</span></label>
+          <input type="text" id="editExpenseName" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 font-semibold">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Số tiền (VNĐ) <span class="text-rose-500">*</span></label>
+            <input type="number" id="editExpenseAmount" required min="500" step="500" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 font-black text-rose-600">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Phân loại</label>
+            <select id="editExpenseCategory" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold focus:outline-none">
+              <option value="Sinh hoạt">Sinh hoạt chung</option>
+              <option value="Điện nước">Điện / Nước</option>
+              <option value="Ăn uống">Ăn uống / Gia vị</option>
+              <option value="Vệ sinh">Đồ dọn phòng KTX</option>
+              <option value="Sửa chữa">Sửa đồ phòng</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Người đã ứng trước <span class="text-rose-500">*</span></label>
+          <select id="editExpensePayer" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-indigo-700 focus:outline-none">
+            <!-- Payer options injected -->
+          </select>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-bold text-slate-700">Người cùng chia khoản này:</label>
+            <div class="flex items-center gap-2 text-[10px] font-semibold text-indigo-600">
+              <button type="button" onclick="toggleEditBeneficiaries(true)" class="hover:underline">Chọn hết</button>
+              <span>|</span>
+              <button type="button" onclick="toggleEditBeneficiaries(false)" class="text-slate-400 hover:underline">Bỏ hết</button>
+            </div>
+          </div>
+          <div id="editBeneficiariesChecklist" class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto p-2 bg-slate-50 rounded-xl border border-slate-200/80">
+            <!-- Beneficiaries injected -->
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalEditExpense')" class="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 font-semibold">Hủy</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md transition flex items-center gap-1.5">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Cập Nhật Khoản Chi</span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -1292,6 +1380,11 @@
 
     function closeModal(id) {
       document.getElementById(id).classList.add('hidden');
+    }
+
+    // Safety fallback: Redirect old assistant modal calls to the AI Bill Scanner modal
+    function openAIAssistantModal() {
+      openScanBillModal();
     }
 
     function toggleSidebar(open) {
@@ -1723,10 +1816,13 @@
                     <span class="truncate">${payer.name}</span>
                   </span>
                 </div>
-                <div class="flex items-center gap-1.5 shrink-0">
+                <div class="flex items-center gap-1 shrink-0">
                   <span class="text-[10px] font-semibold text-slate-600 bg-slate-200/60 px-2 py-0.5 rounded-md whitespace-nowrap" title="${beneNames}">
                     ${isAll ? `Cả phòng (${shareCount})` : `${shareCount} bạn chia`}
                   </span>
+                  <button onclick="openEditExpenseModal('${item.id}')" class="text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition" title="Chỉnh sửa khoản chi này">
+                    <i class="fa-solid fa-pen-to-square text-sm"></i>
+                  </button>
                   <button onclick="deleteExpense('${item.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa khoản chi này">
                     <i class="fa-regular fa-trash-can text-sm"></i>
                   </button>
@@ -1778,9 +1874,14 @@
                 <div class="text-[10px] text-slate-400 whitespace-nowrap">~${formatVND(perPerson)} / bạn</div>
               </td>
               <td class="py-3 px-4 text-right whitespace-nowrap">
-                <button onclick="deleteExpense('${item.id}')" class="text-slate-300 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa khoản chi này">
-                  <i class="fa-regular fa-trash-can text-sm"></i>
-                </button>
+                <div class="flex items-center justify-end gap-1">
+                  <button onclick="openEditExpenseModal('${item.id}')" class="text-slate-300 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition" title="Chỉnh sửa khoản chi này">
+                    <i class="fa-solid fa-pen-to-square text-sm"></i>
+                  </button>
+                  <button onclick="deleteExpense('${item.id}')" class="text-slate-300 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa khoản chi này">
+                    <i class="fa-regular fa-trash-can text-sm"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           `;
@@ -2736,110 +2837,77 @@
       return "";
     }
 
-    // 1. Natural Language Expense Parser
-    async function parseNaturalExpenseWithAI() {
-      const promptInput = document.getElementById('aiExpensePrompt');
-      const text = promptInput.value.trim();
-      if (!text) {
-        showToast("Vui lòng nhập nội dung chi tiêu (VD: Huy mua 2 bình nước 44k)", "error");
-        return;
-      }
+    // --- AI BILL SCANNER LOGIC ---
+    function openScanBillModal() {
+      // Reset scan modal state
+      document.getElementById('aiScanPreviewContainer').classList.add('hidden');
+      document.getElementById('aiExtractedForm').classList.add('hidden');
+      document.getElementById('aiBillFileInput').value = "";
 
-      const statusBox = document.getElementById('aiExpenseStatus');
-      const statusText = document.getElementById('aiExpenseStatusText');
-      const btn = document.getElementById('btnAITextSubmit');
+      // Populate payer dropdown
+      const payerSel = document.getElementById('aiExtractedPayer');
+      payerSel.innerHTML = appData.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
 
-      statusBox.classList.remove('hidden');
-      statusText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-amber-400"></i> Gemini đang phân tích chi phí...';
-      btn.disabled = true;
+      // Populate beneficiaries checklist
+      const beneBox = document.getElementById('aiExtractedBeneficiaries');
+      beneBox.innerHTML = appData.members.map(m => `
+        <label class="flex items-center gap-1.5 p-1.5 rounded-lg bg-white border border-slate-200 text-[11px] font-semibold text-slate-700 cursor-pointer">
+          <input type="checkbox" name="aiBeneficiary" value="${m.id}" checked class="w-3.5 h-3.5 rounded text-indigo-600 focus:ring-indigo-500">
+          <span class="truncate">${m.name}</span>
+        </label>
+      `).join('');
 
-      const memberListStr = appData.members.map(m => `${m.name} (id: ${m.id})`).join(', ');
-
-      const systemInstruction = `Bạn là trợ lý AI kế toán phòng ký túc xá sinh viên tại Việt Nam.
-Nhiệm vụ của bạn là đọc một câu miêu tả chi tiêu tự nhiên bằng tiếng Việt và trích xuất thành định dạng JSON chuẩn.
-Danh sách thành viên phòng: [${memberListStr}].
-
-Định dạng JSON yêu cầu (CHỈ TRẢ VỀ DUY NHẤT JSON HỢP LỆ, KHÔNG KÈM MARKDOWN HAY CHỮ NÀO KHÁC):
-{
-  "name": "Tên món đồ tóm tắt ngắn gọn",
-  "amount": 50000,
-  "payerId": "id_thành_viên_ứng_tiền_nếu_nhắc_đến_nếu_không_để_trống",
-  "category": "Sinh hoạt | Điện nước | Ăn uống | Vệ sinh | Sửa chữa | Khác",
-  "beneficiaryIds": ["id1", "id2"] // danh sách id người chia, nếu cả phòng thì liệt kê tất cả id
-}`;
-
-      try {
-        const rawResponse = await callGeminiGenerate(text, systemInstruction);
-        // Clean JSON string
-        const cleaned = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-
-        // Autofill form
-        if (parsed.name) document.getElementById('expenseName').value = parsed.name;
-        if (parsed.amount) {
-          document.getElementById('expenseAmount').value = parsed.amount;
-          updateAmountPreview(parsed.amount);
-        }
-        if (parsed.category) {
-          document.getElementById('expenseCategory').value = parsed.category;
-        }
-        if (parsed.payerId && appData.members.some(m => m.id === parsed.payerId)) {
-          document.getElementById('expensePayer').value = parsed.payerId;
-        }
-
-        // Beneficiaries
-        if (Array.isArray(parsed.beneficiaryIds) && parsed.beneficiaryIds.length > 0) {
-          const checkboxes = document.querySelectorAll('input[name="beneficiary"]');
-          checkboxes.forEach(cb => {
-            cb.checked = parsed.beneficiaryIds.includes(cb.value);
-          });
-        }
-
-        statusText.innerHTML = `✨ Đã nhận diện: <strong>${parsed.name} (${formatVND(parsed.amount)})</strong>! Vui lòng kiểm tra và bấm "Lưu Khoản Chi".`;
-        showToast("Gemini đã điền thông tin chi tiêu!");
-      } catch (e) {
-        console.error("AI Parse Error:", e);
-        statusText.innerHTML = `<span class="text-rose-300">Không nhận diện được, bạn hãy kiểm tra lại câu hoặc nhập tay nhé!</span>`;
-      } finally {
-        btn.disabled = false;
-      }
+      openModal('modalScanBill');
     }
 
-    // 2. Receipt / Bill Image Scanner via Multimodal Gemini
-    async function handleBillImageUpload(event) {
+    function toggleAIBeneficiaries(checked) {
+      const cbs = document.querySelectorAll('input[name="aiBeneficiary"]');
+      cbs.forEach(cb => cb.checked = checked);
+    }
+
+    async function handleBillImageSelected(event) {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const statusBox = document.getElementById('aiExpenseStatus');
-      const statusText = document.getElementById('aiExpenseStatusText');
-      const uploadLabel = document.getElementById('aiBillUploadLabel');
+      const previewContainer = document.getElementById('aiScanPreviewContainer');
+      const previewImg = document.getElementById('aiScanBillPreviewImg');
+      const laser = document.getElementById('aiScanningLaser');
+      const statusIcon = document.getElementById('aiScanStatusIcon');
+      const statusMsg = document.getElementById('aiScanStatusMsg');
+      const extractedForm = document.getElementById('aiExtractedForm');
 
-      statusBox.classList.remove('hidden');
-      statusText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-amber-400"></i> Đang đọc hóa đơn/bill bằng mắt thần Gemini...';
-      uploadLabel.innerText = "Đang quét...";
+      previewContainer.classList.remove('hidden');
+      extractedForm.classList.add('hidden');
+      laser.classList.remove('hidden');
+
+      statusIcon.className = "fa-solid fa-circle-notch fa-spin text-indigo-600";
+      statusMsg.innerText = "Gemini AI đang đọc hóa đơn và nhận diện số tiền...";
 
       const reader = new FileReader();
       reader.onload = async function(e) {
-        const base64Data = e.target.result.split(',')[1];
+        const fullBase64 = e.target.result;
+        previewImg.src = fullBase64;
+
+        const base64Data = fullBase64.split(',')[1];
         const mimeType = file.type || 'image/jpeg';
 
         const memberListStr = appData.members.map(m => `${m.name} (id: ${m.id})`).join(', ');
-        const systemInstruction = `Bạn là chuyên gia OCR phân tích hóa đơn và hóa đơn điện/nước siêu thị cho sinh viên Việt Nam.
-Hãy đọc bức ảnh hóa đơn, tìm ra:
-1. Tên mô tả hóa đơn chính (VD: Hóa đơn VinMart, Tiền điện tháng 9, Hóa đơn Co.opmart...)
-2. Tổng số tiền thanh toán (bằng số VNĐ)
-3. Danh mục phù hợp nhất ("Sinh hoạt", "Điện nước", "Ăn uống", "Vệ sinh", "Sửa chữa", "Khác")
+        const systemInstruction = `Bạn là trợ lý AI chuyên nghiệp phân tích hóa đơn / bill chi tiêu cho sinh viên ký túc xá tại Việt Nam.
+Nhiệm vụ của bạn là xem hình ảnh hóa đơn (hoặc biên lai siêu thị, tiền điện, nước, mua thực phẩm...) và trích xuất thông tin chuẩn JSON:
+1. "name": Tên tóm tắt đồ dùng hoặc khoản chi (VD: "Hóa đơn Co.opmart", "Tiền điện KTX", "Nước rửa bát + Túi rác").
+2. "amount": Tổng số tiền thanh toán cuối cùng (chỉ số nguyên VNĐ, ví dụ: 85000, 150000).
+3. "category": Phân loại chính xác nhất trong các mục: "Sinh hoạt", "Điện nước", "Ăn uống", "Vệ sinh", "Sửa chữa", "Khác".
 
-CHỈ TRẢ VỀ DUY NHẤT JSON CÓ CẤU TRÚC:
+CHỈ TRẢ VỀ DUY NHẤT ĐỊNH DẠNG JSON HỢP LỆ, KHÔNG KÈM BẤT KỲ VĂN BẢN HAY GIẢI THÍCH NÀO KHÁC:
 {
-  "name": "Chuỗi tên",
-  "amount": 120000,
+  "name": "Tên khoản chi",
+  "amount": 75000,
   "category": "Ăn uống"
 }`;
 
         try {
           const rawResponse = await callGeminiGenerate(
-            "Hãy đọc hóa đơn này và trích xuất tổng tiền cùng tên đồ dùng:",
+            "Hãy đọc hóa đơn này và trích xuất tên khoản chi, tổng số tiền VNĐ và danh mục:",
             systemInstruction,
             { mimeType, data: base64Data }
           );
@@ -2847,116 +2915,154 @@ CHỈ TRẢ VỀ DUY NHẤT JSON CÓ CẤU TRÚC:
           const cleaned = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
           const parsed = JSON.parse(cleaned);
 
-          if (parsed.name) document.getElementById('expenseName').value = parsed.name;
-          if (parsed.amount) {
-            document.getElementById('expenseAmount').value = parsed.amount;
-            updateAmountPreview(parsed.amount);
-          }
-          if (parsed.category) document.getElementById('expenseCategory').value = parsed.category;
+          laser.classList.add('hidden');
+          statusIcon.className = "fa-solid fa-circle-check text-emerald-600";
+          statusMsg.innerHTML = `<span class="text-emerald-700 font-bold">Đã nhận diện xong: ${parsed.name} (${formatVND(parsed.amount)})</span>`;
 
-          statusText.innerHTML = `📸 Đã quét bill thành công: <strong>${parsed.name} - ${formatVND(parsed.amount)}</strong>`;
-          showToast("Đã trích xuất hóa đơn thành công!");
+          // Fill extracted fields
+          document.getElementById('aiExtractedName').value = parsed.name || "Hóa đơn KTX";
+          document.getElementById('aiExtractedAmount').value = parsed.amount || 0;
+          if (parsed.category) {
+            document.getElementById('aiExtractedCategory').value = parsed.category;
+          }
+
+          extractedForm.classList.remove('hidden');
+          showToast("Gemini đã quét bill thành công!");
         } catch (err) {
-          console.error("OCR Error:", err);
-          statusText.innerHTML = `<span class="text-rose-300">Không thể đọc rõ hóa đơn này. Vui lòng chụp gần và nét hơn!</span>`;
-          showToast("Không nhận diện được bill, vui lòng thử lại!", "error");
-        } finally {
-          uploadLabel.innerText = "Quét Hóa Đơn";
-          event.target.value = "";
+          console.error("OCR Scan Error:", err);
+          laser.classList.add('hidden');
+          statusIcon.className = "fa-solid fa-triangle-exclamation text-rose-500";
+          statusMsg.innerHTML = `<span class="text-rose-600 font-bold">Không đọc được hóa đơn này. Vui lòng chụp rõ và gần hơn!</span>`;
+          showToast("Không nhận diện được hóa đơn, vui lòng thử lại!", "error");
         }
       };
       reader.readAsDataURL(file);
     }
 
-    // 3. AI Assistant Modal: Reminders & Mediator
-    function openAIAssistantModal() {
-      openModal('modalAIAssistant');
-    }
+    function confirmAICreatedExpense() {
+      const name = document.getElementById('aiExtractedName').value.trim();
+      const amount = parseFloat(document.getElementById('aiExtractedAmount').value);
+      const payerId = document.getElementById('aiExtractedPayer').value;
+      const category = document.getElementById('aiExtractedCategory').value;
 
-    function switchAITab(tab) {
-      const btnRem = document.getElementById('btnAITabReminder');
-      const btnMed = document.getElementById('btnAITabMediator');
-      const viewRem = document.getElementById('aiSubViewReminder');
-      const viewMed = document.getElementById('aiSubViewMediator');
+      const checkedBeneficiaries = Array.from(document.querySelectorAll('input[name="aiBeneficiary"]:checked')).map(cb => cb.value);
 
-      if (tab === 'reminder') {
-        btnRem.className = "px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5";
-        btnMed.className = "px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5";
-        viewRem.classList.remove('hidden');
-        viewMed.classList.add('hidden');
-      } else {
-        btnMed.className = "px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5";
-        btnRem.className = "px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5";
-        viewMed.classList.remove('hidden');
-        viewRem.classList.add('hidden');
+      if (!name) {
+        showToast("Vui lòng nhập tên khoản chi!", "error");
+        return;
       }
-    }
-
-    async function generateAIReminder() {
-      const topic = document.getElementById('aiReminderTopic').value;
-      const tone = document.getElementById('aiReminderTone').value;
-      const target = document.getElementById('aiReminderTarget').value.trim() || "Cả phòng";
-      const resultArea = document.getElementById('aiGeneratedReminderText');
-      const btnText = document.getElementById('btnGenerateAIReminderText');
-
-      btnText.innerText = "Gemini đang sáng tác...";
-      resultArea.value = "Đang tạo tin nhắn hài hước và tinh tế...";
-
-      const prompt = `Hãy viết một tin nhắn Zalo gửi vào nhóm phòng ký túc xá (${appData.roomName}).
-- Người cần nhắn tới: ${target}
-- Chủ đề: ${topic} (ví dụ đòi nợ tiền phòng, nhắc dọn vệ sinh, nhắc rửa bát...)
-- Phong cách: ${tone} (hài hước, thơ vui vẻ, gen z lầy lội, hoặc lịch sự)
-- Yêu cầu: Viết tự nhiên, hợp văn hóa sinh viên Việt Nam, giữ không khí phòng vui vẻ không gây cãi cọ, có kèm emoji sinh động. Chỉ trả về đúng nội dung tin nhắn để copy.`;
-
-      try {
-        const output = await callGeminiGenerate(prompt, "Bạn là chuyên gia giao tiếp và viết content vui vẻ cho đời sống sinh viên KTX.");
-        resultArea.value = output.trim();
-        showToast("Đã tạo tin nhắn thành công!");
-      } catch (e) {
-        resultArea.value = "Lỗi kết nối AI, vui lòng bấm thử lại!";
-      } finally {
-        btnText.innerText = "Tạo Tin Nhắn Tức Thì Với Gemini AI";
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Vui lòng nhập số tiền hợp lệ!", "error");
+        return;
       }
-    }
-
-    function copyGeneratedAIText() {
-      const txt = document.getElementById('aiGeneratedReminderText').value;
-      if (!txt) return;
-      copyToClipboard(txt, "Đã sao chép tin nhắn Zalo!");
-    }
-
-    async function solveDisputeWithAI() {
-      const issue = document.getElementById('aiDisputeInput').value.trim();
-      if (!issue) {
-        showToast("Vui lòng nhập vấn đề cần phân xử!", "error");
+      if (checkedBeneficiaries.length === 0) {
+        showToast("Vui lòng chọn ít nhất một người tham gia chia tiền!", "error");
         return;
       }
 
-      const btnText = document.getElementById('btnSolveDisputeText');
-      const resultCard = document.getElementById('aiDisputeResultCard');
-      const resultText = document.getElementById('aiDisputeResultText');
+      const newExpense = {
+        id: "exp_" + Date.now(),
+        name,
+        amount,
+        payerId,
+        category,
+        beneficiaries: checkedBeneficiaries,
+        date: new Date().toISOString()
+      };
 
-      btnText.innerText = "Gemini đang nghiên cứu và phán xử...";
-      resultCard.classList.remove('hidden');
-      resultText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-500"></i> Đang cân nhắc giải pháp êm ấm nhất cho phòng...';
+      appData.expenses.unshift(newExpense);
 
-      const prompt = `Phòng ký túc xá đang gặp tình huống sau:
-"${issue}"
+      // Tự động ghim lên bảng thông báo
+      const payerObj = appData.members.find(m => m.id === payerId);
+      const payerName = payerObj ? payerObj.name : "Một bạn trong phòng";
+      const nowStr = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 
-Hãy đóng vai trò là một Trọng Tài / Cố Vấn KTX có kinh nghiệm 10 năm giải quyết xung đột phòng trọ sinh viên:
-1. Đưa ra phán quyết công bằng, hợp lý, thấu tình đạt lý (ai đúng, ai sai hoặc trách nhiệm thuộc về ai).
-2. Đề xuất quy ước cụ thể để từ nay về sau phòng không bao giờ tranh cãi về việc này nữa.
-3. Giọng văn chân thành, dí dỏm, mang tính xây dựng đoàn kết.`;
+      const autoNotice = {
+        id: "n_ai_" + Date.now(),
+        type: "finance",
+        authorName: payerName,
+        title: `[Quét Bill AI] ${name} (${formatVND(amount)})`,
+        content: `${payerName} vừa quét hóa đơn "${name}" trị giá ${formatVND(amount)} (${category}). Chia đều cho ${checkedBeneficiaries.length} bạn trong phòng.`,
+        time: nowStr
+      };
 
-      try {
-        const output = await callGeminiGenerate(prompt, "Bạn là cố vấn ký túc xá sinh viên hòa nhã, công tâm và thấu hiểu.");
-        resultText.innerText = output.trim();
-        showToast("Đã có phán quyết từ Gemini!");
-      } catch (e) {
-        resultText.innerText = "Lỗi khi kết nối với AI, bạn vui lòng thử lại sau nhé!";
-      } finally {
-        btnText.innerText = "Nhờ Gemini Phân Xử Công Tâm";
+      if (!appData.notices) appData.notices = [];
+      appData.notices.unshift(autoNotice);
+
+      saveData();
+      closeModal('modalScanBill');
+      switchTab('expenses');
+      showToast(`Đã thêm khoản chi từ hóa đơn: ${name}!`);
+    }
+
+    // --- EXPENSE EDITING (SỬA CHỮA SAI SÓT) LOGIC ---
+    function openEditExpenseModal(expenseId) {
+      const exp = appData.expenses.find(e => e.id === expenseId);
+      if (!exp) return;
+
+      document.getElementById('editExpenseId').value = exp.id;
+      document.getElementById('editExpenseName').value = exp.name;
+      document.getElementById('editExpenseAmount').value = exp.amount;
+      document.getElementById('editExpenseCategory').value = exp.category;
+
+      // Populate payer dropdown
+      const payerSel = document.getElementById('editExpensePayer');
+      payerSel.innerHTML = appData.members.map(m => `
+        <option value="${m.id}" ${m.id === exp.payerId ? 'selected' : ''}>${m.name}</option>
+      `).join('');
+
+      // Populate beneficiaries checklist
+      const beneBox = document.getElementById('editBeneficiariesChecklist');
+      beneBox.innerHTML = appData.members.map(m => `
+        <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-indigo-50/50 cursor-pointer select-none">
+          <input type="checkbox" name="editBeneficiary" value="${m.id}" ${exp.beneficiaries.includes(m.id) ? 'checked' : ''} class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+          <span class="text-xs font-semibold text-slate-700 truncate">${m.name}</span>
+        </label>
+      `).join('');
+
+      openModal('modalEditExpense');
+    }
+
+    function toggleEditBeneficiaries(checked) {
+      const cbs = document.querySelectorAll('input[name="editBeneficiary"]');
+      cbs.forEach(cb => cb.checked = checked);
+    }
+
+    function handleSaveEditedExpense(e) {
+      e.preventDefault();
+      const id = document.getElementById('editExpenseId').value;
+      const exp = appData.expenses.find(item => item.id === id);
+      if (!exp) return;
+
+      const name = document.getElementById('editExpenseName').value.trim();
+      const amount = parseFloat(document.getElementById('editExpenseAmount').value);
+      const payerId = document.getElementById('editExpensePayer').value;
+      const category = document.getElementById('editExpenseCategory').value;
+      const checkedBeneficiaries = Array.from(document.querySelectorAll('input[name="editBeneficiary"]:checked')).map(cb => cb.value);
+
+      if (!name) {
+        showToast("Vui lòng nhập tên khoản chi!", "error");
+        return;
       }
+      if (isNaN(amount) || amount <= 0) {
+        showToast("Vui lòng nhập số tiền hợp lệ!", "error");
+        return;
+      }
+      if (checkedBeneficiaries.length === 0) {
+        showToast("Vui lòng chọn ít nhất một người cùng chia!", "error");
+        return;
+      }
+
+      // Update fields
+      exp.name = name;
+      exp.amount = amount;
+      exp.payerId = payerId;
+      exp.category = category;
+      exp.beneficiaries = checkedBeneficiaries;
+
+      saveData();
+      closeModal('modalEditExpense');
+      showToast(`Đã sửa khoản chi "${name}" thành công!`);
     }
 
     function updateUI() {
