@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "RoomData": {
+      "title": "RoomData",
+      "description": "Shared dormitory room dataset containing finances, duty checklists, and member profiles",
+      "type": "object",
+      "properties": {
+        "roomId": {
+          "type": "string",
+          "description": "Unique identifier of the dormitory room",
+          "maxLength": 100
+        },
+        "roomName": {
+          "type": "string",
+          "description": "Display name of the room",
+          "maxLength": 150
+        },
+        "roomCode": {
+          "type": "string",
+          "description": "Secret room code used to join the room",
+          "maxLength": 50
+        },
+        "members": {
+          "type": "array",
+          "description": "List of room roommates and their bank settlement accounts"
+        },
+        "expenses": {
+          "type": "array",
+          "description": "Shared expense records and payment splits"
+        },
+        "checklistTasks": {
+          "type": "array",
+          "description": "Cleaning checklist items"
+        },
+        "cleanSchedule": {
+          "type": "array",
+          "description": "Weekly cleaning schedule assignments"
+        },
+        "cleanHistory": {
+          "type": "array",
+          "description": "Log of completed cleaning tasks"
+        },
+        "notes": {
+          "type": "array",
+          "description": "Bulletin board notes and messages"
+        },
+        "fundTransactions": {
+          "type": "array",
+          "description": "Common fund balance and transaction history"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of the latest real-time update"
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Name of the roommate who made the latest change",
+          "maxLength": 100
+        }
+      },
+      "required": ["roomId", "roomName"]
+    },
+    "RoomActivity": {
+      "title": "RoomActivity",
+      "description": "Real-time activity and announcement broadcast for the room",
+      "type": "object",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Name of the user sending the activity",
+          "maxLength": 100
+        },
+        "type": {
+          "type": "string",
+          "description": "Category of activity: expense, clean, fund, or notice",
+          "maxLength": 50
+        },
+        "description": {
+          "type": "string",
+          "description": "Content of the announcement",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Server timestamp of creation"
+        }
+      },
+      "required": ["author", "type", "description"]
+    }
+  },
+  "firestore": {
+    "/ktx_rooms/{roomId}": {
+      "schema": "RoomData",
+      "description": "Real-time room synchronization data accessible to room members"
+    },
+    "/ktx_rooms/{roomId}/activities/{activityId}": {
+      "schema": "RoomActivity",
+      "description": "Live chronological activity timeline for the room"
+    }
+  }
+}
