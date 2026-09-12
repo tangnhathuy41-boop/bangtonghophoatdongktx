@@ -7,6 +7,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#4f46e5">
+  <meta name="description" content="Quản lý phòng KTX, chia tiền chi tiêu, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
+  <meta property="og:title" content="KTX Splitter & Clean - Quản Lý Phòng KTX">
+  <meta property="og:description" content="Quản lý phòng KTX, chia tiền chi tiêu, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
 
   <title>KTX Splitter & Clean - Quản Lý Phòng KTX</title>
 
@@ -68,6 +71,103 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-700">
 
+  <!-- Màn hình Đăng nhập phủ kín - Thiết kế theo phong cách Colorlib Login_v9 Siêu Đẹp -->
+  <div id="login-overlay" style="position: fixed; inset: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(30, 27, 75, 0.82) 0%, rgba(79, 70, 229, 0.76) 48%, rgba(147, 51, 234, 0.80) 100%), url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat; z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 20px 14px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-y: auto;">
+    <div style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 42px 32px 32px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6); width: 100%; max-width: 410px; text-align: center; position: relative;">
+      
+      <!-- Top Logo Badge (Login_v9 Signature) -->
+      <div style="width: 66px; height: 66px; margin: 0 auto 16px; border-radius: 22px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.42);">
+        <i class="fa-solid fa-hotel"></i>
+      </div>
+
+      <!-- Tiêu đề & Phụ đề -->
+      <h2 style="margin: 0 0 4px; color: #1e1b4b; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">KTX Split & Clean</h2>
+      <p style="color: #64748b; font-size: 13px; font-weight: 500; margin: 0 0 24px; line-height: 1.5;">Vui lòng kết nối mã phòng để tiếp tục</p>
+      
+      <!-- Form Đăng Nhập -->
+      <form id="login-form">
+        <!-- Input 1: Mã phòng KTX -->
+        <div style="margin-bottom: 14px; text-align: left;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+            Mã phòng KTX <span style="color: #ef4444;">*</span>
+          </label>
+          <div style="position: relative; background: #f8fafc; border-radius: 20px; border: 1.5px solid #e2e8f0; transition: all 0.2s;" onfocusin="this.style.borderColor='#6366f1'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.15)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none';">
+            <i class="fa-solid fa-door-open" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6366f1; font-size: 15px;"></i>
+            <input type="text" id="login-room-id" placeholder="Ví dụ: KTX402" required style="width: 100%; height: 48px; background: transparent; border: none; outline: none; padding: 0 16px 0 44px; font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase; font-family: monospace; letter-spacing: 1px; box-sizing: border-box;">
+          </div>
+        </div>
+        
+        <!-- Input 2: Tên của bạn -->
+        <div style="margin-bottom: 18px; text-align: left;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+            Tên của bạn <span style="color: #ef4444;">*</span>
+          </label>
+          <div style="position: relative; background: #f8fafc; border-radius: 20px; border: 1.5px solid #e2e8f0; transition: all 0.2s;" onfocusin="this.style.borderColor='#6366f1'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.15)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none';">
+            <i class="fa-solid fa-user" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6366f1; font-size: 15px;"></i>
+            <input type="text" id="login-user-name" placeholder="Ví dụ: Nhật Huy" required style="width: 100%; height: 48px; background: transparent; border: none; outline: none; padding: 0 16px 0 44px; font-size: 14px; font-weight: 600; color: #0f172a; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <!-- Hàng Gợi ý & Ghi nhớ -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 12px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: #64748b; font-weight: 600; user-select: none;">
+            <input type="checkbox" id="login-remember-me" checked style="accent-color: #6366f1; width: 15px; height: 15px; cursor: pointer;">
+            <span>Ghi nhớ phòng này</span>
+          </label>
+          <button type="button" onclick="quickFillRoom('KTX402', 'Nhật Huy')" style="background: none; border: none; color: #6366f1; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;">
+            Dùng phòng mẫu 402
+          </button>
+        </div>
+        
+        <!-- Nút Submit Gradient Đậm Chất Login_v9 -->
+        <button type="submit" id="login-submit-btn" style="width: 100%; height: 50px; border-radius: 25px; border: none; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); transition: all 0.25s;" onmouseover="this.style.background='linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)'; this.style.boxShadow='0 12px 30px rgba(79, 70, 229, 0.55)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)'; this.style.boxShadow='0 10px 25px rgba(79, 70, 229, 0.4)'; this.style.transform='translateY(0)';" onmousedown="this.style.transform='scale(0.98)';" onmouseup="this.style.transform='translateY(-1px)';">
+          <span>VÀO PHÒNG KTX</span>
+          <i class="fa-solid fa-bolt" style="color: #fde047;"></i>
+        </button>
+      </form>
+
+      <!-- Phân cách kiểu Login_v9: Or login with / Vào nhanh -->
+      <div style="position: relative; margin: 24px 0 16px; text-align: center;">
+        <div style="position: absolute; inset: 0; display: flex; align-items: center;">
+          <div style="width: 100%; border-top: 1px solid #e2e8f0;"></div>
+        </div>
+        <span style="position: relative; background: #ffffff; padding: 0 10px; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
+          HOẶC CHỌN NHANH PHÒNG MẪU
+        </span>
+      </div>
+
+      <!-- Các nút thành viên mẫu nhanh (Social style buttons của Login_v9) -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;">
+        <button type="button" onclick="quickFillRoom('KTX402', 'Nhật Huy')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
+          <div style="font-size: 14px; margin-bottom: 2px;">👑</div>
+          <div>KTX402</div>
+          <div style="font-size: 9px; color: #64748b;">(Huy - T.Phòng)</div>
+        </button>
+
+        <button type="button" onclick="quickFillRoom('KTX402', 'Hoàng Long')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
+          <div style="font-size: 14px; margin-bottom: 2px;">⚡</div>
+          <div>KTX402</div>
+          <div style="font-size: 9px; color: #64748b;">(Hoàng Long)</div>
+        </button>
+
+        <button type="button" onclick="quickFillRoom('KTX305', 'Văn Bảo')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
+          <div style="font-size: 14px; margin-bottom: 2px;">🌱</div>
+          <div>KTX305</div>
+          <div style="font-size: 9px; color: #64748b;">(Văn Bảo)</div>
+        </button>
+      </div>
+
+      <!-- Chân trang thẻ đăng nhập -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 600; color: #94a3b8; padding-top: 14px; border-top: 1px solid #f1f5f9;">
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: #10b981;"></span>
+        <span>Đồng bộ mây & Bảng kê VietQR KTX</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="appMainWrapper" class="flex flex-col min-h-screen">
+
   <!-- HEADER / NAVBAR GỌN GÀNG -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2.5 shadow-xs">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
@@ -100,10 +200,10 @@
         </button>
       </div>
 
-      <!-- Cột Phải: Thao Tác Nhanh (Quét Bill & Mời Phòng) -->
+      <!-- Cột Phải: Thao Tác Nhanh (Quét Bill & Mời Phòng & User Info) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <!-- Nút Trung tâm chọn phòng -->
-        <button onclick="openRoomHubModal()" class="hidden md:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition shrink-0" title="Quản lý và chọn phòng khác">
+        <button onclick="dangXuatPhongKTX()" class="hidden md:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition shrink-0" title="Đổi phòng (Đăng xuất)">
           <i class="fa-solid fa-arrow-right-arrow-left text-indigo-600"></i>
           <span>Đổi phòng</span>
         </button>
@@ -119,6 +219,19 @@
           <i class="fa-solid fa-share-nodes text-xs"></i>
           <span class="hidden xs:inline">Zalo</span>
         </button>
+
+        <!-- User profile widget in Header -->
+        <div id="headerUserSection" class="flex items-center gap-1 sm:gap-1.5 pl-1.5 sm:pl-2 border-l border-slate-200">
+          <button type="button" onclick="openUserProfileModal()" class="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition text-xs font-bold shrink-0" title="Thông tin tài khoản">
+            <div id="headerUserAvatar" class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-black text-[11px] flex items-center justify-center shrink-0">
+              H
+            </div>
+            <span id="headerUserName" class="hidden sm:inline max-w-[85px] truncate">Huy</span>
+          </button>
+          <button type="button" onclick="dangXuatPhongKTX()" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition text-xs shrink-0" title="Đăng xuất khỏi phòng">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </button>
+        </div>
       </div>
 
     </div>
@@ -142,7 +255,25 @@
       </button>
     </div>
 
-    <!-- Thông tin phòng trong Sidebar -->
+    <!-- Thông tin thành viên & phòng trong Sidebar -->
+    <div class="p-3 bg-slate-50/90 border-b border-slate-100 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div id="drawerUserAvatar" class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+          H
+        </div>
+        <div class="min-w-0">
+          <div id="drawerUserName" class="font-extrabold text-slate-900 text-xs truncate">Nhật Huy</div>
+          <div class="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span id="drawerUserRoleText">Trưởng Phòng</span>
+          </div>
+        </div>
+      </div>
+      <button onclick="dangXuatPhongKTX()" class="px-2 py-1 text-[11px] font-bold text-rose-600 hover:bg-rose-50 rounded-lg transition border border-rose-200/80 shrink-0" title="Đăng xuất">
+        <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Đăng xuất
+      </button>
+    </div>
+
     <div class="p-3.5 bg-gradient-to-br from-indigo-50/80 via-white to-teal-50/80 border-b border-indigo-100">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
@@ -150,7 +281,7 @@
           <div id="drawerRoomNameLabel" class="font-extrabold text-slate-900 text-sm truncate">Phòng 402 - KTX</div>
           <div class="text-[11px] font-mono text-indigo-600 font-bold" id="drawerRoomCodeLabel">Mã: KTX402</div>
         </div>
-        <button onclick="toggleSidebar(false); openRoomHubModal();" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0 flex items-center gap-1 shadow-2xs">
+        <button onclick="toggleSidebar(false); dangXuatPhongKTX();" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0 flex items-center gap-1 shadow-2xs" title="Đổi sang phòng khác">
           <i class="fa-solid fa-repeat text-[10px]"></i>
           <span>Đổi phòng</span>
         </button>
@@ -586,7 +717,7 @@
           </div>
         </div>
 
-        <button onclick="openRoomHubModal('join')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+        <button onclick="dangXuatPhongKTX()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 text-xs font-bold transition flex items-center gap-1.5" title="Đổi sang phòng khác">
           <i class="fa-solid fa-door-open text-xs"></i>
           <span>Đổi / Chuyển phòng khác</span>
         </button>
@@ -615,6 +746,7 @@
     </div>
 
   </main>
+  </div> <!-- HẾT #appMainWrapper -->
 
   <!-- ==================== MODAL MỚI: TRUNG TÂM CHỌN & QUẢN LÝ PHÒNG KTX ==================== -->
   <div id="modalRoomHub" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
@@ -1192,6 +1324,46 @@
     </div>
   </div>
 
+  <!-- MODAL: THÔNG TIN TÀI KHOẢN & NGƯỜI DÙNG -->
+  <div id="modalUserProfile" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-extrabold text-slate-900 text-sm">Tài Khoản KTX Cá Nhân</h3>
+        <button onclick="closeModal('modalUserProfile')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="my-4 text-center">
+        <div id="modalUserAvatarLarge" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white font-black text-2xl flex items-center justify-center mx-auto shadow-md mb-2">
+          H
+        </div>
+        <h4 id="modalUserDisplayName" class="font-black text-slate-900 text-base">Nhật Huy</h4>
+        <div id="modalUserRoleBadge" class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 mt-1">
+          Trưởng Phòng
+        </div>
+        <div id="modalUserEmailText" class="text-xs text-slate-400 mt-1 font-mono">nhathuy@ktx.vn</div>
+      </div>
+
+      <div class="space-y-2 pt-2 border-t border-slate-100">
+        <button onclick="closeModal('modalUserProfile'); dangXuatPhongKTX();" class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-between">
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-hotel text-indigo-600"></i>
+            <span>Đổi phòng KTX</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+        </button>
+        <button onclick="closeModal('modalUserProfile'); dangXuatPhongKTX();" class="w-full py-2.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center justify-between">
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-arrow-right-from-bracket text-rose-600"></i>
+            <span>Đăng xuất phòng</span>
+          </span>
+          <i class="fa-solid fa-chevron-right text-[10px] text-rose-400"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST THÔNG BÁO TỰ ĐỘNG -->
   <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700/80 flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
     <div id="toastIcon" class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 text-xs">
@@ -1200,8 +1372,133 @@
     <div class="text-xs font-semibold pr-2" id="toastMessage">Thông báo</div>
   </div>
 
-  <!-- ==================== SCRIPT 1: LOGIC TOÀN TRANG & CHỌN PHÒNG ==================== -->
+  <!-- ==================== SCRIPT 1: LOGIC TOÀN TRANG, AUTH & CHỌN PHÒNG ==================== -->
   <script>
+    /* ===============================================================
+       HƯỚNG 2: XÁC THỰC PHÒNG KTX (LOGIN OVERLAY & SESSION LOGIC)
+       =============================================================== */
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginOverlay = document.getElementById("login-overlay");
+      const loginForm = document.getElementById("login-form");
+
+      // 1. Kiểm tra xem người dùng đã từng đăng nhập trước đó chưa
+      const savedRoomId = localStorage.getItem("current_room_id");
+      const savedUserName = localStorage.getItem("current_user_name");
+
+      if (savedRoomId && savedUserName) {
+        // Nếu đã có dữ liệu cũ, ẩn ngay màn hình đăng nhập đi để vào thẳng web
+        if (loginOverlay) loginOverlay.style.display = "none";
+        
+        // Cập nhật thông tin phòng và người dùng lên giao diện
+        syncUserAndRoomState(savedRoomId, savedUserName);
+      } else {
+        if (loginOverlay) loginOverlay.style.display = "flex";
+      }
+
+      // 2. Xử lý khi người dùng điền thông tin và ấn nút "Vào Phòng"
+      if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault(); // Chặn reload trang mặc định
+
+          const roomId = document.getElementById("login-room-id").value.trim().toUpperCase();
+          const userName = document.getElementById("login-user-name").value.trim();
+
+          if (roomId && userName) {
+            // Lưu thông tin vào bộ nhớ trình duyệt (localStorage)
+            localStorage.setItem("current_room_id", roomId);
+            localStorage.setItem("current_user_name", userName);
+
+            // Nút bấm hiển thị trạng thái đang kết nối
+            const submitBtn = document.getElementById("login-submit-btn");
+            if (submitBtn) {
+              submitBtn.innerHTML = `<span>ĐANG VÀO PHÒNG...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
+              submitBtn.style.opacity = "0.85";
+              submitBtn.style.pointerEvents = "none";
+            }
+
+            // Tải lại trang để áp dụng phòng mới và đồng bộ
+            setTimeout(() => {
+              location.reload();
+            }, 350);
+          }
+        });
+      }
+    });
+
+    // 3. Hàm đăng xuất (dùng cho nút "Đổi phòng" hoặc "Rời phòng" hiện có của bạn)
+    function dangXuatPhongKTX() {
+      localStorage.removeItem("current_room_id");
+      localStorage.removeItem("current_user_name");
+      location.reload(); // Tải lại trang để màn hình đăng nhập hiện ra lại
+    }
+    window.dangXuatPhongKTX = dangXuatPhongKTX;
+    const handleLogout = dangXuatPhongKTX;
+
+    // 4. Hàm điền nhanh phòng mẫu (Quick-fill)
+    function quickFillRoom(roomId, userName) {
+      const roomInput = document.getElementById("login-room-id");
+      const nameInput = document.getElementById("login-user-name");
+      if (roomInput) {
+        roomInput.value = roomId;
+        roomInput.parentElement.style.borderColor = "#6366f1";
+        roomInput.parentElement.style.backgroundColor = "#eff6ff";
+      }
+      if (nameInput) {
+        nameInput.value = userName;
+        nameInput.parentElement.style.borderColor = "#6366f1";
+        nameInput.parentElement.style.backgroundColor = "#eff6ff";
+      }
+      setTimeout(() => {
+        if (roomInput && roomInput.parentElement) {
+          roomInput.parentElement.style.borderColor = "#e2e8f0";
+          roomInput.parentElement.style.backgroundColor = "#f8fafc";
+        }
+        if (nameInput && nameInput.parentElement) {
+          nameInput.parentElement.style.borderColor = "#e2e8f0";
+          nameInput.parentElement.style.backgroundColor = "#f8fafc";
+        }
+      }, 600);
+    }
+    window.quickFillRoom = quickFillRoom;
+
+    function syncUserAndRoomState(savedRoomId, savedUserName) {
+      if (!savedRoomId || !savedUserName) return;
+
+      const slugId = savedRoomId.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, "-");
+      currentActiveRoomId = slugId;
+      appData.roomCode = savedRoomId;
+      if (!appData.roomName || appData.roomName.includes("402")) {
+        appData.roomName = "Phòng " + savedRoomId;
+      }
+
+      const shortName = getShortName(savedUserName);
+      const initial = getNameInitial(savedUserName);
+
+      const headerName = document.getElementById("headerUserName");
+      const headerAvatar = document.getElementById("headerUserAvatar");
+      if (headerName) headerName.innerText = shortName;
+      if (headerAvatar) headerAvatar.innerText = initial;
+
+      const drawerName = document.getElementById("drawerUserName");
+      const drawerAvatar = document.getElementById("drawerUserAvatar");
+      if (drawerName) drawerName.innerText = savedUserName;
+      if (drawerAvatar) drawerAvatar.innerText = initial;
+
+      const modalName = document.getElementById("modalUserDisplayName");
+      const modalAvatar = document.getElementById("modalUserAvatarLarge");
+      if (modalName) modalName.innerText = savedUserName;
+      if (modalAvatar) modalAvatar.innerText = initial;
+
+      const headerTitle = document.getElementById("headerRoomTitle");
+      const headerTag = document.getElementById("headerRoomCodeTag");
+      if (headerTitle) headerTitle.innerText = appData.roomName;
+      if (headerTag) headerTag.innerText = savedRoomId;
+
+      const drawerRoom = document.getElementById("drawerRoomNameLabel");
+      const drawerCode = document.getElementById("drawerRoomCodeLabel");
+      if (drawerRoom) drawerRoom.innerText = appData.roomName;
+      if (drawerCode) drawerCode.innerText = "Mã: " + savedRoomId;
+    }
     const defaultState = {
       roomName: "Phòng 402 - KTX",
       roomCode: "KTX402",
@@ -1557,6 +1854,15 @@
 
     /* HỆ THỐNG ĐỒNG BỘ MÂY TỰ ĐỘNG THỜI GIAN THỰC */
     function initAutoCloudEngine() {
+      // 0. Khởi tạo mã phòng từ phiên đăng nhập Xác thực phòng (current_room_id)
+      try {
+        const authRoom = localStorage.getItem("current_room_id");
+        if (authRoom) {
+          currentActiveRoomId = authRoom.trim().toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+          appData.roomCode = authRoom.trim().toUpperCase();
+        }
+      } catch (e) {}
+
       // 1. Kiểm tra tham số URL query ?room=...
       try {
         const urlParams = new URLSearchParams(window.location.search);
