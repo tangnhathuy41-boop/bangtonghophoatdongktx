@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KTX Splitter & Clean - Quản Lý Chi Tiêu & Lịch Vệ Sinh KTX</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti for celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            tealbrand: {
+              500: '#0d9488',
+              600: '#0f766e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom styled scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .custom-shadow {
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08), 0 8px 10px -6px rgba(99, 102, 241, 0.04);
+    }
+    .modal-backdrop {
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white pb-16">
+
+  <!-- Header Bar -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-1 sm:gap-3">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+        <!-- Button to open Left Sidebar Drawer -->
+        <button onclick="toggleSidebar(true)" id="btnOpenSidebar" class="p-2 -ml-1 text-slate-700 hover:text-indigo-600 hover:bg-slate-100 rounded-xl transition flex items-center justify-center shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500/30" title="Mở danh mục (Menu)">
+          <i class="fa-solid fa-bars text-base sm:text-lg"></i>
+        </button>
+
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center shadow-sm sm:shadow-md shadow-indigo-200 shrink-0">
+          <i class="fa-solid fa-hotel text-sm sm:text-base"></i>
+        </div>
+
+        <!-- Tên Web hiển thị trực tiếp theo Tên Phòng & Cho phép bấm vào để đổi tên -->
+        <div onclick="openRoomSettingsModal()" class="cursor-pointer group min-w-0" title="Nhấp để đổi tên phòng ký túc xá">
+          <div class="flex items-center gap-1 sm:gap-1.5">
+            <h1 id="appRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-base leading-tight tracking-tight truncate max-w-[125px] xs:max-w-[180px] sm:max-w-none group-hover:text-indigo-600 transition">
+              Phòng 402 - KTX
+            </h1>
+            <span class="text-indigo-600 bg-indigo-50 group-hover:bg-indigo-100 p-1 rounded-md border border-indigo-200/80 transition flex items-center shrink-0" title="Đổi tên">
+              <i class="fa-solid fa-pen text-[8px] sm:text-[9px]"></i>
+            </span>
+          </div>
+          <p class="text-[10px] sm:text-xs text-slate-400 hidden sm:block truncate">Chi tiêu sòng phẳng • Luân phiên vệ sinh KTX</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+        <!-- Nút sao lưu: Ẩn trên mobile để tránh tràn, có sẵn trong menu bên trái -->
+        <button onclick="exportDataJson()" class="hidden sm:flex p-2 text-slate-500 hover:text-indigo-600 hover:bg-slate-100 rounded-xl transition text-xs font-semibold items-center gap-1.5" title="Sao lưu dữ liệu ra file JSON">
+          <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+          <span class="hidden md:inline">Sao lưu</span>
+        </button>
+
+        <!-- Nút Trợ lý AI: Tối ưu nhỏ gọn trên mobile -->
+        <button onclick="openAIAssistantModal()" class="flex items-center gap-1.5 text-xs font-bold p-2 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white shadow-sm shadow-indigo-200 transition shrink-0" title="Mở Trợ Lý Gemini AI">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-200 animate-pulse text-xs sm:text-sm"></i>
+          <span class="hidden sm:inline">Trợ Lý AI</span>
+        </button>
+
+        <!-- Nút Zalo: Gọn gàng không chiếm diện tích -->
+        <button onclick="openShareReportModal()" class="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold px-2.5 py-2 sm:px-3.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-200 transition shrink-0">
+          <i class="fa-solid fa-share-nodes text-xs"></i>
+          <span class="hidden xs:inline">Báo Cáo Zalo</span>
+          <span class="xs:hidden">Zalo</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LEFT SIDEBAR DRAWER (Vertical navigation hidden on the left) -->
+  <div id="sidebarBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <aside id="sidebarDrawer" class="fixed top-0 left-0 bottom-0 z-50 w-72 sm:w-80 bg-white shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-out border-r border-slate-200">
+    <!-- Sidebar Header -->
+    <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-slate-50 to-indigo-50/40">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center shadow-md shadow-indigo-200">
+          <i class="fa-solid fa-hotel text-lg"></i>
+        </div>
+        <div>
+          <h2 class="font-extrabold text-slate-900 text-base leading-tight">Danh Mục KTX</h2>
+          <p class="text-[11px] text-slate-500">Menu quản lý phòng</p>
+        </div>
+      </div>
+      <button onclick="toggleSidebar(false)" class="w-9 h-9 rounded-xl bg-white text-slate-400 hover:text-slate-700 border border-slate-200 flex items-center justify-center transition" title="Đóng menu">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Vertical Navigation Links -->
+    <div class="p-4 space-y-2 flex-grow overflow-y-auto">
+      <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Chức Năng Chính</div>
+
+      <!-- Tab Bảng Thông Báo được đẩy lên đầu tiên -->
+      <button onclick="selectTabFromSidebar('notices')" id="nav-notices" class="nav-tab w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between text-slate-700 hover:text-amber-600 hover:bg-amber-50/60 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm shadow-xs">
+            <i class="fa-solid fa-bullhorn"></i>
+          </div>
+          <span>Bảng Thông Báo Phòng</span>
+        </div>
+        <span id="badgeNoticeCount" class="bg-amber-100 text-amber-800 text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
+      </button>
+
+      <button onclick="selectTabFromSidebar('expenses')" id="nav-expenses" class="nav-tab active w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-200 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-receipt"></i>
+          </div>
+          <span>Chi Tiêu Phòng</span>
+        </div>
+        <span id="badgeExpenseCount" class="bg-white/20 text-white text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
+      </button>
+
+      <button onclick="selectTabFromSidebar('settlement')" id="nav-settlement" class="nav-tab w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between text-slate-700 hover:text-indigo-600 hover:bg-slate-100 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 group-hover:text-indigo-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </div>
+          <span>Quyết Toán Cuối Tháng</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>
+      </button>
+
+      <button onclick="selectTabFromSidebar('cleaning')" id="nav-cleaning" class="nav-tab w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between text-slate-700 hover:text-indigo-600 hover:bg-slate-100 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-broom-ball"></i>
+          </div>
+          <span>Lịch Trực Nhật KTX</span>
+        </div>
+        <span class="bg-teal-100 text-teal-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">Xoay tua</span>
+      </button>
+
+      <button onclick="selectTabFromSidebar('members')" id="nav-members" class="nav-tab w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between text-slate-700 hover:text-indigo-600 hover:bg-slate-100 text-left">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <span>Thành Viên Phòng</span>
+        </div>
+        <span id="memberCountHeader" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">6</span>
+      </button>
+    </div>
+
+    <!-- Sidebar Footer with quick actions -->
+    <div class="p-4 border-t border-slate-100 bg-slate-50 space-y-2">
+      <button onclick="toggleSidebar(false); openRoomSettingsModal();" class="w-full py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+        <span>Đổi Tên Phòng KTX</span>
+      </button>
+      <button onclick="toggleSidebar(false); exportDataJson();" class="w-full py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-cloud-arrow-down text-slate-500"></i>
+        <span>Sao Lưu Dữ Liệu (JSON)</span>
+      </button>
+      <button onclick="toggleSidebar(false); openAIAssistantModal();" class="w-full py-2.5 px-3 bg-gradient-to-r from-amber-500 to-indigo-600 text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2">
+        <i class="fa-solid fa-wand-magic-sparkles text-amber-200"></i>
+        <span>Mở Trợ Lý Gemini AI</span>
+      </button>
+      <button onclick="toggleSidebar(false); openShareReportModal();" class="w-full py-2 px-3 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs rounded-xl border border-slate-200 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-share-nodes text-indigo-600"></i>
+        <span>Sao Chép Báo Cáo Zalo</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-3 sm:pt-4 pb-12 w-full flex-grow flex flex-col gap-4 sm:gap-5">
+
+    <!-- BẢNG THÔNG BÁO GHIM ĐẦU TRANG (Có thể đóng/mở thu gọn - Bản nhỏ gọn tinh giản) -->
+    <div id="topNoticeBanner" class="bg-white rounded-2xl border border-amber-200/80 p-2.5 sm:p-3 shadow-xs relative overflow-hidden bg-gradient-to-br from-amber-50/40 via-white to-indigo-50/20 transition-all duration-300">
+      <!-- Tiêu đề & Nút thao tác thu nhỏ gọn -->
+      <div class="flex items-center justify-between gap-2 cursor-pointer select-none" onclick="toggleTopNoticeBanner(event)">
+        <div class="flex items-center gap-2 min-w-0">
+          <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-white flex items-center justify-center text-xs shadow-xs shrink-0">
+            <i class="fa-solid fa-bullhorn text-[10px]"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <h3 class="font-bold text-slate-900 text-xs sm:text-sm tracking-tight truncate">Bảng Thông Báo Phòng</h3>
+              <span id="topNoticeCountBadge" class="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-amber-100 text-amber-800 border border-amber-200 shrink-0">
+                0 thông báo
+              </span>
+            </div>
+            <p class="text-[10px] text-slate-400 hidden xs:block truncate">Tự động thông báo khi đổi ca trực & phát sinh chi tiêu mới</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
+          <button onclick="openCreateNoticeModal()" class="text-[11px] font-bold px-2 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 transition flex items-center gap-1 shadow-xs">
+            <i class="fa-solid fa-plus text-[9px]"></i>
+            <span class="hidden xs:inline">Đăng tin</span>
+          </button>
+          <button onclick="switchTab('notices')" class="text-[11px] font-semibold px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1">
+            <span>Chi tiết</span>
+            <i class="fa-solid fa-arrow-right text-[9px]"></i>
+          </button>
+          <!-- Nút bấm Đóng/Mở Thu Gọn -->
+          <button id="btnToggleNoticeCollapse" onclick="toggleTopNoticeBanner()" class="w-6 h-6 rounded-lg bg-amber-100/70 hover:bg-amber-200 text-amber-900 transition flex items-center justify-center" title="Đóng / Mở bảng thông báo">
+            <i id="iconToggleNoticeCollapse" class="fa-solid fa-chevron-up text-[10px] transition-transform duration-300"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Danh sách thông báo có thể thu gọn -->
+      <div id="topNoticeCollapsibleBody" class="pt-2 border-t border-amber-100/80 mt-2 transition-all duration-300">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+          <i class="fa-solid fa-bell text-[9px] text-amber-500"></i>
+          <span>Mới nhất:</span>
+        </div>
+        <div id="topNoticeItemsList" class="space-y-1.5">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- BẢN THỐNG KÊ ĐẦY ĐỦ (Chỉ hiển thị đầy đủ ở tab Bảng Thông Báo) -->
+    <div id="statsOverviewFull" class="hidden grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 transition-all duration-300">
+      <!-- Card 1: Tổng chi -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 custom-shadow flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium mb-1">
+          <span>Tổng chi chung</span>
+          <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <i class="fa-solid fa-wallet text-xs"></i>
+          </div>
+        </div>
+        <div id="statTotalExpenses" class="text-xl sm:text-2xl font-black text-slate-900">0 ₫</div>
+        <div id="statExpenseSub" class="text-[11px] text-slate-400 mt-1 truncate">0 hóa đơn chi tiêu</div>
+      </div>
+
+      <!-- Card 2: Bình quân / người -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 custom-shadow flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium mb-1">
+          <span>Bình quân mỗi bạn</span>
+          <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i class="fa-solid fa-chart-pie text-xs"></i>
+          </div>
+        </div>
+        <div id="statAvgPerPerson" class="text-xl sm:text-2xl font-black text-emerald-600">0 ₫</div>
+        <div id="statMemberCountSub" class="text-[11px] text-slate-400 mt-1">6 thành viên</div>
+      </div>
+
+      <!-- Card 3: Trực nhật hôm nay -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 custom-shadow flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium mb-1">
+          <span>Trực nhật hôm nay</span>
+          <div class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+            <i class="fa-solid fa-broom text-xs"></i>
+          </div>
+        </div>
+        <div id="statTodayDutyPerson" class="text-lg sm:text-xl font-black text-amber-600 truncate">Chưa xếp</div>
+        <div id="statTodayDutyStatus" class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5 truncate">
+          <span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span>
+          <span>Chưa hoàn thành</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Giao dịch thanh toán -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 custom-shadow flex flex-col justify-between">
+        <div class="flex items-center justify-between text-slate-500 text-xs font-medium mb-1">
+          <span>Số lệnh chuyển bù trừ</span>
+          <div class="w-7 h-7 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+            <i class="fa-solid fa-shuffle text-xs"></i>
+          </div>
+        </div>
+        <div id="statTransfersNeeded" class="text-xl sm:text-2xl font-black text-rose-600">0 lệnh</div>
+        <div class="text-[11px] text-slate-400 mt-1">Tối ưu hóa công nợ</div>
+      </div>
+    </div>
+
+    <!-- BẢN THỐNG KÊ THU NHỎ COMPACT (Hiển thị thanh mảnh, tiết kiệm diện tích khi qua các tab khác) -->
+    <div id="statsOverviewCompact" class="bg-white/95 border border-slate-200/80 rounded-xl p-2 shadow-xs transition-all duration-300">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+        <!-- Mini 1: Tổng chi -->
+        <div onclick="switchTab('expenses')" class="cursor-pointer hover:bg-indigo-50/50 p-1.5 rounded-lg border border-slate-100 flex items-center justify-between transition group" title="Bấm để xem Chi tiêu phòng">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded bg-indigo-50 text-indigo-600 flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-500 truncate">Tổng chi</span>
+          </div>
+          <span id="statCompactTotalExpenses" class="text-xs font-black text-slate-900 ml-1 truncate">0 ₫</span>
+        </div>
+
+        <!-- Mini 2: Bình quân -->
+        <div onclick="switchTab('settlement')" class="cursor-pointer hover:bg-emerald-50/50 p-1.5 rounded-lg border border-slate-100 flex items-center justify-between transition group" title="Bấm để xem Quyết toán công nợ">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded bg-emerald-50 text-emerald-600 flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-500 truncate">Bình quân</span>
+          </div>
+          <span id="statCompactAvgPerPerson" class="text-xs font-black text-emerald-600 ml-1 truncate">0 ₫</span>
+        </div>
+
+        <!-- Mini 3: Trực nhật -->
+        <div onclick="switchTab('cleaning')" class="cursor-pointer hover:bg-amber-50/50 p-1.5 rounded-lg border border-slate-100 flex items-center justify-between transition group" title="Bấm để xem Lịch trực nhật">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded bg-amber-50 text-amber-600 flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-solid fa-broom"></i>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-500 truncate">Trực nhật</span>
+          </div>
+          <span id="statCompactTodayDuty" class="text-xs font-black text-amber-600 ml-1 truncate">Chưa xếp</span>
+        </div>
+
+        <!-- Mini 4: Lệnh bù trừ -->
+        <div onclick="switchTab('settlement')" class="cursor-pointer hover:bg-rose-50/50 p-1.5 rounded-lg border border-slate-100 flex items-center justify-between transition group" title="Bấm để xem danh sách chuyển khoản">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded bg-rose-50 text-rose-600 flex items-center justify-center text-[10px] shrink-0">
+              <i class="fa-solid fa-shuffle"></i>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-500 truncate">Bù trừ</span>
+          </div>
+          <span id="statCompactTransfers" class="text-xs font-black text-rose-600 ml-1 truncate">0 lệnh</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Chi Tiêu Phòng -->
+    <section id="section-expenses" class="space-y-6">
+      <!-- Input Expense Box -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+          <div class="flex items-center gap-2.5">
+            <span class="flex h-3 w-3 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-600"></span>
+            </span>
+            <h2 class="font-extrabold text-slate-800 text-base sm:text-lg">Thêm Khoản Chi Mới</h2>
+          </div>
+          <span class="text-xs text-slate-400 italic hidden sm:inline">Ai ứng tiền trước cứ ghi vào đây, cuối tháng tự trừ!</span>
+        </div>
+
+        <form id="formAddExpense" onsubmit="handleSaveExpense(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <!-- Tên đồ dùng / Hoá đơn -->
+            <div class="md:col-span-4">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Nội dung mua sắm / Chi tiêu <span class="text-rose-500">*</span></label>
+              <input type="text" id="expenseName" required placeholder="VD: Bình nước 20L, Dầu ăn, Nước rửa chén..."
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition">
+
+              <!-- Quick suggestions -->
+              <div class="flex flex-wrap gap-1.5 mt-2">
+                <button type="button" onclick="setQuickExpense('Bình nước uống 20L', 20000, 'Nước')" class="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">+ Nước 20L (20k)</button>
+                <button type="button" onclick="setQuickExpense('Dầu ăn + Nước mắm', 75000, 'Gia vị')" class="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">+ Gia vị nấu ăn</button>
+                <button type="button" onclick="setQuickExpense('Nước rửa bát + Túi rác', 42000, 'Vệ sinh')" class="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">+ Đồ dọn phòng</button>
+                <button type="button" onclick="setQuickExpense('Tiền điện KTX tháng này', 180000, 'Điện')" class="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-600 transition">+ Tiền điện</button>
+              </div>
+            </div>
+
+            <!-- Số tiền -->
+            <div class="md:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Số tiền chi (VNĐ) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <input type="number" id="expenseAmount" required min="500" step="500" placeholder="50000"
+                  class="w-full pl-3.5 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
+                  oninput="updateAmountPreview(this.value)">
+                <span class="absolute right-3 top-2.5 text-xs font-black text-slate-400">₫</span>
+              </div>
+              <div id="expenseAmountPreview" class="text-[11px] text-indigo-600 font-semibold mt-1"></div>
+            </div>
+
+            <!-- Người đã trả tiền -->
+            <div class="md:col-span-3">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Người đã thanh toán trước <span class="text-rose-500">*</span></label>
+              <select id="expensePayer" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition">
+                <!-- Injected via JavaScript -->
+              </select>
+            </div>
+
+            <!-- Phân loại danh mục -->
+            <div class="md:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1.5">Loại chi tiêu</label>
+              <select id="expenseCategory" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition">
+                <option value="Sinh hoạt">Sinh hoạt chung</option>
+                <option value="Điện nước">Điện / Nước</option>
+                <option value="Ăn uống">Ăn uống / Gia vị</option>
+                <option value="Vệ sinh">Đồ lau dọn KTX</option>
+                <option value="Sửa chữa">Sửa đồ phòng</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Chọn người tham gia chia tiền -->
+          <div class="pt-3 border-t border-slate-100">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-user-check text-indigo-600"></i>
+                Khoản chi này chia đều cho những ai?
+              </label>
+              <div class="flex items-center gap-2 text-xs font-semibold">
+                <button type="button" onclick="toggleAllBeneficiaries(true)" class="text-indigo-600 hover:text-indigo-800 transition">Chọn tất cả</button>
+                <span class="text-slate-300">|</span>
+                <button type="button" onclick="toggleAllBeneficiaries(false)" class="text-slate-500 hover:text-slate-700 transition">Bỏ chọn hết</button>
+              </div>
+            </div>
+
+            <div id="beneficiariesChecklist" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <!-- Dynamically rendered checklist -->
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1.5">
+              <i class="fa-regular fa-lightbulb text-amber-500"></i>
+              <span>Lưu ý: Nếu có bạn về quê hoặc không dùng đồ đó, hãy bỏ chọn tên bạn ấy để chia tiền chính xác nhất!</span>
+            </p>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="reset" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Nhập lại</button>
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-200 flex items-center gap-2 transition">
+              <i class="fa-solid fa-check"></i>
+              <span>Lưu Khoản Chi</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Danh sách chi tiêu -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <span>Lịch Sử Chi Tiêu Phòng</span>
+              <span id="totalExpenseCounterBadge" class="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-200">0 mục</span>
+            </h3>
+            <p class="text-xs text-slate-500">Chi tiết minh bạch từng món mua sắm</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <i class="fa-solid fa-filter absolute left-3 top-2.5 text-xs text-slate-400"></i>
+              <select id="expenseFilterCategory" onchange="renderExpenseTable()" class="pl-8 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-600 focus:outline-none">
+                <option value="ALL">Tất cả danh mục</option>
+                <option value="Sinh hoạt">Sinh hoạt chung</option>
+                <option value="Điện nước">Điện / Nước</option>
+                <option value="Ăn uống">Ăn uống / Gia vị</option>
+                <option value="Vệ sinh">Đồ dọn phòng</option>
+                <option value="Sửa chữa">Sửa chữa</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto -mx-5 sm:mx-0">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase text-[11px] bg-slate-50/70">
+                <th class="py-3 px-4 rounded-l-xl">Khoản chi</th>
+                <th class="py-3 px-3">Loại</th>
+                <th class="py-3 px-3">Số tiền</th>
+                <th class="py-3 px-3">Người ứng trước</th>
+                <th class="py-3 px-3">Người cùng chia</th>
+                <th class="py-3 px-4 rounded-r-xl text-right">Xoá</th>
+              </tr>
+            </thead>
+            <tbody id="expenseTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="expenseEmptyState" class="hidden py-10 text-center text-slate-400">
+          <div class="w-12 h-12 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-400 mb-2">
+            <i class="fa-solid fa-receipt text-lg"></i>
+          </div>
+          <p class="text-xs font-medium">Chưa có khoản chi nào được ghi nhận.</p>
+          <p class="text-[11px] text-slate-400">Hãy thêm tiền mua nước 20L, gia vị hoặc tiền điện ở form trên nhé!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Quyết Toán Cuối Tháng -->
+    <section id="section-settlement" class="hidden space-y-6">
+      <!-- Balance summary by member -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-6 custom-shadow">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-indigo-600"></i>
+              <span>Bảng Đối Soát Công Nợ Cá Nhân</span>
+            </h2>
+            <p class="text-xs text-slate-500">Dương (+) là được nhận lại tiền • Âm (-) là phải chuyển khoản nộp bù</p>
+          </div>
+          <button onclick="openShareReportModal()" class="self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-copy"></i>
+            <span>Sao chép bản báo cáo</span>
+          </button>
+        </div>
+
+        <!-- Mobile Card View: Hiển thị dạng thẻ gọn đẹp trên điện thoại -->
+        <div id="settlementCardsMobile" class="sm:hidden space-y-2.5">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <!-- Desktop Table View: Hiển thị bảng đầy đủ trên màn hình máy tính/tablet -->
+        <div class="hidden sm:block overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase text-[11px] bg-slate-50/70">
+                <th class="py-3 px-4 rounded-l-xl">Thành viên</th>
+                <th class="py-3 px-3 whitespace-nowrap">Đã ứng trước (+)</th>
+                <th class="py-3 px-3 whitespace-nowrap">Phần phải chịu (-)</th>
+                <th class="py-3 px-3 whitespace-nowrap">Chênh lệch (Net)</th>
+                <th class="py-3 px-4 rounded-r-xl text-right whitespace-nowrap">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="settlementSummaryBody" class="divide-y divide-slate-100">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Optimal Transfers Card -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <i class="fa-solid fa-route text-rose-500"></i>
+              <span>Lộ Trình Chuyển Tiền Tối Giản Nhất</span>
+            </h3>
+            <p class="text-xs text-slate-500">Đã tự động bù trừ qua lại để ai nợ ai chỉ cần chuyển 1 lần</p>
+          </div>
+        </div>
+
+        <div id="transfersList" class="space-y-3">
+          <!-- Dynamically populated transfers cards with VietQR button -->
+        </div>
+
+        <div id="transfersEmptyState" class="hidden py-8 text-center text-slate-400">
+          <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center text-lg mb-2">
+            <i class="fa-solid fa-badge-check"></i>
+          </div>
+          <p class="text-sm font-bold text-slate-700">Tất cả sòng phẳng!</p>
+          <p class="text-xs text-slate-400">Hiện tại không có khoản nợ nào cần thanh toán bù trừ.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Lịch Trực Nhật KTX -->
+    <section id="section-cleaning" class="hidden space-y-6">
+      <!-- Cleaning Header & Control -->
+      <div class="bg-gradient-to-br from-teal-700 via-teal-600 to-indigo-700 rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 bg-white/15 px-3 py-1 rounded-full text-xs font-semibold mb-2">
+              <i class="fa-solid fa-sparkles text-amber-300"></i>
+              <span>Trực nhật văn minh • Giữ phòng sạch bong</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black tracking-tight">Lịch Phân Công Vệ Sinh Tuần Này</h2>
+            <p class="text-teal-100 text-xs sm:text-sm mt-1 max-w-xl">
+              Hệ thống tự động xoay tua từng thành viên cho từng ngày trong tuần. Bạn có thể bấm hoàn thành hoặc đổi ca khi bận lịch học.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button onclick="openSpinWheelModal()" class="px-3.5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+              <i class="fa-solid fa-dice text-sm"></i>
+              <span>Vòng quay trực nhật</span>
+            </button>
+            <button onclick="regenerateSchedule()" class="px-3.5 py-2.5 bg-white/20 hover:bg-white/30 text-white font-bold text-xs rounded-xl transition flex items-center gap-2">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Xếp lại xoay tua</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Schedule Grid -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <i class="fa-regular fa-calendar-days text-teal-600"></i>
+              <span>Các Ngày Trong Tuần (Thứ 2 - Chủ Nhật)</span>
+            </h3>
+            <p class="text-xs text-slate-500">Nhấp vào thẻ để đánh dấu đã hoàn thành hoặc đổi người trực</p>
+          </div>
+          <button onclick="openSwapDutyModal()" class="text-xs font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-xl border border-teal-200 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-right-left"></i>
+            <span>Đổi ca trực</span>
+          </button>
+        </div>
+
+        <div id="weeklyDutyGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+          <!-- 7 days of the week dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Checklist standard room cleaning tasks -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-indigo-600"></i>
+              <span>Checklist Công Việc Trực Nhật Chuẩn KTX</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">Tự do tùy biến danh sách đầu việc vệ sinh phòng kèm emoji sinh động</p>
+          </div>
+          <button onclick="openAddChecklistModal()" class="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs rounded-xl border border-indigo-200 transition flex items-center gap-1.5 self-start sm:self-auto">
+            <i class="fa-solid fa-plus text-[11px]"></i>
+            <span>Thêm việc mới</span>
+          </button>
+        </div>
+
+        <div id="roomChecklistContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+          <!-- Dynamically populated checklist tasks with emojis -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Thành Viên Phòng -->
+    <section id="section-members" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-base sm:text-lg flex items-center gap-2">
+              <i class="fa-solid fa-users-gear text-indigo-600"></i>
+              <span>Danh Sách Thành Viên Phòng KTX</span>
+            </h2>
+            <p class="text-xs text-slate-500">Cập nhật thông tin ngân hàng để tự động tạo mã VietQR khi thanh toán nợ</p>
+          </div>
+          <button onclick="openAddMemberModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 self-start sm:self-auto">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Thêm bạn mới</span>
+          </button>
+        </div>
+
+        <div id="membersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Member profile cards generated here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: Bảng Thông Báo Phòng (Thay cho Nội Quy cũ) -->
+    <section id="section-notices" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 custom-shadow space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+              <i class="fa-solid fa-bullhorn text-amber-500"></i>
+              <span>Bảng Thông Báo Ký Túc Xá</span>
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Nơi cập nhật lý do đổi ca trực nhật, lịch kiểm tra phòng KTX và tin nhắn của Trưởng phòng</p>
+          </div>
+          <button onclick="openCreateNoticeModal()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 self-start sm:self-auto">
+            <i class="fa-solid fa-pen-nib"></i>
+            <span>Tạo Thông Báo Mới</span>
+          </button>
+        </div>
+
+        <!-- Filter tags for notices -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="filterNotices('ALL')" id="noticeFilter-ALL" class="notice-filter-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-900 text-white transition">Tất cả</button>
+          <button onclick="filterNotices('swap')" id="noticeFilter-swap" class="notice-filter-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🔄 Đổi ca trực nhật</button>
+          <button onclick="filterNotices('urgent')" id="noticeFilter-urgent" class="notice-filter-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition">🚨 Khẩn cấp & KTX</button>
+          <button onclick="filterNotices('finance')" id="noticeFilter-finance" class="notice-filter-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition">💰 Tiền điện / Nước</button>
+          <button onclick="filterNotices('general')" id="noticeFilter-general" class="notice-filter-btn px-3 py-1.5 rounded-xl font-bold text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 transition">📢 Sinh hoạt chung</button>
+        </div>
+
+        <!-- Full notices grid -->
+        <div id="fullNoticesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <!-- Dynamically populated notices -->
+        </div>
+
+        <div id="noticesEmptyState" class="hidden py-10 text-center text-slate-400">
+          <div class="w-12 h-12 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-400 mb-2">
+            <i class="fa-solid fa-bell-slash text-lg"></i>
+          </div>
+          <p class="text-xs font-semibold">Chưa có thông báo nào trong danh mục này.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Tạo Thông Báo Phòng Mới -->
+  <div id="modalNotice" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i class="fa-solid fa-bullhorn text-amber-500"></i>
+          <span>Đăng Thông Báo Cho Phòng</span>
+        </h3>
+        <button onclick="closeModal('modalNotice')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formNotice" onsubmit="handleSaveNotice(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Loại thông báo <span class="text-rose-500">*</span></label>
+          <select id="noticeTypeInput" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-semibold text-slate-700">
+            <option value="swap">🔄 Đổi ca trực nhật / Báo bận</option>
+            <option value="urgent">🚨 Khẩn cấp / Kiểm tra phòng KTX</option>
+            <option value="finance">💰 Thu tiền điện nước / Tất toán</option>
+            <option value="general">📢 Nhắc nhở sinh hoạt chung</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Người gửi thông báo <span class="text-rose-500">*</span></label>
+          <select id="noticeAuthorInput" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-semibold text-slate-700">
+            <!-- Member options injected -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tiêu đề ngắn gọn <span class="text-rose-500">*</span></label>
+          <input type="text" id="noticeTitleInput" required placeholder="VD: Xin đổi ca trực Thứ 4 sang Thứ 5 / KTX kiểm tra phòng lúc 19h..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-medium">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nội dung chi tiết / Lý do <span class="text-rose-500">*</span></label>
+          <textarea id="noticeContentInput" rows="3" required placeholder="Ghi rõ lý do (ví dụ: bận thi kết thúc môn, về quê, lưu ý khi dọn dẹp...)" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 font-medium"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modalNotice')" class="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 font-semibold">Hủy</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold shadow-md transition flex items-center gap-1.5">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Đăng Ngay</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: VietQR & Payment -->
+  <div id="modalQR" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 text-center animate-scale-up">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Mã Chuyển Khoản Nhanh</span>
+        <button onclick="closeModal('modalQR')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 mb-4 inline-block">
+        <img id="qrImageDisplay" src="" alt="Mã VietQR" class="w-60 h-60 object-contain mx-auto rounded-xl">
+      </div>
+
+      <div class="space-y-1 mb-4 text-left bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100">
+        <div class="text-xs text-slate-500">Chuyển cho: <strong id="qrReceiverName" class="text-indigo-900 font-bold">...</strong></div>
+        <div class="text-xs text-slate-500">Số tài khoản: <span id="qrAccountNumber" class="font-mono font-bold text-slate-800">...</span> (<span id="qrBankName"></span>)</div>
+        <div class="text-xs text-slate-500">Số tiền: <strong id="qrAmountDisplay" class="text-rose-600 font-black text-sm">0 ₫</strong></div>
+        <div class="text-xs text-slate-500">Nội dung: <span id="qrMemoDisplay" class="italic text-slate-700">Tien phong KTX</span></div>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="btnCopyQRInfo" onclick="copyQRTransferText()" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copy STK</span>
+        </button>
+        <button onclick="closeModal('modalQR')" class="flex-1 py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition">
+          Xong
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Zalo Report Sharing -->
+  <div id="modalReport" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+            <i class="fa-solid fa-message text-sm"></i>
+          </div>
+          <h3 class="font-bold text-slate-900 text-base">Báo Cáo Quyết Toán Nhóm Zalo</h3>
+        </div>
+        <button onclick="closeModal('modalReport')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-500 mb-3">Nội dung đã được định dạng chuẩn, bạn chỉ cần bấm nút sao chép và dán thẳng vào nhóm chat phòng:</p>
+
+      <textarea id="reportTextContent" rows="10" readonly class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl font-mono text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 leading-relaxed"></textarea>
+
+      <div class="flex items-center justify-end gap-3 mt-4">
+        <button onclick="closeModal('modalReport')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100">Đóng</button>
+        <button onclick="copyReportTextToClipboard()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-200 flex items-center gap-2 transition">
+          <i class="fa-solid fa-copy"></i>
+          <span id="btnCopyReportLabel">Sao Chép Báo Cáo</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Random Duty Spin Wheel -->
+  <div id="modalSpinWheel" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-center">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2 text-left">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+            <i class="fa-solid fa-dice text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-base">Bốc Thăm Người Trực Nhật</h3>
+            <p class="text-[11px] text-slate-400">Dành cho đợt dọn phòng bất ngờ!</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalSpinWheel')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="py-6 px-4 bg-slate-50 rounded-2xl border border-slate-200/80 mb-4 flex flex-col items-center justify-center min-h-[160px]">
+        <div id="spinWheelDisplay" class="text-3xl sm:text-4xl font-black text-slate-800 transition-all duration-100">
+          ? ? ?
+        </div>
+        <div id="spinWheelSub" class="text-xs text-slate-400 mt-2">Bấm nút bên dưới để chọn ngẫu nhiên</div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="startSpinningWheel()" id="btnStartSpin" class="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-play"></i>
+          <span>Quay Ngay!</span>
+        </button>
+        <button onclick="assignSpinnedPersonToToday()" id="btnAssignToday" disabled class="py-3 px-4 rounded-xl bg-slate-200 text-slate-400 font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-not-allowed">
+          <i class="fa-solid fa-calendar-plus"></i>
+          <span>Gán cho hôm nay</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Swap Duty Shift -->
+  <div id="modalSwapDuty" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <i class="fa-solid fa-right-left text-teal-600"></i>
+          <span>Đổi Ca Trực Nhật & Báo Bận</span>
+        </h3>
+        <button onclick="closeModal('modalSwapDuty')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 mb-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Đổi ca của ngày:</label>
+          <select id="swapDaySelect1" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none">
+            <!-- Day options injected -->
+          </select>
+        </div>
+
+        <div class="text-center text-slate-400">
+          <i class="fa-solid fa-arrow-down-arrow-up text-sm"></i>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Với ca của ngày:</label>
+          <select id="swapDaySelect2" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none">
+            <!-- Day options injected -->
+          </select>
+        </div>
+
+        <!-- Mandatory Swap Reason -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">
+            Lý do xin đổi ca trực <span class="text-rose-500 font-extrabold">* (Bắt buộc)</span>
+          </label>
+          <textarea id="swapDutyReason" rows="3" required placeholder="VD: Hôm nay em bận thi kết thúc môn / Đi làm thêm ca tối / Về quê đột xuất..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500/30 font-medium"></textarea>
+          <p class="text-[10px] text-slate-400 mt-1 italic">Quy định phòng: Phải có lý do chính đáng cả phòng mới duyệt đổi ca!</p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2">
+        <button onclick="closeModal('modalSwapDuty')" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-100">Hủy</button>
+        <button onclick="executeSwapDuty()" class="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-md transition">Xác nhận đổi ca</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add / Edit Room Checklist Task -->
+  <div id="modalChecklist" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalChecklistTitle" class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <span>Tạo Đầu Việc Vệ Sinh</span>
+        </h3>
+        <button onclick="closeModal('modalChecklist')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formChecklist" onsubmit="handleSaveChecklistTask(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Chọn Emoji sinh động</label>
+          <div class="flex flex-wrap gap-1.5 mb-2">
+            <button type="button" onclick="selectChecklistEmoji('🗑️')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🗑️</button>
+            <button type="button" onclick="selectChecklistEmoji('🧹')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🧹</button>
+            <button type="button" onclick="selectChecklistEmoji('🧽')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🧽</button>
+            <button type="button" onclick="selectChecklistEmoji('🚽')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🚽</button>
+            <button type="button" onclick="selectChecklistEmoji('🪟')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🪟</button>
+            <button type="button" onclick="selectChecklistEmoji('🍳')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🍳</button>
+            <button type="button" onclick="selectChecklistEmoji('🚿')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🚿</button>
+            <button type="button" onclick="selectChecklistEmoji('🧴')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🧴</button>
+            <button type="button" onclick="selectChecklistEmoji('🧺')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">🧺</button>
+            <button type="button" onclick="selectChecklistEmoji('✨')" class="emoji-btn p-2 rounded-xl bg-slate-100 hover:bg-indigo-100 text-base transition">✨</button>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="inputTaskEmoji" value="🧹" maxlength="4" class="w-14 text-center text-lg p-2 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:outline-none">
+            <span class="text-[11px] text-slate-400">Nhấp chọn emoji ở trên hoặc tự dán emoji bạn thích</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên đầu việc <span class="text-rose-500">*</span></label>
+          <input type="text" id="inputTaskTitle" required placeholder="VD: Cọ bồn rửa chén, Giặt thảm chùi chân..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ghi chú hướng dẫn chi tiết</label>
+          <textarea id="inputTaskDesc" rows="2" placeholder="VD: Nhớ vứt đồ ăn thừa vào túi rác trước khi cọ bồn..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modalChecklist')" class="px-3.5 py-2 rounded-xl text-slate-500 hover:bg-slate-100">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md transition">Lưu Đầu Việc</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Add / Edit Roommate Member -->
+  <div id="modalMember" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="modalMemberTitle" class="font-bold text-slate-900 text-base">Thành Viên Mới</h3>
+        <button onclick="closeModal('modalMember')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formMember" onsubmit="handleSaveMember(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="inputMemberId">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Họ và tên / Biệt danh <span class="text-rose-500">*</span></label>
+          <input type="text" id="inputMemberName" required placeholder="VD: Nam (Giường 1)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ngân hàng</label>
+          <select id="inputMemberBank" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none">
+            <option value="MB">MB Bank (Quân Đội)</option>
+            <option value="VCB">Vietcombank</option>
+            <option value="TCB">Techcombank</option>
+            <option value="VPB">VPBank</option>
+            <option value="ACB">ACB</option>
+            <option value="BIDV">BIDV</option>
+            <option value="VTB">VietinBank</option>
+            <option value="TPB">TPBank</option>
+            <option value="MOMO">Ví MoMo</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Số tài khoản / SĐT MoMo</label>
+          <input type="text" id="inputMemberAccount" placeholder="VD: 0987654321" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/30 font-mono">
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3">
+          <button type="button" onclick="closeModal('modalMember')" class="px-3.5 py-2 rounded-xl text-slate-500 hover:bg-slate-100">Hủy</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md transition">Lưu Thông Tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Custom Toast Notification Alert (No window.alert) -->
+  <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700/80 flex items-center gap-3 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <div id="toastIcon" class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+      <i class="fa-solid fa-check text-xs"></i>
+    </div>
+    <div class="text-xs font-semibold pr-2" id="toastMessage">Thông báo</div>
+  </div>
+
+  <!-- MODAL: Gemini AI Assistant for KTX (Zalo Reminders & Dispute Mediator) -->
+  <div id="modalAIAssistant" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100">
+            <i class="fa-solid fa-brain text-sm"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+              <span>Trợ Lý KTX Thông Minh</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-bold">Gemini 3 Flash</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Soạn tin nhắn khéo léo & Hòa giải tranh chấp phòng</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalAIAssistant')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Tabs inside AI modal -->
+      <div class="flex gap-2 pt-3 pb-2 border-b border-slate-100 shrink-0">
+        <button onclick="switchAITab('reminder')" id="btnAITabReminder" class="px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>Soạn Tin Nhắc Nhở Zalo</span>
+        </button>
+        <button onclick="switchAITab('mediator')" id="btnAITabMediator" class="px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span>Tòa Án Hòa Giải KTX</span>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto flex-grow py-3 space-y-4">
+        <!-- Sub-view 1: Reminder Generator -->
+        <div id="aiSubViewReminder" class="space-y-3.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mục đích nhắc nhở</label>
+              <select id="aiReminderTopic" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none">
+                <option value="debt">Đòi tiền nợ / Quyết toán cuối tháng</option>
+                <option value="cleaning">Nhắc dọn phòng / Trực nhật hôm nay</option>
+                <option value="dishes">Nhắc rửa bát đũa cá nhân</option>
+                <option value="quiet">Nhắc giữ yên lặng sau 23h00</option>
+                <option value="water">Nhắc đóng tiền bình nước 20L</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Phong cách giọng điệu</label>
+              <select id="aiReminderTone" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none">
+                <option value="funny">Hài hước, lầy lội, không quạu</option>
+                <option value="poem">Thơ lục bát / Vè chế đòi nợ</option>
+                <option value="genz">Ngôn ngữ Gen Z bắt trend</option>
+                <option value="serious">Nghiêm túc, trách nhiệm, rõ ràng</option>
+                <option value="polite">Cực kỳ tế nhị & nhỏ nhẹ</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nhắc đích danh ai? (Tùy chọn)</label>
+            <input type="text" id="aiReminderTarget" placeholder="VD: Hoàng Long, hoặc Cả phòng..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20">
+          </div>
+
+          <button onclick="generateAIReminder()" id="btnGenerateAIReminder" class="w-full py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i>
+            <span id="btnGenerateAIReminderText">Tạo Tin Nhắn Tức Thì Với Gemini AI</span>
+          </button>
+
+          <!-- Result box -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-bold text-slate-700">Nội dung Gemini vừa tạo:</label>
+              <button onclick="copyGeneratedAIText()" id="btnCopyAIReminder" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> <span>Sao chép gửi Zalo</span>
+              </button>
+            </div>
+            <textarea id="aiGeneratedReminderText" rows="4" placeholder="Tin nhắn sáng tạo sẽ hiển thị tại đây..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none leading-relaxed"></textarea>
+          </div>
+        </div>
+
+        <!-- Sub-view 2: Roommate Dispute Mediator -->
+        <div id="aiSubViewMediator" class="hidden space-y-3.5">
+          <p class="text-xs text-slate-500">Gặp mâu thuẫn tiền bạc hoặc sinh hoạt trong phòng? Hãy miêu tả ngắn gọn, Gemini sẽ đóng vai Hòa Giải Viên phân xử công tâm dựa trên văn hóa sống tập thể:</p>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Vấn đề hoặc mâu thuẫn phát sinh</label>
+            <textarea id="aiDisputeInput" rows="3" placeholder="VD: Bạn A về quê thực tập 10 ngày trong tháng, cuối tháng bạn A có phải chia tiền bình nước 20L và tiền wifi không?" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 leading-relaxed"></textarea>
+          </div>
+
+          <button onclick="solveDisputeWithAI()" id="btnSolveDispute" class="w-full py-2.5 bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-scale-balanced text-amber-300"></i>
+            <span id="btnSolveDisputeText">Nhờ Gemini Phân Xử Công Tâm</span>
+          </button>
+
+          <div id="aiDisputeResultCard" class="hidden p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs leading-relaxed space-y-2">
+            <div class="font-bold text-indigo-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-gavel text-amber-500"></i>
+              <span>Phán Quyết & Lời Khuyên Hòa Giải:</span>
+            </div>
+            <div id="aiDisputeResultText" class="text-slate-700 whitespace-pre-line"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-end shrink-0">
+        <button onclick="closeModal('modalAIAssistant')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 transition">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- APP STATE ---
+    const STORAGE_KEY = 'KTX_SPLITTER_CLEAN_DATA_v2';
+
+    const defaultState = {
+      roomName: "Phòng KTX",
+      members: [
+        { id: "m1", name: "Nhật Huy (Trưởng Phòng)", bank: "MB", account: "0981234567" },
+        { id: "m2", name: "Hoàng Long", bank: "TCB", account: "1903567890123" },
+        { id: "m3", name: "Văn Bảo", bank: "VCB", account: "0011004567890" },
+        { id: "m4", name: "Văn Dương", bank: "TPB", account: "03456789012" },
+        { id: "m5", name: "Thiên Tài", bank: "ACB", account: "246813579" },
+        { id: "m6", name: "Ngọc Đạt", bank: "BIDV", account: "6868999999" }
+      ],
+      // Customizable room tasks with vibrant emojis
+      checklistTasks: [
+        { id: "t1", emoji: "🗑️", title: "1. Đổ rác phòng", desc: "Cột chặt bao rác và mang ra thùng rác tổng KTX trước 22h00." },
+        { id: "t2", emoji: "🧹", title: "2. Quét & Lau sàn", desc: "Quét kỹ tóc/bụi dưới gầm giường và lau thơm với nước lau sàn." },
+        { id: "t3", emoji: "🧽", title: "3. Bồn rửa & Kệ bát", desc: "Rửa lưới lọc rác bồn rửa, lau khô ráo kệ úp chén đũa chung." },
+        { id: "t4", emoji: "🚽", title: "4. Vệ sinh Toilet", desc: "Chà bồn cầu bằng dung dịch tẩy rửa, xịt sàn nhà tắm khô ráo." }
+      ],
+      // Bảng thông báo phòng & lý do đổi ca
+      notices: [
+        {
+          id: "n1",
+          type: "swap",
+          authorName: "Văn Bảo",
+          title: "Xin đổi ca trực nhật Thứ 4 sang Thứ 5",
+          content: "Thứ 4 tuần này mình bận thi kết thúc môn Giải Tích 2 ca chiều nên đã xin đổi với Văn Dương. Thứ 5 mình sẽ trực bù!",
+          time: new Date().toLocaleDateString('vi-VN')
+        },
+        {
+          id: "n2",
+          type: "urgent",
+          authorName: "Nhật Huy (Trưởng Phòng)",
+          title: "Ban Quản lý KTX kiểm tra vệ sinh phòng đột xuất",
+          content: "Chiều thứ 6 KTX đi chấm điểm vệ sinh phòng, các bạn nhớ gom gọn đồ cá nhân và dọn sạch gầm giường nhé!",
+          time: new Date().toLocaleDateString('vi-VN')
+        },
+        {
+          id: "n3",
+          type: "finance",
+          authorName: "Nhật Huy (Trưởng Phòng)",
+          title: "Chốt quyết toán tiền điện KTX tháng này",
+          content: "Hóa đơn tiền điện đã lên ở tab Quyết toán, các bạn kiểm tra số dư và chuyển khoản theo mã VietQR trước ngày 28 giúp mình nha.",
+          time: new Date().toLocaleDateString('vi-VN')
+        }
+      ],
+      expenses: [
+        {
+          id: "e1",
+          name: "Bình nước Lavie 20L",
+          amount: 22000,
+          payerId: "m1",
+          category: "Sinh hoạt",
+          beneficiaries: ["m1", "m2", "m3", "m4", "m5", "m6"],
+          date: new Date().toISOString()
+        },
+        {
+          id: "e2",
+          name: "Dầu ăn Simply 1L + Nước mắm Nam Ngư",
+          amount: 78000,
+          payerId: "m2",
+          category: "Ăn uống",
+          beneficiaries: ["m1", "m2", "m3", "m4", "m5"],
+          date: new Date().toISOString()
+        },
+        {
+          id: "e3",
+          name: "Nước rửa bát Sunlight + Túi rác 5 cuộn",
+          amount: 45000,
+          payerId: "m3",
+          category: "Vệ sinh",
+          beneficiaries: ["m1", "m2", "m3", "m4", "m5", "m6"],
+          date: new Date().toISOString()
+        }
+      ],
+      // Weekly duty: 0 = Mon, 6 = Sun
+      cleaningSchedule: [
+        { dayIndex: 0, dayName: "Thứ 2", memberId: "m1", done: true, task: "Đổ rác & Quét phòng", emoji: "🗑️", reason: "" },
+        { dayIndex: 1, dayName: "Thứ 3", memberId: "m2", done: true, task: "Lau sàn phòng", emoji: "🧹", reason: "" },
+        { dayIndex: 2, dayName: "Thứ 4", memberId: "m3", done: false, task: "Cọ bồn rửa & Kệ bát", emoji: "🧽", reason: "Đổi ca với Văn Dương: Kẹt lịch thi môn Giải Tích 2" },
+        { dayIndex: 3, dayName: "Thứ 5", memberId: "m4", done: false, task: "Cọ Toilet & Sàn tắm", emoji: "🚽", reason: "Nhận đổi ca từ Văn Bảo" },
+        { dayIndex: 4, dayName: "Thứ 6", memberId: "m5", done: false, task: "Đổ rác & Quét gầm giường", emoji: "🗑️", reason: "" },
+        { dayIndex: 5, dayName: "Thứ 7", memberId: "m6", done: false, task: "Tổng vệ sinh ban công", emoji: "🪟", reason: "" },
+        { dayIndex: 6, dayName: "Chủ Nhật", memberId: "m1", done: false, task: "Tổng vệ sinh phòng cuối tuần", emoji: "✨", reason: "" }
+      ]
+    };
+
+    let appData = null;
+
+    // Load from memory or saved local data
+    function initData() {
+      try {
+        const local = localStorage.getItem(STORAGE_KEY);
+        if (local) {
+          appData = JSON.parse(local);
+          // Backwards compatibility migration
+          if (!appData.checklistTasks) {
+            appData.checklistTasks = defaultState.checklistTasks;
+          }
+          if (!appData.notices || appData.notices.length === 0) {
+            appData.notices = defaultState.notices;
+          }
+          if (appData.cleaningSchedule) {
+            appData.cleaningSchedule.forEach((s, i) => {
+              if (!s.emoji) s.emoji = defaultState.cleaningSchedule[i]?.emoji || "🧹";
+              if (s.reason === undefined) s.reason = "";
+            });
+          }
+        } else {
+          appData = JSON.parse(JSON.stringify(defaultState));
+        }
+      } catch (e) {
+        appData = JSON.parse(JSON.stringify(defaultState));
+      }
+      saveData();
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {
+        console.warn("Storage warning:", e);
+      }
+      updateUI();
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessage');
+      const icon = document.getElementById('toastIcon');
+
+      text.innerText = message;
+      if (type === 'error') {
+        icon.className = 'w-6 h-6 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0';
+        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-xs"></i>';
+      } else {
+        icon.className = 'w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+        icon.innerHTML = '<i class="fa-solid fa-check text-xs"></i>';
+      }
+
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function toggleSidebar(open) {
+      const drawer = document.getElementById('sidebarDrawer');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      if (!drawer || !backdrop) return;
+
+      if (open) {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+        backdrop.classList.add('opacity-100');
+        document.body.classList.add('overflow-hidden');
+      } else {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
+    function selectTabFromSidebar(tabId) {
+      switchTab(tabId);
+      toggleSidebar(false);
+    }
+
+    const TAB_INFO = {
+      expenses: { title: "Chi Tiêu Phòng", icon: "fa-solid fa-receipt" },
+      settlement: { title: "Quyết Toán Cuối Tháng", icon: "fa-solid fa-money-bill-transfer" },
+      cleaning: { title: "Lịch Trực Nhật KTX", icon: "fa-solid fa-broom-ball" },
+      members: { title: "Thành Viên Phòng", icon: "fa-solid fa-users" },
+      notices: { title: "Bảng Thông Báo Phòng", icon: "fa-solid fa-bullhorn" }
+    };
+
+    function switchTab(tabId) {
+      const tabs = ['notices', 'expenses', 'settlement', 'cleaning', 'members'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('nav-' + t);
+        const section = document.getElementById('section-' + t);
+        if (!btn || !section) return;
+
+        if (t === tabId) {
+          btn.className = "nav-tab active w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-200 text-left";
+          section.classList.remove('hidden');
+        } else {
+          btn.className = "nav-tab w-full px-4 py-3 rounded-2xl font-bold text-sm transition flex items-center justify-between text-slate-700 hover:text-indigo-600 hover:bg-slate-100 text-left";
+          section.classList.add('hidden');
+        }
+      });
+
+      // TỰ ĐỘNG CHUYỂN ĐỔI: Chỉ hiện đầy đủ ở tab Thông Báo, các tab khác thu nhỏ lại thành thanh compact
+      const fullStats = document.getElementById('statsOverviewFull');
+      const compactStats = document.getElementById('statsOverviewCompact');
+      if (fullStats && compactStats) {
+        if (tabId === 'notices') {
+          fullStats.classList.remove('hidden');
+          compactStats.classList.add('hidden');
+        } else {
+          fullStats.classList.add('hidden');
+          compactStats.classList.remove('hidden');
+        }
+      }
+
+      if (tabId === 'settlement') {
+        renderSettlement();
+      } else if (tabId === 'notices') {
+        renderNotices();
+      }
+    }
+
+    // --- NOTICE BOARD LOGIC ---
+    let currentNoticeFilter = 'ALL';
+
+    function getNoticeTag(type) {
+      switch (type) {
+        case 'swap':
+          return { label: 'Đổi ca trực nhật', bg: 'bg-teal-50 text-teal-700 border-teal-200', icon: 'fa-solid fa-right-left' };
+        case 'urgent':
+          return { label: 'Khẩn cấp / Kiểm tra', bg: 'bg-rose-50 text-rose-700 border-rose-200', icon: 'fa-solid fa-triangle-exclamation' };
+        case 'finance':
+          return { label: 'Tiền điện nước', bg: 'bg-indigo-50 text-indigo-700 border-indigo-200', icon: 'fa-solid fa-money-bill' };
+        default:
+          return { label: 'Sinh hoạt chung', bg: 'bg-amber-50 text-amber-800 border-amber-200', icon: 'fa-solid fa-bullhorn' };
+      }
+    }
+
+    function renderNotices() {
+      if (!appData || !appData.notices) return;
+
+      const totalCount = appData.notices.length;
+      document.getElementById('badgeNoticeCount').innerText = totalCount;
+      document.getElementById('topNoticeCountBadge').innerText = `${totalCount} tin`;
+
+      // 1. Render Top Banner (Bản nhỏ gọn, thanh mảnh)
+      const topContainer = document.getElementById('topNoticeItemsList');
+      if (topContainer) {
+        if (totalCount === 0) {
+          topContainer.innerHTML = `
+            <div class="text-[11px] text-slate-400 italic py-0.5">Phòng hiện chưa có thông báo hay lý do đổi ca mới nào.</div>
+          `;
+        } else {
+          const recent = appData.notices.slice(0, 3);
+          topContainer.innerHTML = recent.map(n => {
+            const tag = getNoticeTag(n.type);
+            return `
+              <div class="p-1.5 sm:px-2.5 sm:py-2 rounded-lg bg-white border border-slate-200/80 hover:border-amber-300 transition flex items-center justify-between gap-2 shadow-xs">
+                <div class="flex items-center gap-1.5 min-w-0 flex-grow">
+                  <span class="inline-flex items-center gap-1 text-[9px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${tag.bg}">
+                    <i class="${tag.icon} text-[8px]"></i>
+                    <span class="hidden sm:inline">${tag.label}</span>
+                  </span>
+                  <div class="min-w-0 flex-grow">
+                    <div class="text-[11px] sm:text-xs font-bold text-slate-800 truncate">${n.title}</div>
+                    <div class="text-[10px] text-slate-400 truncate leading-tight">${n.content}</div>
+                  </div>
+                </div>
+                <span class="text-[9px] text-slate-400 shrink-0 font-semibold px-1 py-0.5 bg-slate-50 rounded border border-slate-100">${n.authorName ? n.authorName.split(' ')[0] : 'Phòng'}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // 2. Render Full Tab
+      const fullGrid = document.getElementById('fullNoticesGrid');
+      const emptyState = document.getElementById('noticesEmptyState');
+      if (!fullGrid) return;
+
+      const filtered = currentNoticeFilter === 'ALL'
+        ? appData.notices
+        : appData.notices.filter(n => n.type === currentNoticeFilter);
+
+      if (filtered.length === 0) {
+        fullGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      fullGrid.innerHTML = filtered.map(n => {
+        const tag = getNoticeTag(n.type);
+        return `
+          <div class="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/60 hover:bg-white hover:border-amber-200 hover:shadow-md transition flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-0.5 rounded-xl border ${tag.bg}">
+                  <i class="${tag.icon} text-[10px]"></i>
+                  <span>${tag.label}</span>
+                </span>
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] text-slate-400 font-medium">${n.time || ''}</span>
+                  <button onclick="deleteNotice('${n.id}')" class="opacity-0 group-hover:opacity-100 transition text-slate-300 hover:text-rose-500 p-1 rounded-lg" title="Xóa thông báo">
+                    <i class="fa-regular fa-trash-can text-xs"></i>
+                  </button>
+                </div>
+              </div>
+
+              <h3 class="font-extrabold text-sm text-slate-900 leading-snug mb-1.5">${n.title}</h3>
+              <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${n.content}</p>
+            </div>
+
+            <div class="mt-3.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
+              <span class="text-slate-400">Người đăng: <strong class="text-slate-700 font-bold">${n.authorName || 'Phòng KTX'}</strong></span>
+              <button onclick="shareNoticeToGroup('${n.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 transition">
+                <i class="fa-solid fa-share-nodes text-[10px]"></i>
+                <span>Gửi Zalo</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterNotices(type) {
+      currentNoticeFilter = type;
+      const btns = document.querySelectorAll('.notice-filter-btn');
+      btns.forEach(b => {
+        b.classList.remove('bg-slate-900', 'text-white');
+        b.classList.add('bg-slate-100', 'text-slate-600');
+      });
+
+      const activeBtn = document.getElementById('noticeFilter-' + type);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-slate-900', 'text-white');
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+      }
+
+      renderNotices();
+    }
+
+    function openCreateNoticeModal(prefillType = 'swap', prefillTitle = '', prefillContent = '') {
+      // Populate author dropdown
+      const select = document.getElementById('noticeAuthorInput');
+      select.innerHTML = appData.members.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+
+      document.getElementById('noticeTypeInput').value = prefillType;
+      document.getElementById('noticeTitleInput').value = prefillTitle;
+      document.getElementById('noticeContentInput').value = prefillContent;
+
+      openModal('modalNotice');
+    }
+
+    function handleSaveNotice(e) {
+      e.preventDefault();
+      const type = document.getElementById('noticeTypeInput').value;
+      const authorName = document.getElementById('noticeAuthorInput').value;
+      const title = document.getElementById('noticeTitleInput').value.trim();
+      const content = document.getElementById('noticeContentInput').value.trim();
+
+      if (!title || !content) return;
+
+      const newNotice = {
+        id: "n_" + Date.now(),
+        type,
+        authorName,
+        title,
+        content,
+        time: new Date().toLocaleDateString('vi-VN')
+      };
+
+      if (!appData.notices) appData.notices = [];
+      appData.notices.unshift(newNotice);
+      saveData();
+      closeModal('modalNotice');
+      showToast("Đã đăng thông báo lên bảng tin phòng!");
+    }
+
+    function deleteNotice(id) {
+      if (!confirm("Bạn có chắc chắn muốn xóa thông báo này không?")) return;
+      appData.notices = appData.notices.filter(n => n.id !== id);
+      saveData();
+      showToast("Đã xóa thông báo!");
+    }
+
+    function shareNoticeToGroup(id) {
+      const notice = appData.notices.find(n => n.id === id);
+      if (!notice) return;
+      const msg = `📢 [THÔNG BÁO ${appData.roomName.toUpperCase()}]\n📌 ${notice.title}\n👤 Người gửi: ${notice.authorName}\n📝 Nội dung: ${notice.content}\n(Xem chi tiết trên app phòng)`;
+      copyToClipboard(msg, "Đã sao chép nội dung thông báo để gửi vào Zalo!");
+    }
+
+    // --- TOGGLE COLLAPSE TOP NOTICE BANNER ---
+    let isNoticeBannerCollapsed = false;
+
+    function toggleTopNoticeBanner(event) {
+      if (event && event.target.closest('button')) return; // Avoid triggering when clicking child buttons
+
+      const body = document.getElementById('topNoticeCollapsibleBody');
+      const icon = document.getElementById('iconToggleNoticeCollapse');
+      if (!body || !icon) return;
+
+      isNoticeBannerCollapsed = !isNoticeBannerCollapsed;
+
+      if (isNoticeBannerCollapsed) {
+        body.classList.add('hidden');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      } else {
+        body.classList.remove('hidden');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      }
+    }
+
+    function formatVND(amount) {
+      return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + '\u00A0₫';
+    }
+
+    function renderExpenseInputs() {
+      // Payer dropdown
+      const selectPayer = document.getElementById('expensePayer');
+      selectPayer.innerHTML = appData.members.map(m => `
+        <option value="${m.id}">${m.name}</option>
+      `).join('');
+
+      // Beneficiaries checklist
+      const container = document.getElementById('beneficiariesChecklist');
+      container.innerHTML = appData.members.map(m => `
+        <label class="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200/80 hover:bg-indigo-50/50 cursor-pointer transition select-none">
+          <input type="checkbox" name="beneficiary" value="${m.id}" checked class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+          <span class="text-xs font-semibold text-slate-700 truncate">${m.name}</span>
+        </label>
+      `).join('');
+    }
+
+    function toggleAllBeneficiaries(checked) {
+      const checkboxes = document.querySelectorAll('input[name="beneficiary"]');
+      checkboxes.forEach(cb => cb.checked = checked);
+    }
+
+    function setQuickExpense(name, amount, category) {
+      document.getElementById('expenseName').value = name;
+      document.getElementById('expenseAmount').value = amount;
+      updateAmountPreview(amount);
+      if (category) {
+        document.getElementById('expenseCategory').value = category === 'Điện' || category === 'Nước' ? 'Điện nước' : (category === 'Gia vị' ? 'Ăn uống' : 'Vệ sinh');
+      }
+    }
+
+    function updateAmountPreview(val) {
+      const preview = document.getElementById('expenseAmountPreview');
+      const num = parseFloat(val);
+      if (!isNaN(num) && num > 0) {
+        preview.innerText = `≈ ${formatVND(num)}`;
+      } else {
+        preview.innerText = '';
+      }
+    }
+
+    function handleSaveExpense(e) {
+      e.preventDefault();
+      const name = document.getElementById('expenseName').value.trim();
+      const amount = parseFloat(document.getElementById('expenseAmount').value);
+      const payerId = document.getElementById('expensePayer').value;
+      const category = document.getElementById('expenseCategory').value;
+
+      const checkedCheckboxes = Array.from(document.querySelectorAll('input[name="beneficiary"]:checked'));
+      const beneficiaries = checkedCheckboxes.map(cb => cb.value);
+
+      if (beneficiaries.length === 0) {
+        showToast("Vui lòng chọn ít nhất một người tham gia khoản chi!", "error");
+        return;
+      }
+
+      const newExpense = {
+        id: "exp_" + Date.now(),
+        name,
+        amount,
+        payerId,
+        category,
+        beneficiaries,
+        date: new Date().toISOString()
+      };
+
+      appData.expenses.unshift(newExpense);
+
+      // TỰ ĐỘNG PHÁT THÔNG BÁO LÊN BẢNG TIN KHI CÓ KHOẢN CHI MỚI
+      const payerObj = appData.members.find(m => m.id === payerId);
+      const payerName = payerObj ? payerObj.name : "Một bạn trong phòng";
+      const nowStr = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+      const autoExpenseNotice = {
+        id: "n_exp_" + Date.now(),
+        type: "finance",
+        authorName: payerName,
+        title: `Phát sinh chi tiêu: ${name} (${formatVND(amount)})`,
+        content: `${payerName} vừa ứng trước ${formatVND(amount)} để mua "${name}" (${category}). Khoản chi này chia cho ${beneficiaries.length} bạn trong phòng.`,
+        time: nowStr
+      };
+
+      if (!appData.notices) appData.notices = [];
+      appData.notices.unshift(autoExpenseNotice);
+
+      saveData();
+
+      // Reset form
+      e.target.reset();
+      updateAmountPreview('');
+      toggleAllBeneficiaries(true);
+      showToast(`Đã lưu "${name}" & tự động ghim lên Bảng Thông Báo!`);
+    }
+
+    function deleteExpense(id) {
+      appData.expenses = appData.expenses.filter(e => e.id !== id);
+      saveData();
+      showToast("Đã xóa khoản chi!");
+    }
+
+    function renderExpenseTable() {
+      const filter = document.getElementById('expenseFilterCategory').value;
+      const tbody = document.getElementById('expenseTableBody');
+      const mobileContainer = document.getElementById('expenseCardsMobile');
+      const empty = document.getElementById('expenseEmptyState');
+
+      const filtered = filter === 'ALL' 
+        ? appData.expenses 
+        : appData.expenses.filter(e => e.category === filter);
+
+      document.getElementById('totalExpenseCounterBadge').innerText = `${filtered.length} mục`;
+      document.getElementById('badgeExpenseCount').innerText = `${appData.expenses.length}`;
+
+      if (filtered.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (mobileContainer) mobileContainer.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+
+      // 1. Render Mobile Cards View (Tối ưu riêng cho điện thoại không bị tràn/ngắt chữ)
+      if (mobileContainer) {
+        mobileContainer.innerHTML = filtered.map(item => {
+          const payer = appData.members.find(m => m.id === item.payerId) || { name: "Đã xóa" };
+          const shareCount = item.beneficiaries.length;
+          const perPerson = Math.round(item.amount / shareCount);
+          const isAll = item.beneficiaries.length === appData.members.length;
+          const beneNames = item.beneficiaries.map(bid => {
+            const m = appData.members.find(mb => mb.id === bid);
+            return m ? m.name.split(' ')[0] : '?';
+          }).join(', ');
+
+          return `
+            <div class="bg-slate-50/90 hover:bg-white border border-slate-200/90 rounded-2xl p-3.5 space-y-2.5 transition shadow-xs">
+              <!-- Tên món đồ & Số tiền: Rộng rãi, không bị ép thành hàng dọc -->
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5 flex-wrap mb-1">
+                    <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-100 whitespace-nowrap">
+                      ${item.category}
+                    </span>
+                    <span class="text-[11px] text-slate-400 font-medium whitespace-nowrap">
+                      <i class="fa-regular fa-calendar text-[10px] mr-1"></i>${new Date(item.date).toLocaleDateString('vi-VN')}
+                    </span>
+                  </div>
+                  <h4 class="font-extrabold text-slate-900 text-sm sm:text-base leading-snug break-words">${item.name}</h4>
+                </div>
+                <div class="text-right shrink-0">
+                  <div class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap">${formatVND(item.amount)}</div>
+                  <div class="text-[10px] text-indigo-600 font-semibold whitespace-nowrap">~${formatVND(perPerson)} / bạn</div>
+                </div>
+              </div>
+
+              <!-- Thông tin người ứng tiền & người cùng chia -->
+              <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between gap-2 text-xs">
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span class="text-[11px] text-slate-400 shrink-0">Ứng trước:</span>
+                  <span class="inline-flex items-center gap-1 font-bold text-indigo-700 bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-xs truncate max-w-[130px]">
+                    <i class="fa-solid fa-user-tag text-[9px] shrink-0"></i>
+                    <span class="truncate">${payer.name}</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <span class="text-[10px] font-semibold text-slate-600 bg-slate-200/60 px-2 py-0.5 rounded-md whitespace-nowrap" title="${beneNames}">
+                    ${isAll ? `Cả phòng (${shareCount})` : `${shareCount} bạn chia`}
+                  </span>
+                  <button onclick="deleteExpense('${item.id}')" class="text-slate-400 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa khoản chi này">
+                    <i class="fa-regular fa-trash-can text-sm"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 2. Render Desktop Table View
+      if (tbody) {
+        tbody.innerHTML = filtered.map(item => {
+          const payer = appData.members.find(m => m.id === item.payerId) || { name: "Đã xóa" };
+          const shareCount = item.beneficiaries.length;
+          const perPerson = Math.round(item.amount / shareCount);
+
+          const beneNames = item.beneficiaries.map(bid => {
+            const m = appData.members.find(mb => mb.id === bid);
+            return m ? m.name.split(' ')[0] : '?';
+          }).join(', ');
+
+          const isAll = item.beneficiaries.length === appData.members.length;
+
+          return `
+            <tr class="hover:bg-slate-50/80 transition group">
+              <td class="py-3 px-4 font-semibold text-slate-800">
+                <div class="font-bold text-slate-900">${item.name}</div>
+                <div class="text-[10px] text-slate-400">${new Date(item.date).toLocaleDateString('vi-VN')}</div>
+              </td>
+              <td class="py-3 px-3 whitespace-nowrap">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                  ${item.category}
+                </span>
+              </td>
+              <td class="py-3 px-3 font-extrabold text-slate-900 whitespace-nowrap">
+                ${formatVND(item.amount)}
+              </td>
+              <td class="py-3 px-3">
+                <span class="inline-flex items-center gap-1 font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 text-xs whitespace-nowrap">
+                  <i class="fa-solid fa-user-tag text-[10px]"></i>
+                  ${payer.name}
+                </span>
+              </td>
+              <td class="py-3 px-3">
+                <div class="text-xs font-medium text-slate-700">
+                  ${isAll ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[11px] whitespace-nowrap">Cả phòng (${shareCount})</span>` : `<span class="whitespace-nowrap">${beneNames} (${shareCount} người)</span>`}
+                </div>
+                <div class="text-[10px] text-slate-400 whitespace-nowrap">~${formatVND(perPerson)} / bạn</div>
+              </td>
+              <td class="py-3 px-4 text-right whitespace-nowrap">
+                <button onclick="deleteExpense('${item.id}')" class="text-slate-300 hover:text-rose-500 p-1.5 rounded-lg hover:bg-rose-50 transition" title="Xóa khoản chi này">
+                  <i class="fa-regular fa-trash-can text-sm"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    function computeBalances() {
+      // Initialize balances: positive = paid more (is owed), negative = consumed more (owes)
+      const balances = {};
+      const totalPaid = {};
+      const totalShare = {};
+
+      appData.members.forEach(m => {
+        balances[m.id] = 0;
+        totalPaid[m.id] = 0;
+        totalShare[m.id] = 0;
+      });
+
+      let grandTotal = 0;
+
+      appData.expenses.forEach(exp => {
+        const amount = exp.amount;
+        grandTotal += amount;
+        if (totalPaid[exp.payerId] !== undefined) {
+          totalPaid[exp.payerId] += amount;
+        }
+
+        const sharePerPerson = amount / (exp.beneficiaries.length || 1);
+        exp.beneficiaries.forEach(bId => {
+          if (totalShare[bId] !== undefined) {
+            totalShare[bId] += sharePerPerson;
+          }
+        });
+      });
+
+      appData.members.forEach(m => {
+        balances[m.id] = (totalPaid[m.id] || 0) - (totalShare[m.id] || 0);
+      });
+
+      // Greedy settlement algorithm to minimize number of transfers
+      const debtors = [];  // needs to pay (balance < -1)
+      const creditors = []; // needs to receive (balance > 1)
+
+      appData.members.forEach(m => {
+        const bal = balances[m.id];
+        if (bal < -10) {
+          debtors.push({ id: m.id, name: m.name, amount: -bal });
+        } else if (bal > 10) {
+          creditors.push({ id: m.id, name: m.name, amount: bal });
+        }
+      });
+
+      // Sort descending
+      debtors.sort((a, b) => b.amount - a.amount);
+      creditors.sort((a, b) => b.amount - a.amount);
+
+      const transfers = [];
+      let i = 0;
+      let j = 0;
+
+      while (i < debtors.length && j < creditors.length) {
+        const debtor = debtors[i];
+        const creditor = creditors[j];
+        const settleAmount = Math.min(debtor.amount, creditor.amount);
+
+        if (settleAmount > 10) {
+          transfers.push({
+            fromId: debtor.id,
+            fromName: debtor.name,
+            toId: creditor.id,
+            toName: creditor.name,
+            amount: Math.round(settleAmount)
+          });
+        }
+
+        debtor.amount -= settleAmount;
+        creditor.amount -= settleAmount;
+
+        if (debtor.amount < 10) i++;
+        if (creditor.amount < 10) j++;
+      }
+
+      return {
+        grandTotal,
+        balances,
+        totalPaid,
+        totalShare,
+        transfers
+      };
+    }
+
+    function renderSettlement() {
+      const calc = computeBalances();
+      const tbody = document.getElementById('settlementSummaryBody');
+      const cardsContainer = document.getElementById('settlementCardsMobile');
+      const transfersContainer = document.getElementById('transfersList');
+      const transfersEmpty = document.getElementById('transfersEmptyState');
+
+      // Update stat cards
+      document.getElementById('statTransfersNeeded').innerText = `${calc.transfers.length} lệnh`;
+      const compactTrans = document.getElementById('statCompactTransfers');
+      if (compactTrans) compactTrans.innerText = `${calc.transfers.length} lệnh`;
+
+      // 1. Render Desktop Table
+      if (tbody) {
+        tbody.innerHTML = appData.members.map(m => {
+          const paid = calc.totalPaid[m.id] || 0;
+          const share = calc.totalShare[m.id] || 0;
+          const net = calc.balances[m.id] || 0;
+
+          let badge = '';
+          if (net > 10) {
+            badge = `<span class="whitespace-nowrap font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 text-xs">Nhận lại +${formatVND(net)}</span>`;
+          } else if (net < -10) {
+            badge = `<span class="whitespace-nowrap font-bold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-xl border border-rose-200 text-xs">Cần nộp -${formatVND(Math.abs(net))}</span>`;
+          } else {
+            badge = `<span class="whitespace-nowrap font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-xl text-xs">Đã sòng phẳng 0\u00A0₫</span>`;
+          }
+
+          return `
+            <tr class="hover:bg-slate-50/80 transition">
+              <td class="py-3 px-4 font-bold text-slate-800">
+                ${m.name}
+                <div class="text-[11px] text-slate-400 font-normal">${m.bank ? `${m.bank} - ${m.account}` : 'Chưa có STK'}</div>
+              </td>
+              <td class="py-3 px-3 font-semibold text-emerald-600 whitespace-nowrap">+${formatVND(paid)}</td>
+              <td class="py-3 px-3 font-semibold text-slate-600 whitespace-nowrap">-${formatVND(share)}</td>
+              <td class="py-3 px-3 font-black whitespace-nowrap ${net >= 0 ? 'text-emerald-600' : 'text-rose-600'}">
+                ${net >= 0 ? '+' : ''}${formatVND(net)}
+              </td>
+              <td class="py-3 px-4 text-right whitespace-nowrap">${badge}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // 2. Render Mobile Cards View (Tối ưu riêng cho điện thoại)
+      if (cardsContainer) {
+        cardsContainer.innerHTML = appData.members.map(m => {
+          const paid = calc.totalPaid[m.id] || 0;
+          const share = calc.totalShare[m.id] || 0;
+          const net = calc.balances[m.id] || 0;
+
+          let statusBadge = '';
+          let cardBorder = 'border-slate-200/80';
+          let cardBg = 'bg-white';
+
+          if (net > 10) {
+            statusBadge = `
+              <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                <i class="fa-solid fa-arrow-down-left text-[10px]"></i>
+                <span>Nhận lại +${formatVND(net)}</span>
+              </span>
+            `;
+            cardBorder = 'border-emerald-200/90';
+            cardBg = 'bg-emerald-50/20';
+          } else if (net < -10) {
+            statusBadge = `
+              <span class="inline-flex items-center gap-1 text-[11px] font-extrabold px-2.5 py-1 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
+                <i class="fa-solid fa-arrow-up-right text-[10px]"></i>
+                <span>Cần nộp -${formatVND(Math.abs(net))}</span>
+              </span>
+            `;
+            cardBorder = 'border-rose-200/90';
+            cardBg = 'bg-rose-50/20';
+          } else {
+            statusBadge = `
+              <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-xl bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
+                <i class="fa-solid fa-check text-[10px]"></i>
+                <span>Sòng phẳng 0\u00A0₫</span>
+              </span>
+            `;
+          }
+
+          return `
+            <div class="${cardBg} p-3.5 rounded-2xl border ${cardBorder} shadow-xs space-y-2.5 transition">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-700 font-black text-xs flex items-center justify-center shrink-0 border border-indigo-100">
+                    ${m.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div class="min-w-0">
+                    <h4 class="font-bold text-xs text-slate-900 truncate">${m.name}</h4>
+                    <p class="text-[10px] text-slate-400 truncate">${m.bank ? `${m.bank}: ${m.account}` : 'Chưa có STK'}</p>
+                  </div>
+                </div>
+                <div class="shrink-0">
+                  ${statusBadge}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-1.5 p-2 bg-slate-50/90 rounded-xl border border-slate-100 text-center">
+                <div>
+                  <div class="text-[9px] font-semibold text-slate-400">Đã ứng (+)</div>
+                  <div class="text-[11px] font-bold text-emerald-600 whitespace-nowrap">+${formatVND(paid)}</div>
+                </div>
+                <div class="border-x border-slate-200/60">
+                  <div class="text-[9px] font-semibold text-slate-400">Phần chịu (-)</div>
+                  <div class="text-[11px] font-bold text-slate-600 whitespace-nowrap">-${formatVND(share)}</div>
+                </div>
+                <div>
+                  <div class="text-[9px] font-semibold text-slate-400">Chênh lệch</div>
+                  <div class="text-[11px] font-black whitespace-nowrap ${net >= 0 ? 'text-emerald-600' : 'text-rose-600'}">
+                    ${net >= 0 ? '+' : ''}${formatVND(net)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render transfers
+      if (calc.transfers.length === 0) {
+        transfersContainer.innerHTML = '';
+        transfersEmpty.classList.remove('hidden');
+      } else {
+        transfersEmpty.classList.add('hidden');
+        transfersContainer.innerHTML = calc.transfers.map(tr => {
+          const receiver = appData.members.find(m => m.id === tr.toId);
+          const hasBank = receiver && receiver.account && receiver.bank;
+
+          return `
+            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base shrink-0">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                <div>
+                  <div class="text-xs text-slate-500">
+                    <strong class="text-slate-900 font-bold">${tr.fromName}</strong> cần chuyển cho <strong class="text-indigo-700 font-bold">${tr.toName}</strong>:
+                  </div>
+                  <div class="text-lg font-black text-rose-600">
+                    ${formatVND(tr.amount)}
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                ${hasBank ? `
+                  <button onclick="openVietQRModal('${tr.toId}', ${tr.amount}, '${tr.fromName}')" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>Tạo VietQR</span>
+                  </button>
+                ` : `
+                  <span class="text-[11px] text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 italic">Chưa nhập STK</span>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    let currentQRDetail = {};
+
+    function openVietQRModal(receiverId, amount, senderName) {
+      const receiver = appData.members.find(m => m.id === receiverId);
+      if (!receiver || !receiver.account || !receiver.bank) {
+        showToast("Bạn này chưa nhập số tài khoản ngân hàng!", "error");
+        return;
+      }
+
+      const memo = `Tien phong KTX ${senderName.split(' ')[0]}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '');
+      // Use standard VietQR image API
+      const qrUrl = `https://img.vietqr.io/image/${receiver.bank}-${receiver.account}-compact2.png?amount=${amount}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(receiver.name)}`;
+
+      currentQRDetail = {
+        receiverName: receiver.name,
+        account: receiver.account,
+        bank: receiver.bank,
+        amount: amount,
+        memo: memo
+      };
+
+      document.getElementById('qrImageDisplay').src = qrUrl;
+      document.getElementById('qrReceiverName').innerText = receiver.name;
+      document.getElementById('qrAccountNumber').innerText = receiver.account;
+      document.getElementById('qrBankName').innerText = receiver.bank;
+      document.getElementById('qrAmountDisplay').innerText = formatVND(amount);
+      document.getElementById('qrMemoDisplay').innerText = memo;
+
+      openModal('modalQR');
+    }
+
+    function copyQRTransferText() {
+      if (!currentQRDetail.account) return;
+      const txt = `${currentQRDetail.account}`;
+      copyToClipboard(txt, "Đã sao chép số tài khoản!");
+    }
+
+    function renderCleaningSchedule() {
+      const grid = document.getElementById('weeklyDutyGrid');
+      const todayIndex = (new Date().getDay() + 6) % 7; // Monday = 0, Sunday = 6
+
+      // Find duty person for today
+      const todayDuty = appData.cleaningSchedule.find(s => s.dayIndex === todayIndex);
+      if (todayDuty) {
+        const member = appData.members.find(m => m.id === todayDuty.memberId);
+        const shortName = member ? member.name.split(' ')[0] : "Chưa có";
+        document.getElementById('statTodayDutyPerson').innerText = member ? `${todayDuty.emoji || '🧹'} ${member.name}` : "Chưa có";
+        
+        // Update compact version
+        const compactDuty = document.getElementById('statCompactTodayDuty');
+        if (compactDuty) {
+          compactDuty.innerText = `${todayDuty.emoji || '🧹'} ${shortName} (${todayDuty.done ? 'Xong' : 'Chưa'})`;
+        }
+
+        const statusEl = document.getElementById('statTodayDutyStatus');
+        if (todayDuty.done) {
+          statusEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-emerald-600 font-bold">Đã dọn xong ✨</span>';
+        } else {
+          const reasonText = todayDuty.reason ? ` (${todayDuty.reason})` : '';
+          statusEl.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-amber-400"></span><span class="text-amber-600 font-bold">Chưa hoàn thành${reasonText}</span>`;
+        }
+      }
+
+      grid.innerHTML = appData.cleaningSchedule.map(item => {
+        const member = appData.members.find(m => m.id === item.memberId) || { name: "Chưa phân" };
+        const isToday = item.dayIndex === todayIndex;
+        const emoji = item.emoji || '🧹';
+
+        return `
+          <div class="rounded-2xl p-3.5 border transition-all flex flex-col justify-between ${isToday ? 'bg-indigo-50/70 border-indigo-300 ring-2 ring-indigo-500/20 shadow-md' : 'bg-slate-50/70 border-slate-200/80'}">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-black ${isToday ? 'text-indigo-700' : 'text-slate-700'}">${item.dayName}</span>
+                ${isToday ? '<span class="text-[9px] font-black uppercase bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">Hôm nay</span>' : ''}
+              </div>
+
+              <div class="font-extrabold text-xs text-slate-800 truncate mb-1 flex items-center gap-1.5">
+                <span class="text-sm">${emoji}</span>
+                <span class="truncate">${member.name}</span>
+              </div>
+
+              <div class="text-[11px] text-slate-500 flex items-center gap-1 mb-2">
+                <span class="truncate">${item.task || 'Trực nhật'}</span>
+              </div>
+
+              ${item.reason ? `
+                <div class="mb-2.5 p-1.5 bg-amber-50 border border-amber-200 rounded-lg text-[10px] text-amber-800 flex items-start gap-1" title="Lý do đổi ca/chưa làm: ${item.reason}">
+                  <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5 shrink-0"></i>
+                  <span class="line-clamp-2 leading-tight font-medium">${item.reason}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between">
+              <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                <input type="checkbox" ${item.done ? 'checked' : ''} onchange="handleDutyCheckToggle(${item.dayIndex}, this)" class="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 cursor-pointer">
+                <span class="text-[11px] font-bold ${item.done ? 'text-teal-700' : 'text-slate-400'}">
+                  ${item.done ? 'Đã dọn' : 'Chưa'}
+                </span>
+              </label>
+
+              <div class="flex items-center gap-1">
+                <button onclick="requestDutySwapForDay(${item.dayIndex})" class="text-slate-400 hover:text-teal-600 p-1 text-[11px] font-semibold flex items-center gap-0.5" title="Báo bận & xin đổi ca">
+                  <i class="fa-solid fa-right-left"></i>
+                </button>
+                <button onclick="promptEditDayDuty(${item.dayIndex})" class="text-slate-300 hover:text-indigo-600 p-1" title="Đổi người trực ngày này">
+                  <i class="fa-solid fa-pencil text-[11px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      renderRoomChecklist();
+    }
+
+    // Toggle duty checkbox: If unchecking (marking not done), prompt for a reason
+    function handleDutyCheckToggle(dayIndex, checkboxEl) {
+      const day = appData.cleaningSchedule.find(s => s.dayIndex === dayIndex);
+      if (!day) return;
+      const m = appData.members.find(mb => mb.id === day.memberId)?.name || 'Bạn';
+      const nowStr = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+
+      if (checkboxEl.checked) {
+        day.done = true;
+        day.reason = ""; // Clear delay reason on completion
+
+        // Tự động thông báo hoàn thành dọn phòng
+        const autoDoneNotice = {
+          id: "n_clean_" + Date.now(),
+          type: "general",
+          authorName: m,
+          title: `Đã hoàn thành trực nhật ${day.dayName} ✨`,
+          content: `${m} vừa hoàn thành nhiệm vụ dọn phòng (${day.task || 'Trực nhật'}) cho ngày ${day.dayName}! Phòng KTX sạch bong.`,
+          time: nowStr
+        };
+        if (!appData.notices) appData.notices = [];
+        appData.notices.unshift(autoDoneNotice);
+
+        saveData();
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.8 }
+        });
+        showToast(`Hoan hô! ${m} đã dọn xong trực nhật ${day.dayName}!`);
+      } else {
+        // Marking as uncompleted: ask for reason or offer to swap
+        const reason = prompt(`Bạn chưa làm trực nhật ${day.dayName} hôm nay?\nVui lòng nhập lý do (hoặc bấm Hủy để xin đổi ca):`);
+        if (reason !== null && reason.trim()) {
+          day.done = false;
+          day.reason = reason.trim();
+
+          // Tự động thông báo lý do chưa kịp dọn
+          const autoDelayNotice = {
+            id: "n_delay_" + Date.now(),
+            type: "swap",
+            authorName: m,
+            title: `Báo bận ca trực nhật ${day.dayName}`,
+            content: `${m} chưa hoàn thành trực nhật ngày ${day.dayName}.\nLý do: "${reason.trim()}"`,
+            time: nowStr
+          };
+          if (!appData.notices) appData.notices = [];
+          appData.notices.unshift(autoDelayNotice);
+
+          saveData();
+          showToast(`Đã ghi nhận lý do chưa dọn & đăng lên Bảng Thông Báo!`);
+        } else {
+          // If cancelled or empty, open the swap modal with mandatory reason
+          checkboxEl.checked = true; // revert until swapped
+          requestDutySwapForDay(dayIndex);
+        }
+      }
+    }
+
+    function renderRoomChecklist() {
+      const container = document.getElementById('roomChecklistContainer');
+      if (!container) return;
+
+      if (!appData.checklistTasks || appData.checklistTasks.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-4 text-center text-slate-400 text-xs">
+            Chưa có đầu việc nào. Hãy bấm "+ Thêm việc mới" để tạo checklist phòng nhé!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appData.checklistTasks.map(task => {
+        return `
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 hover:border-indigo-200 transition flex items-start gap-3 group relative">
+            <div class="w-9 h-9 rounded-xl bg-white shadow-sm border border-slate-200/80 flex items-center justify-center text-lg shrink-0 select-none">
+              ${task.emoji || '🧹'}
+            </div>
+            <div class="flex-grow pr-4">
+              <h4 class="font-bold text-xs text-slate-800">${task.title}</h4>
+              <p class="text-[11px] text-slate-500 mt-0.5 leading-relaxed">${task.desc}</p>
+            </div>
+            <button onclick="removeChecklistTask('${task.id}')" class="opacity-0 group-hover:opacity-100 transition absolute top-2 right-2 text-slate-300 hover:text-rose-500 p-1 rounded-lg" title="Xóa đầu việc này">
+              <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddChecklistModal() {
+      document.getElementById('inputTaskEmoji').value = "🧹";
+      document.getElementById('inputTaskTitle').value = "";
+      document.getElementById('inputTaskDesc').value = "";
+      openModal('modalChecklist');
+    }
+
+    function selectChecklistEmoji(emoji) {
+      document.getElementById('inputTaskEmoji').value = emoji;
+    }
+
+    function handleSaveChecklistTask(e) {
+      e.preventDefault();
+      const emoji = document.getElementById('inputTaskEmoji').value.trim() || '🧹';
+      const title = document.getElementById('inputTaskTitle').value.trim();
+      const desc = document.getElementById('inputTaskDesc').value.trim();
+
+      if (!title) return;
+
+      const newTask = {
+        id: "t_" + Date.now(),
+        emoji,
+        title,
+        desc: desc || "Vệ sinh sạch sẽ theo quy định phòng."
+      };
+
+      if (!appData.checklistTasks) appData.checklistTasks = [];
+      appData.checklistTasks.push(newTask);
+      saveData();
+      closeModal('modalChecklist');
+      showToast(`Đã thêm việc "${emoji} ${title}" vào checklist phòng!`);
+    }
+
+    function removeChecklistTask(taskId) {
+      if (!confirm("Bạn có chắc muốn xóa đầu việc này khỏi checklist?")) return;
+      appData.checklistTasks = appData.checklistTasks.filter(t => t.id !== taskId);
+      saveData();
+      showToast("Đã xóa đầu việc khỏi checklist!");
+    }
+
+    function regenerateSchedule() {
+      const memberIds = appData.members.map(m => m.id);
+      if (memberIds.length === 0) return;
+
+      const tasks = [
+        { name: "Đổ rác & Quét phòng", emoji: "🗑️" },
+        { name: "Lau sàn phòng", emoji: "🧹" },
+        { name: "Cọ bồn rửa & Kệ bát", emoji: "🧽" },
+        { name: "Cọ Toilet & Sàn tắm", emoji: "🚽" },
+        { name: "Đổ rác & Quét gầm giường", emoji: "🗑️" },
+        { name: "Tổng vệ sinh ban công", emoji: "🪟" },
+        { name: "Tổng vệ sinh phòng cuối tuần", emoji: "✨" }
+      ];
+
+      appData.cleaningSchedule.forEach((s, idx) => {
+        s.memberId = memberIds[idx % memberIds.length];
+        s.done = false;
+        s.task = tasks[idx % tasks.length].name;
+        s.emoji = tasks[idx % tasks.length].emoji;
+        s.reason = "";
+      });
+
+      saveData();
+      showToast("Đã tự động xoay tua lại lịch trực nhật!");
+    }
+
+    function promptEditDayDuty(dayIndex) {
+      const day = appData.cleaningSchedule.find(s => s.dayIndex === dayIndex);
+      if (!day) return;
+
+      // Populate quick select
+      const memberNames = appData.members.map((m, i) => `${i + 1}. ${m.name}`).join('\n');
+      const input = prompt(`Chọn người trực cho ${day.dayName}:\n\n${memberNames}\n\nNhập số thứ tự:`, "1");
+      if (input !== null) {
+        const num = parseInt(input) - 1;
+        if (appData.members[num]) {
+          day.memberId = appData.members[num].id;
+          saveData();
+          showToast(`Đã gán ${appData.members[num].name} trực nhật ${day.dayName}!`);
+        }
+      }
+    }
+
+    function requestDutySwapForDay(dayIndex) {
+      openSwapDutyModal();
+      document.getElementById('swapDaySelect1').value = dayIndex;
+      // Auto select next day for swap
+      const nextIdx = (dayIndex + 1) % 7;
+      document.getElementById('swapDaySelect2').value = nextIdx;
+      document.getElementById('swapDutyReason').value = "";
+      document.getElementById('swapDutyReason').focus();
+    }
+
+    function openSwapDutyModal() {
+      const sel1 = document.getElementById('swapDaySelect1');
+      const sel2 = document.getElementById('swapDaySelect2');
+
+      const options = appData.cleaningSchedule.map(s => {
+        const m = appData.members.find(mb => mb.id === s.memberId);
+        return `<option value="${s.dayIndex}">${s.dayName} (${m ? m.name : 'Chưa rõ'})</option>`;
+      }).join('');
+
+      sel1.innerHTML = options;
+      sel2.innerHTML = options;
+      sel2.selectedIndex = 1;
+      document.getElementById('swapDutyReason').value = "";
+
+      openModal('modalSwapDuty');
+    }
+
+    function executeSwapDuty() {
+      const idx1 = parseInt(document.getElementById('swapDaySelect1').value);
+      const idx2 = parseInt(document.getElementById('swapDaySelect2').value);
+      const reason = document.getElementById('swapDutyReason').value.trim();
+
+      if (idx1 === idx2) {
+        showToast("Vui lòng chọn 2 ngày khác nhau để hoán đổi!", "error");
+        return;
+      }
+
+      // Enforce mandatory reason
+      if (!reason) {
+        showToast("Vui lòng nhập lý do đổi ca trực để cả phòng cùng biết!", "error");
+        document.getElementById('swapDutyReason').focus();
+        return;
+      }
+
+      const day1 = appData.cleaningSchedule.find(s => s.dayIndex === idx1);
+      const day2 = appData.cleaningSchedule.find(s => s.dayIndex === idx2);
+
+      if (day1 && day2) {
+        const m1 = appData.members.find(m => m.id === day1.memberId)?.name || 'Bạn';
+        const m2 = appData.members.find(m => m.id === day2.memberId)?.name || 'Bạn';
+
+        const tempMember = day1.memberId;
+        day1.memberId = day2.memberId;
+        day2.memberId = tempMember;
+
+        // Reset completion status and store reason
+        day1.done = false;
+        day2.done = false;
+        day1.reason = `Đổi ca với ${m2}: ${reason}`;
+        day2.reason = `Nhận đổi ca từ ${m1}: ${reason}`;
+
+        // TỰ ĐỘNG TẠO THÔNG BÁO VÀ GHIM LÊN ĐẦU BẢNG TIN PHÒNG
+        const nowStr = new Date().toLocaleDateString('vi-VN') + " " + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        const autoNotice = {
+          id: "n_swap_" + Date.now(),
+          type: "swap",
+          authorName: m1,
+          title: `Đổi ca trực nhật: ${day1.dayName} ⇄ ${day2.dayName}`,
+          content: `${m1} đã đổi ca trực nhật ngày ${day1.dayName} với ${m2} (ngày ${day2.dayName}).\nLý do: "${reason}"`,
+          time: nowStr
+        };
+        if (!appData.notices) appData.notices = [];
+        appData.notices.unshift(autoNotice);
+
+        saveData();
+        closeModal('modalSwapDuty');
+        showToast(`Đã đổi ca trực thành công & tự động ghim lên Bảng Thông Báo!`);
+      }
+    }
+
+    // Spin Wheel mini game for random duty
+    let spinInterval = null;
+    let selectedSpinnedMember = null;
+
+    function openSpinWheelModal() {
+      document.getElementById('spinWheelDisplay').innerText = "? ? ?";
+      document.getElementById('spinWheelSub').innerText = "Bấm nút bên dưới để chọn ngẫu nhiên";
+      document.getElementById('btnAssignToday').disabled = true;
+      document.getElementById('btnAssignToday').classList.add('cursor-not-allowed', 'bg-slate-200', 'text-slate-400');
+      document.getElementById('btnAssignToday').classList.remove('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+      openModal('modalSpinWheel');
+    }
+
+    function startSpinningWheel() {
+      if (appData.members.length === 0) return;
+      const display = document.getElementById('spinWheelDisplay');
+      const btn = document.getElementById('btnStartSpin');
+      btn.disabled = true;
+
+      let counter = 0;
+      const speed = 60;
+      const totalSteps = 25;
+
+      clearInterval(spinInterval);
+      spinInterval = setInterval(() => {
+        const randomMember = appData.members[Math.floor(Math.random() * appData.members.length)];
+        display.innerText = randomMember.name;
+        counter++;
+
+        if (counter >= totalSteps) {
+          clearInterval(spinInterval);
+          selectedSpinnedMember = randomMember;
+          btn.disabled = false;
+          display.innerHTML = `<span class="text-amber-500">${randomMember.name}</span> 🎉`;
+          document.getElementById('spinWheelSub').innerText = `Người được chọn trúng giải trực nhật đột xuất!`;
+
+          const assignBtn = document.getElementById('btnAssignToday');
+          assignBtn.disabled = false;
+          assignBtn.classList.remove('cursor-not-allowed', 'bg-slate-200', 'text-slate-400');
+          assignBtn.classList.add('bg-teal-600', 'text-white', 'hover:bg-teal-700');
+
+          confetti({ particleCount: 70, spread: 70 });
+        }
+      }, speed);
+    }
+
+    function assignSpinnedPersonToToday() {
+      if (!selectedSpinnedMember) return;
+      const todayIndex = (new Date().getDay() + 6) % 7;
+      const todaySchedule = appData.cleaningSchedule.find(s => s.dayIndex === todayIndex);
+      if (todaySchedule) {
+        todaySchedule.memberId = selectedSpinnedMember.id;
+        saveData();
+        closeModal('modalSpinWheel');
+        showToast(`Đã gán ${selectedSpinnedMember.name} làm trực nhật hôm nay!`);
+      }
+    }
+
+    function renderMembers() {
+      const grid = document.getElementById('membersGrid');
+      document.getElementById('memberCountHeader').innerText = appData.members.length;
+      document.getElementById('statMemberCountSub').innerText = `${appData.members.length} thành viên`;
+
+      grid.innerHTML = appData.members.map((m, idx) => {
+        return `
+          <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 flex flex-col justify-between hover:shadow-md transition">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-teal-400 text-white font-black text-xs flex items-center justify-center">
+                  ${m.name.charAt(0).toUpperCase()}
+                </div>
+                <div class="flex items-center gap-1">
+                  <button onclick="openEditMemberModal('${m.id}')" class="text-slate-400 hover:text-indigo-600 p-1 rounded-lg transition" title="Chỉnh sửa">
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                  </button>
+                  ${appData.members.length > 2 ? `
+                    <button onclick="removeMember('${m.id}')" class="text-slate-400 hover:text-rose-500 p-1 rounded-lg transition" title="Xóa bạn này">
+                      <i class="fa-regular fa-trash-can text-xs"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <h4 class="font-extrabold text-sm text-slate-900 truncate">${m.name}</h4>
+              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                <i class="fa-solid fa-building-columns text-[10px] text-slate-400"></i>
+                <span>${m.bank || 'Chưa set Bank'}</span>
+              </p>
+              <p class="text-xs font-mono font-semibold text-slate-700 truncate mt-0.5">
+                ${m.account || 'Chưa có STK'}
+              </p>
+            </div>
+
+            <div class="mt-4 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Thành viên #${idx + 1}</span>
+              ${m.account ? `<span class="text-teal-600 font-bold"><i class="fa-solid fa-check"></i> Sẵn sàng QR</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAddMemberModal() {
+      document.getElementById('modalMemberTitle').innerText = "Thêm Thành Viên Mới";
+      document.getElementById('inputMemberId').value = "";
+      document.getElementById('inputMemberName').value = "";
+      document.getElementById('inputMemberBank').value = "MB";
+      document.getElementById('inputMemberAccount').value = "";
+      openModal('modalMember');
+    }
+
+    function openEditMemberModal(memberId) {
+      const m = appData.members.find(mb => mb.id === memberId);
+      if (!m) return;
+      document.getElementById('modalMemberTitle').innerText = "Chỉnh Sửa Thành Viên";
+      document.getElementById('inputMemberId').value = m.id;
+      document.getElementById('inputMemberName').value = m.name;
+      document.getElementById('inputMemberBank').value = m.bank || 'MB';
+      document.getElementById('inputMemberAccount').value = m.account || '';
+      openModal('modalMember');
+    }
+
+    function handleSaveMember(e) {
+      e.preventDefault();
+      const id = document.getElementById('inputMemberId').value;
+      const name = document.getElementById('inputMemberName').value.trim();
+      const bank = document.getElementById('inputMemberBank').value;
+      const account = document.getElementById('inputMemberAccount').value.trim();
+
+      if (!name) return;
+
+      if (id) {
+        // Edit
+        const m = appData.members.find(mb => mb.id === id);
+        if (m) {
+          m.name = name;
+          m.bank = bank;
+          m.account = account;
+        }
+        showToast("Đã cập nhật thông tin thành viên!");
+      } else {
+        // Add new
+        const newM = {
+          id: "m_" + Date.now(),
+          name,
+          bank,
+          account
+        };
+        appData.members.push(newM);
+        showToast(`Đã thêm ${name} vào phòng!`);
+      }
+
+      closeModal('modalMember');
+      saveData();
+      renderExpenseInputs();
+    }
+
+    function removeMember(memberId) {
+      if (appData.members.length <= 2) {
+        showToast("Phòng cần tối thiểu 2 thành viên!", "error");
+        return;
+      }
+      const member = appData.members.find(m => m.id === memberId);
+      if (!member) return;
+
+      // Ask via confirmation modal or simple prompt
+      const ok = prompt(`Nhập chữ "XOA" để xác nhận xóa bạn ${member.name} khỏi danh sách phòng:`);
+      if (ok === "XOA") {
+        appData.members = appData.members.filter(m => m.id !== memberId);
+        // Clean expenses & cleaning
+        appData.cleaningSchedule.forEach(s => {
+          if (s.memberId === memberId) {
+            s.memberId = appData.members[0].id;
+          }
+        });
+        saveData();
+        renderExpenseInputs();
+        showToast(`Đã xóa ${member.name}`);
+      }
+    }
+
+    function openRoomSettingsModal() {
+      const current = appData.roomName || "Phòng 402 - KTX";
+      const name = prompt("Nhập tên phòng ký túc xá của bạn:", current);
+      if (name && name.trim()) {
+        appData.roomName = name.trim();
+        const titleEl = document.getElementById('appRoomTitle');
+        if (titleEl) titleEl.innerText = appData.roomName;
+        document.title = `${appData.roomName} - Quản Lý Chi Tiêu & Trực Nhật KTX`;
+        saveData();
+        showToast("Đã đổi tên phòng thành công!");
+      }
+    }
+
+    function openShareReportModal() {
+      const calc = computeBalances();
+      const todayStr = new Date().toLocaleDateString('vi-VN');
+
+      let text = `📢 BÁO CÁO CHI TIÊU & QUYẾT TOÁN ${appData.roomName.toUpperCase()}\n`;
+      text += `📅 Ngày xuất: ${todayStr}\n`;
+      text += `------------------------------------\n`;
+      text += `💰 TỔNG CHI PHÒNG: ${formatVND(calc.grandTotal)}\n`;
+      text += `👥 Số thành viên: ${appData.members.length} bạn\n\n`;
+
+      text += `📋 CHI TIẾT TỪNG KHOẢN:\n`;
+      if (appData.expenses.length === 0) {
+        text += `- Chưa có khoản chi nào.\n`;
+      } else {
+        appData.expenses.forEach((e, idx) => {
+          const payer = appData.members.find(m => m.id === e.payerId)?.name || '?';
+          text += `${idx + 1}. ${e.name}: ${formatVND(e.amount)} (bạn ${payer} ứng)\n`;
+        });
+      }
+
+      text += `\n⚖️ CÔNG NỢ & LỆNH CHUYỂN TIỀN:\n`;
+      if (calc.transfers.length === 0) {
+        text += `✨ Tất cả sòng phẳng, không ai nợ ai!\n`;
+      } else {
+        calc.transfers.forEach((tr, i) => {
+          const rec = appData.members.find(m => m.id === tr.toId);
+          const bankInfo = rec && rec.account ? ` [STK: ${rec.account} (${rec.bank})]` : '';
+          text += `👉 Lệnh ${i + 1}: ${tr.fromName} chuyển cho ${tr.toName} số tiền ${formatVND(tr.amount)}${bankInfo}\n`;
+        });
+      }
+
+      const todayIndex = (new Date().getDay() + 6) % 7;
+      const todayDuty = appData.cleaningSchedule.find(s => s.dayIndex === todayIndex);
+      if (todayDuty) {
+        const dutyPerson = appData.members.find(m => m.id === todayDuty.memberId)?.name || 'Chưa xếp';
+        const emoji = todayDuty.emoji || '🧹';
+        const reasonText = todayDuty.reason ? ` [Lý do đổi ca: ${todayDuty.reason}]` : '';
+        text += `\n${emoji} TRỰC NHẬT HÔM NAY: ${dutyPerson} (${todayDuty.task})${reasonText}\n`;
+      }
+
+      text += `\n(Chi tiêu minh bạch - KTX văn minh đoàn kết!)`;
+
+      document.getElementById('reportTextContent').value = text;
+      document.getElementById('btnCopyReportLabel').innerText = "Sao Chép Báo Cáo";
+      openModal('modalReport');
+    }
+
+    function copyReportTextToClipboard() {
+      const text = document.getElementById('reportTextContent').value;
+      copyToClipboard(text, "Đã sao chép báo cáo Zalo! Mở Zalo dán ngay.");
+      document.getElementById('btnCopyReportLabel').innerText = "Đã Chép Xong!";
+    }
+
+    function copyToClipboard(text, successMsg) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg);
+      } catch (err) {
+        showToast("Không thể sao chép, vui lòng bôi đen thủ công!", "error");
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function exportDataJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `KTX_${appData.roomName.replace(/\s+/g, '_')}_data.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Đã tải về file sao lưu dự phòng!");
+    }
+
+    // --- GEMINI API INTEGRATIONS ---
+    const GEMINI_API_KEY = ""; // Canvas provides runtime key
+    const GEMINI_MODEL = "gemini-3-flash-preview";
+
+    async function callGeminiGenerate(prompt, systemInstruction = "", inlineData = null) {
+      const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+      
+      const parts = [{ text: prompt }];
+      if (inlineData) {
+        parts.push({
+          inlineData: {
+            mimeType: inlineData.mimeType,
+            data: inlineData.data
+          }
+        });
+      }
+
+      const payload = {
+        contents: [{ role: "user", parts: parts }]
+      };
+
+      if (systemInstruction) {
+        payload.systemInstruction = {
+          parts: [{ text: systemInstruction }]
+        };
+      }
+
+      // Exponential backoff
+      let retries = 0;
+      const maxRetries = 3;
+      let delay = 1000;
+
+      while (retries < maxRetries) {
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+          return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        } catch (err) {
+          retries++;
+          if (retries >= maxRetries) throw err;
+          await new Promise(r => setTimeout(r, delay));
+          delay *= 2;
+        }
+      }
+      return "";
+    }
+
+    // 1. Natural Language Expense Parser
+    async function parseNaturalExpenseWithAI() {
+      const promptInput = document.getElementById('aiExpensePrompt');
+      const text = promptInput.value.trim();
+      if (!text) {
+        showToast("Vui lòng nhập nội dung chi tiêu (VD: Huy mua 2 bình nước 44k)", "error");
+        return;
+      }
+
+      const statusBox = document.getElementById('aiExpenseStatus');
+      const statusText = document.getElementById('aiExpenseStatusText');
+      const btn = document.getElementById('btnAITextSubmit');
+
+      statusBox.classList.remove('hidden');
+      statusText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-amber-400"></i> Gemini đang phân tích chi phí...';
+      btn.disabled = true;
+
+      const memberListStr = appData.members.map(m => `${m.name} (id: ${m.id})`).join(', ');
+
+      const systemInstruction = `Bạn là trợ lý AI kế toán phòng ký túc xá sinh viên tại Việt Nam.
+Nhiệm vụ của bạn là đọc một câu miêu tả chi tiêu tự nhiên bằng tiếng Việt và trích xuất thành định dạng JSON chuẩn.
+Danh sách thành viên phòng: [${memberListStr}].
+
+Định dạng JSON yêu cầu (CHỈ TRẢ VỀ DUY NHẤT JSON HỢP LỆ, KHÔNG KÈM MARKDOWN HAY CHỮ NÀO KHÁC):
+{
+  "name": "Tên món đồ tóm tắt ngắn gọn",
+  "amount": 50000,
+  "payerId": "id_thành_viên_ứng_tiền_nếu_nhắc_đến_nếu_không_để_trống",
+  "category": "Sinh hoạt | Điện nước | Ăn uống | Vệ sinh | Sửa chữa | Khác",
+  "beneficiaryIds": ["id1", "id2"] // danh sách id người chia, nếu cả phòng thì liệt kê tất cả id
+}`;
+
+      try {
+        const rawResponse = await callGeminiGenerate(text, systemInstruction);
+        // Clean JSON string
+        const cleaned = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+
+        // Autofill form
+        if (parsed.name) document.getElementById('expenseName').value = parsed.name;
+        if (parsed.amount) {
+          document.getElementById('expenseAmount').value = parsed.amount;
+          updateAmountPreview(parsed.amount);
+        }
+        if (parsed.category) {
+          document.getElementById('expenseCategory').value = parsed.category;
+        }
+        if (parsed.payerId && appData.members.some(m => m.id === parsed.payerId)) {
+          document.getElementById('expensePayer').value = parsed.payerId;
+        }
+
+        // Beneficiaries
+        if (Array.isArray(parsed.beneficiaryIds) && parsed.beneficiaryIds.length > 0) {
+          const checkboxes = document.querySelectorAll('input[name="beneficiary"]');
+          checkboxes.forEach(cb => {
+            cb.checked = parsed.beneficiaryIds.includes(cb.value);
+          });
+        }
+
+        statusText.innerHTML = `✨ Đã nhận diện: <strong>${parsed.name} (${formatVND(parsed.amount)})</strong>! Vui lòng kiểm tra và bấm "Lưu Khoản Chi".`;
+        showToast("Gemini đã điền thông tin chi tiêu!");
+      } catch (e) {
+        console.error("AI Parse Error:", e);
+        statusText.innerHTML = `<span class="text-rose-300">Không nhận diện được, bạn hãy kiểm tra lại câu hoặc nhập tay nhé!</span>`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // 2. Receipt / Bill Image Scanner via Multimodal Gemini
+    async function handleBillImageUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const statusBox = document.getElementById('aiExpenseStatus');
+      const statusText = document.getElementById('aiExpenseStatusText');
+      const uploadLabel = document.getElementById('aiBillUploadLabel');
+
+      statusBox.classList.remove('hidden');
+      statusText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-amber-400"></i> Đang đọc hóa đơn/bill bằng mắt thần Gemini...';
+      uploadLabel.innerText = "Đang quét...";
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        const mimeType = file.type || 'image/jpeg';
+
+        const memberListStr = appData.members.map(m => `${m.name} (id: ${m.id})`).join(', ');
+        const systemInstruction = `Bạn là chuyên gia OCR phân tích hóa đơn và hóa đơn điện/nước siêu thị cho sinh viên Việt Nam.
+Hãy đọc bức ảnh hóa đơn, tìm ra:
+1. Tên mô tả hóa đơn chính (VD: Hóa đơn VinMart, Tiền điện tháng 9, Hóa đơn Co.opmart...)
+2. Tổng số tiền thanh toán (bằng số VNĐ)
+3. Danh mục phù hợp nhất ("Sinh hoạt", "Điện nước", "Ăn uống", "Vệ sinh", "Sửa chữa", "Khác")
+
+CHỈ TRẢ VỀ DUY NHẤT JSON CÓ CẤU TRÚC:
+{
+  "name": "Chuỗi tên",
+  "amount": 120000,
+  "category": "Ăn uống"
+}`;
+
+        try {
+          const rawResponse = await callGeminiGenerate(
+            "Hãy đọc hóa đơn này và trích xuất tổng tiền cùng tên đồ dùng:",
+            systemInstruction,
+            { mimeType, data: base64Data }
+          );
+
+          const cleaned = rawResponse.replace(/```json/gi, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleaned);
+
+          if (parsed.name) document.getElementById('expenseName').value = parsed.name;
+          if (parsed.amount) {
+            document.getElementById('expenseAmount').value = parsed.amount;
+            updateAmountPreview(parsed.amount);
+          }
+          if (parsed.category) document.getElementById('expenseCategory').value = parsed.category;
+
+          statusText.innerHTML = `📸 Đã quét bill thành công: <strong>${parsed.name} - ${formatVND(parsed.amount)}</strong>`;
+          showToast("Đã trích xuất hóa đơn thành công!");
+        } catch (err) {
+          console.error("OCR Error:", err);
+          statusText.innerHTML = `<span class="text-rose-300">Không thể đọc rõ hóa đơn này. Vui lòng chụp gần và nét hơn!</span>`;
+          showToast("Không nhận diện được bill, vui lòng thử lại!", "error");
+        } finally {
+          uploadLabel.innerText = "Quét Hóa Đơn";
+          event.target.value = "";
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 3. AI Assistant Modal: Reminders & Mediator
+    function openAIAssistantModal() {
+      openModal('modalAIAssistant');
+    }
+
+    function switchAITab(tab) {
+      const btnRem = document.getElementById('btnAITabReminder');
+      const btnMed = document.getElementById('btnAITabMediator');
+      const viewRem = document.getElementById('aiSubViewReminder');
+      const viewMed = document.getElementById('aiSubViewMediator');
+
+      if (tab === 'reminder') {
+        btnRem.className = "px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5";
+        btnMed.className = "px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5";
+        viewRem.classList.remove('hidden');
+        viewMed.classList.add('hidden');
+      } else {
+        btnMed.className = "px-3 py-1.5 rounded-xl font-bold text-xs bg-indigo-600 text-white transition flex items-center gap-1.5";
+        btnRem.className = "px-3 py-1.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition flex items-center gap-1.5";
+        viewMed.classList.remove('hidden');
+        viewRem.classList.add('hidden');
+      }
+    }
+
+    async function generateAIReminder() {
+      const topic = document.getElementById('aiReminderTopic').value;
+      const tone = document.getElementById('aiReminderTone').value;
+      const target = document.getElementById('aiReminderTarget').value.trim() || "Cả phòng";
+      const resultArea = document.getElementById('aiGeneratedReminderText');
+      const btnText = document.getElementById('btnGenerateAIReminderText');
+
+      btnText.innerText = "Gemini đang sáng tác...";
+      resultArea.value = "Đang tạo tin nhắn hài hước và tinh tế...";
+
+      const prompt = `Hãy viết một tin nhắn Zalo gửi vào nhóm phòng ký túc xá (${appData.roomName}).
+- Người cần nhắn tới: ${target}
+- Chủ đề: ${topic} (ví dụ đòi nợ tiền phòng, nhắc dọn vệ sinh, nhắc rửa bát...)
+- Phong cách: ${tone} (hài hước, thơ vui vẻ, gen z lầy lội, hoặc lịch sự)
+- Yêu cầu: Viết tự nhiên, hợp văn hóa sinh viên Việt Nam, giữ không khí phòng vui vẻ không gây cãi cọ, có kèm emoji sinh động. Chỉ trả về đúng nội dung tin nhắn để copy.`;
+
+      try {
+        const output = await callGeminiGenerate(prompt, "Bạn là chuyên gia giao tiếp và viết content vui vẻ cho đời sống sinh viên KTX.");
+        resultArea.value = output.trim();
+        showToast("Đã tạo tin nhắn thành công!");
+      } catch (e) {
+        resultArea.value = "Lỗi kết nối AI, vui lòng bấm thử lại!";
+      } finally {
+        btnText.innerText = "Tạo Tin Nhắn Tức Thì Với Gemini AI";
+      }
+    }
+
+    function copyGeneratedAIText() {
+      const txt = document.getElementById('aiGeneratedReminderText').value;
+      if (!txt) return;
+      copyToClipboard(txt, "Đã sao chép tin nhắn Zalo!");
+    }
+
+    async function solveDisputeWithAI() {
+      const issue = document.getElementById('aiDisputeInput').value.trim();
+      if (!issue) {
+        showToast("Vui lòng nhập vấn đề cần phân xử!", "error");
+        return;
+      }
+
+      const btnText = document.getElementById('btnSolveDisputeText');
+      const resultCard = document.getElementById('aiDisputeResultCard');
+      const resultText = document.getElementById('aiDisputeResultText');
+
+      btnText.innerText = "Gemini đang nghiên cứu và phán xử...";
+      resultCard.classList.remove('hidden');
+      resultText.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-indigo-500"></i> Đang cân nhắc giải pháp êm ấm nhất cho phòng...';
+
+      const prompt = `Phòng ký túc xá đang gặp tình huống sau:
+"${issue}"
+
+Hãy đóng vai trò là một Trọng Tài / Cố Vấn KTX có kinh nghiệm 10 năm giải quyết xung đột phòng trọ sinh viên:
+1. Đưa ra phán quyết công bằng, hợp lý, thấu tình đạt lý (ai đúng, ai sai hoặc trách nhiệm thuộc về ai).
+2. Đề xuất quy ước cụ thể để từ nay về sau phòng không bao giờ tranh cãi về việc này nữa.
+3. Giọng văn chân thành, dí dỏm, mang tính xây dựng đoàn kết.`;
+
+      try {
+        const output = await callGeminiGenerate(prompt, "Bạn là cố vấn ký túc xá sinh viên hòa nhã, công tâm và thấu hiểu.");
+        resultText.innerText = output.trim();
+        showToast("Đã có phán quyết từ Gemini!");
+      } catch (e) {
+        resultText.innerText = "Lỗi khi kết nối với AI, bạn vui lòng thử lại sau nhé!";
+      } finally {
+        btnText.innerText = "Nhờ Gemini Phân Xử Công Tâm";
+      }
+    }
+
+    function updateUI() {
+      if (!appData) return;
+
+      // Update room header and browser page title
+      const titleEl = document.getElementById('appRoomTitle');
+      if (titleEl) titleEl.innerText = appData.roomName || "Phòng KTX";
+      document.title = `${appData.roomName || 'Phòng KTX'} - Quản Lý Chi Tiêu & Trực Nhật KTX`;
+
+      // Update top stats
+      const calc = computeBalances();
+      const grandTotalStr = formatVND(calc.grandTotal);
+      document.getElementById('statTotalExpenses').innerText = grandTotalStr;
+      const compactTotal = document.getElementById('statCompactTotalExpenses');
+      if (compactTotal) compactTotal.innerText = grandTotalStr;
+
+      document.getElementById('statExpenseSub').innerText = `${appData.expenses.length} hóa đơn chi tiêu`;
+
+      const avg = appData.members.length > 0 ? (calc.grandTotal / appData.members.length) : 0;
+      const avgStr = formatVND(avg);
+      document.getElementById('statAvgPerPerson').innerText = avgStr;
+      const compactAvg = document.getElementById('statCompactAvgPerPerson');
+      if (compactAvg) compactAvg.innerText = avgStr;
+
+      // Render components
+      renderExpenseTable();
+      renderCleaningSchedule();
+      renderMembers();
+      renderNotices();
+      updateDynamicTabStatuses(calc);
+    }
+
+    // Update dynamic tab statuses inside the top Notice Board
+    function updateDynamicTabStatuses(calc) {
+      if (!appData) return;
+      if (!calc) calc = computeBalances();
+
+      // 1. Trạng thái Tab Chi Tiêu
+      const expenseCount = appData.expenses.length;
+      const totalExpenseStr = formatVND(calc.grandTotal);
+      const tabExpEl = document.getElementById('tabStatusExpense');
+      if (tabExpEl) {
+        tabExpEl.innerText = `${totalExpenseStr} (${expenseCount} mục)`;
+      }
+
+      // 2. Trạng thái Tab Quyết Toán
+      const transferCount = calc.transfers.length;
+      const tabSetEl = document.getElementById('tabStatusSettlement');
+      const tabSetDot = document.getElementById('tabStatusSettlementDot');
+      if (tabSetEl && tabSetDot) {
+        if (transferCount === 0) {
+          tabSetEl.innerText = "Sòng phẳng 100% ✨";
+          tabSetEl.className = "font-extrabold text-emerald-700 truncate";
+          tabSetDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0";
+        } else {
+          tabSetEl.innerText = `${transferCount} lệnh chuyển bù`;
+          tabSetEl.className = "font-extrabold text-rose-600 truncate";
+          tabSetDot.className = "w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0 animate-ping";
+        }
+      }
+
+      // 3. Trạng thái Tab Trực Nhật Hôm Nay
+      const todayIndex = (new Date().getDay() + 6) % 7;
+      const todayDuty = appData.cleaningSchedule ? appData.cleaningSchedule.find(s => s.dayIndex === todayIndex) : null;
+      const tabCleanEl = document.getElementById('tabStatusCleaning');
+      const tabCleanDot = document.getElementById('tabStatusCleaningDot');
+      if (tabCleanEl && tabCleanDot) {
+        if (todayDuty) {
+          const m = appData.members.find(mb => mb.id === todayDuty.memberId);
+          const name = m ? m.name.split(' ')[0] : 'Chưa xếp';
+          const emoji = todayDuty.emoji || '🧹';
+
+          if (todayDuty.done) {
+            tabCleanEl.innerText = `${emoji} ${name} (Đã dọn ✨)`;
+            tabCleanEl.className = "font-extrabold text-emerald-700 truncate";
+            tabCleanDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0";
+          } else if (todayDuty.reason) {
+            tabCleanEl.innerText = `${emoji} ${name} (${todayDuty.reason})`;
+            tabCleanEl.className = "font-extrabold text-amber-700 truncate";
+            tabCleanDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0";
+          } else {
+            tabCleanEl.innerText = `${emoji} ${name} (Chưa dọn)`;
+            tabCleanEl.className = "font-extrabold text-slate-800 truncate";
+            tabCleanDot.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0 animate-pulse";
+          }
+        }
+      }
+    }
+
+    // Initialize application on window load
+    window.onload = function() {
+      initData();
+      renderExpenseInputs();
+      updateUI();
+      switchTab('expenses'); // Khởi tạo với tab Chi Tiêu và bản thống kê thu nhỏ
+    };
+  </script>
+</body>
+</html>
