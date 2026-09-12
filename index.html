@@ -41,7 +41,7 @@
     }
     .modal-backdrop {
       background-color: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(6px);
     }
     .no-scrollbar::-webkit-scrollbar {
       display: none;
@@ -64,46 +64,57 @@
       box-shadow: 0 0 15px #38bdf8, 0 0 30px #818cf8;
       animation: scanLaser 2s infinite ease-in-out;
     }
-    .ktx-hide { display: none; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-700">
 
-  <!-- HEADER / NAVBAR -->
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2.5 shadow-xs">
+  <!-- HEADER / NAVBAR GỌN GÀNG -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2.5 shadow-xs">
     <div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
       
-      <!-- Cột Trái: Menu & Tên Phòng KTX -->
+      <!-- Cột Trái: Menu & Bộ Chọn Phòng Nhanh -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-        <button onclick="toggleSidebar(true)" class="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition shrink-0" title="Mở danh mục menu">
+        <button onclick="toggleSidebar(true)" class="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition shrink-0" title="Mở menu">
           <i class="fa-solid fa-bars text-lg"></i>
         </button>
 
-        <button onclick="openRoomSettingsModal()" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 transition min-w-0 group" title="Bấm để đổi tên phòng">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0">
-            <i class="fa-solid fa-people-roof"></i>
+        <!-- Nút chọn / đổi phòng KTX -->
+        <button onclick="openRoomHubModal()" class="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/80 border border-indigo-100 transition min-w-0 group" title="Bấm để đổi phòng hoặc tạo phòng KTX khác">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-hotel"></i>
           </div>
           <div class="text-left min-w-0">
             <div class="flex items-center gap-1.5">
-              <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[150px] xs:max-w-[210px] sm:max-w-[280px]">Phòng 402 - KTX</span>
-              <i class="fa-solid fa-pen text-[10px] text-slate-400 group-hover:text-indigo-600 transition"></i>
+              <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[140px] xs:max-w-[200px] sm:max-w-[260px]">Phòng 402 - KTX</span>
+              <span class="text-[10px] bg-indigo-600/10 text-indigo-700 font-bold px-1.5 py-0.5 rounded-md flex items-center gap-1 shrink-0">
+                <span id="headerRoomCodeTag">KTX402</span>
+                <i class="fa-solid fa-chevron-down text-[8px]"></i>
+              </span>
             </div>
-            <!-- Trạng thái tự động kết nối ngầm -->
+            <!-- Trạng thái kết nối ngầm -->
             <div class="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
               <span id="autoSyncDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="autoSyncStatusText">Trực tuyến</span>
+              <span id="autoSyncStatusText">Trực tuyến (Mây)</span>
             </div>
           </div>
         </button>
       </div>
 
-      <!-- Cột Phải: Quét Bill AI & Báo Cáo Zalo -->
+      <!-- Cột Phải: Thao Tác Nhanh (Quét Bill & Mời Phòng) -->
       <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Nút Trung tâm chọn phòng -->
+        <button onclick="openRoomHubModal()" class="hidden md:flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition shrink-0" title="Quản lý và chọn phòng khác">
+          <i class="fa-solid fa-arrow-right-arrow-left text-indigo-600"></i>
+          <span>Đổi phòng</span>
+        </button>
+
+        <!-- Nút Quét Bill AI -->
         <button onclick="openScanBillModal()" class="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-xs hover:opacity-95 transition shrink-0" title="Quét hóa đơn tự động bằng AI">
           <i class="fa-solid fa-camera text-xs"></i>
           <span class="hidden xs:inline">Quét Bill</span>
         </button>
 
+        <!-- Nút Báo cáo Zalo -->
         <button onclick="openShareReportModal()" class="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition shrink-0" title="Xuất báo cáo gửi nhóm Zalo/Messenger">
           <i class="fa-solid fa-share-nodes text-xs"></i>
           <span class="hidden xs:inline">Zalo</span>
@@ -113,7 +124,7 @@
     </div>
   </header>
 
-  <!-- SIDEBAR MENU DRAWER -->
+  <!-- SIDEBAR MENU DRAWER (TRƯỢT TỪ TRÁI SANG) -->
   <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs transition-opacity opacity-0 pointer-events-none duration-300"></div>
   <aside id="sidebarDrawer" class="fixed top-0 left-0 bottom-0 z-50 w-72 sm:w-80 bg-white shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-slate-200">
     <div class="p-4 border-b border-slate-100 flex items-center justify-between">
@@ -131,20 +142,22 @@
       </button>
     </div>
 
-    <!-- Thông tin phòng -->
+    <!-- Thông tin phòng trong Sidebar -->
     <div class="p-3.5 bg-gradient-to-br from-indigo-50/80 via-white to-teal-50/80 border-b border-indigo-100">
       <div class="flex items-center justify-between gap-2">
         <div class="min-w-0">
-          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Phòng KTX</div>
+          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Phòng KTX Đang Chọn</div>
           <div id="drawerRoomNameLabel" class="font-extrabold text-slate-900 text-sm truncate">Phòng 402 - KTX</div>
+          <div class="text-[11px] font-mono text-indigo-600 font-bold" id="drawerRoomCodeLabel">Mã: KTX402</div>
         </div>
-        <button onclick="toggleSidebar(false); openRoomSettingsModal();" class="text-[11px] font-bold px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0">
-          Đổi tên
+        <button onclick="toggleSidebar(false); openRoomHubModal();" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0 flex items-center gap-1 shadow-2xs">
+          <i class="fa-solid fa-repeat text-[10px]"></i>
+          <span>Đổi phòng</span>
         </button>
       </div>
       <div class="mt-2 text-[10px] text-emerald-700 font-semibold flex items-center gap-1.5">
         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Dữ liệu tự động khớp nối giữa các máy</span>
+        <span>Đang đồng bộ dữ liệu thời gian thực</span>
       </div>
     </div>
 
@@ -192,16 +205,21 @@
         <span id="sidebarMemberCountBadge" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-extrabold">6</span>
       </button>
 
-      <!-- Cài đặt cơ bản -->
+      <!-- Quản lý & chọn phòng -->
       <div class="pt-3 border-t border-slate-100 mt-2">
-        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Cài Đặt & Dữ Liệu</div>
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Cài Đặt Phòng KTX</div>
 
-        <button onclick="toggleSidebar(false); openRoomSettingsModal();" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
-          <i class="fa-solid fa-pen-to-square w-4 text-center text-indigo-500"></i>
-          <span>Đổi Tên Phòng KTX</span>
+        <button onclick="toggleSidebar(false); openRoomHubModal('join');" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+          <i class="fa-solid fa-door-open w-4 text-center text-indigo-500"></i>
+          <span>Vào phòng khác / Nhập mã</span>
         </button>
 
-        <button onclick="toggleSidebar(false); exportDataJson();" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition mt-1">
+        <button onclick="toggleSidebar(false); openRoomHubModal('create');" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
+          <i class="fa-solid fa-plus-circle w-4 text-center text-emerald-500"></i>
+          <span>Tạo phòng KTX mới</span>
+        </button>
+
+        <button onclick="toggleSidebar(false); exportDataJson();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
           <i class="fa-solid fa-file-export w-4 text-center text-slate-400"></i>
           <span>Sao lưu dữ liệu (JSON)</span>
         </button>
@@ -552,67 +570,207 @@
       </div>
     </div>
 
-    <!-- ==================== KHỐI ĐỒNG BỘ HOẠT ĐỘNG FIREBASE ==================== -->
+    <!-- ==================== KHỐI HOẠT ĐỘNG PHÒNG TRỰC TUYẾN ==================== -->
     <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-xs space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-bold text-sm">
-            <i class="fa-solid fa-bolt"></i>
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base shadow-xs">
+            <i class="fa-solid fa-comments"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Kênh Hoạt Động Trực Tuyến (Firebase)</h3>
-            <p class="text-[11px] text-slate-400">Gửi trao đổi và nhật ký hoạt động thời gian thực</p>
+            <div class="flex items-center gap-2">
+              <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Nhật Ký & Thảo Luận Phòng</h3>
+              <span id="activeRoomBadge" class="px-2 py-0.5 rounded-lg text-[10px] font-black bg-indigo-100 text-indigo-700">Phòng 402 - KTX</span>
+            </div>
+            <p class="text-[11px] text-slate-400">Gửi trao đổi nhanh và xem hoạt động tức thì cùng bạn cùng phòng</p>
           </div>
         </div>
+
+        <button onclick="openRoomHubModal('join')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-door-open text-xs"></i>
+          <span>Đổi / Chuyển phòng khác</span>
+        </button>
       </div>
 
-      <div id="lobbyScreen" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-        <h4 class="font-bold text-xs text-slate-700 uppercase">Tham gia kênh phòng</h4>
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">Tên của bạn:</label>
-          <input type="text" id="userNameInput" placeholder="Nhập tên..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold" />
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
-          <div>
-            <input type="text" id="newRoomName" placeholder="Tên phòng mới (VD: phong-402)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold mb-1" />
-            <button id="createRoomBtn" class="w-full py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition">Mở phòng mới</button>
-          </div>
-          <div>
-            <input type="text" id="joinRoomId" placeholder="Nhập mã phòng có sẵn..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold mb-1" />
-            <button id="joinRoomBtn" class="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition">Tham gia phòng</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="roomScreen" class="ktx-hide space-y-3">
-        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200">
-          <div class="flex items-center gap-2">
-            <strong id="displayRoomName" class="text-xs sm:text-sm font-black text-slate-900"></strong>
-            <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-100 text-indigo-700" id="displayRoomId"></span>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button id="copyLinkBtn" class="px-2.5 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-[11px] transition">Sao chép link</button>
-            <button id="leaveRoomBtn" class="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-[11px] transition">Rời phòng</button>
-          </div>
-        </div>
-
+      <!-- Ô nhập gửi hoạt động nhanh -->
+      <div class="p-3 bg-slate-50/80 rounded-2xl border border-slate-200/80 space-y-2.5">
         <div class="flex flex-col sm:flex-row gap-2">
-          <select id="actType" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold">
-            <option value="expense">Khoản chi tiêu</option>
-            <option value="clean">Trực nhật vệ sinh</option>
-            <option value="notice">Thông báo</option>
+          <select id="quickActType" class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+            <option value="notice">📢 Thông báo</option>
+            <option value="clean">🧹 Trực nhật xong</option>
+            <option value="expense">💰 Mua đồ chung</option>
           </select>
-          <input type="text" id="actContent" placeholder="Nhập nội dung cập nhật nhanh..." class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold" />
-          <button id="submitActBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shrink-0">Gửi lên bảng</button>
+          <input type="text" id="quickActContent" placeholder="Nhắn gì đó cho cả phòng (VD: 'Tớ vừa mua túi rác mới để dưới bồn rửa nhé')..." class="flex-grow px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30" />
+          <button onclick="sendQuickRoomActivity()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-2xs shrink-0">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+            <span>Gửi Tin</span>
+          </button>
         </div>
+      </div>
 
-        <div id="activitiesList" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+      <!-- Danh sách hoạt động phòng theo thời gian thực -->
+      <div id="roomActivitiesList" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+        <div class="text-center py-6 text-slate-400 text-xs italic">Đang tải nhật ký hoạt động...</div>
       </div>
     </div>
 
   </main>
 
-  <!-- ==================== CÁC MODAL TIỆN ÍCH ==================== -->
+  <!-- ==================== MODAL MỚI: TRUNG TÂM CHỌN & QUẢN LÝ PHÒNG KTX ==================== -->
+  <div id="modalRoomHub" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col max-h-[92vh]">
+      
+      <!-- Tiêu đề Modal -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-base shadow-sm">
+            <i class="fa-solid fa-hotel"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Trung Tâm Phòng KTX</h3>
+            <p class="text-[11px] text-slate-400">Chuyển phòng, tạo phòng mới hoặc kết nối bạn cùng phòng</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalRoomHub')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Tabs điều hướng trong Modal chọn phòng -->
+      <div class="grid grid-cols-3 gap-1.5 my-3 p-1 bg-slate-100 rounded-2xl text-xs font-bold shrink-0">
+        <button onclick="switchRoomHubTab('current')" id="tabBtnRoomCurrent" class="py-2 rounded-xl bg-white text-indigo-700 shadow-xs transition">Phòng Hiện Tại</button>
+        <button onclick="switchRoomHubTab('join')" id="tabBtnRoomJoin" class="py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">Đổi Phòng</button>
+        <button onclick="switchRoomHubTab('create')" id="tabBtnRoomCreate" class="py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">+ Mở Phòng Mới</button>
+      </div>
+
+      <!-- Nội dung Tab 1: Thông tin phòng hiện tại & Mời bạn bè -->
+      <div id="roomHubTab-current" class="space-y-3.5 overflow-y-auto pr-1 flex-grow">
+        <!-- Thẻ VIP Room KTX -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-slate-900 text-white shadow-lg space-y-3 relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 text-white/5 text-8xl font-black select-none pointer-events-none">KTX</div>
+          
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-white/20 text-emerald-300 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Đang hoạt động
+            </span>
+            <span class="text-[11px] text-slate-300 font-mono" id="roomHubCreatedDate">2026</span>
+          </div>
+
+          <div>
+            <div class="text-[11px] text-indigo-200">Tên phòng KTX</div>
+            <h2 id="roomHubDisplayTitle" class="text-xl font-black text-white tracking-wide">Phòng 402 - KTX</h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 text-xs">
+            <div class="bg-white/10 p-2 rounded-xl">
+              <div class="text-[10px] text-indigo-200">Mã phòng kết nối</div>
+              <div id="roomHubDisplayCode" class="font-mono font-black text-amber-300 text-sm tracking-wider">KTX402</div>
+            </div>
+            <div class="bg-white/10 p-2 rounded-xl">
+              <div class="text-[10px] text-indigo-200">Số thành viên</div>
+              <div id="roomHubMemberCount" class="font-black text-teal-300 text-sm">6 bạn</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thao tác chia sẻ & Mời bạn vào phòng -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Liên kết tham gia nhanh cho bạn cùng phòng</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="roomShareLinkInput" readonly class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-600 select-all" />
+            <button onclick="copyRoomShareLink()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shrink-0 flex items-center gap-1.5 shadow-2xs">
+              <i class="fa-solid fa-copy"></i>
+              <span>Sao chép</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400">Gửi link này vào nhóm chat Zalo của phòng, các bạn mở ra sẽ tự động vào đúng phòng này.</p>
+        </div>
+
+        <!-- Đổi nhanh tên phòng hiện tại -->
+        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Đổi tên hiển thị phòng này:</label>
+          <div class="flex gap-2">
+            <input type="text" id="inputEditCurrentRoomName" placeholder="VD: Phòng 402 - KTX B5..." class="flex-grow px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold" />
+            <button onclick="saveEditedCurrentRoomName()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition shrink-0">Lưu tên</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nội dung Tab 2: Chuyển sang phòng khác / Nhập mã phòng -->
+      <div id="roomHubTab-join" class="hidden space-y-3.5 overflow-y-auto pr-1 flex-grow">
+        <div class="p-3.5 bg-sky-50 border border-sky-200 rounded-2xl text-xs text-sky-900">
+          <i class="fa-solid fa-circle-info text-sky-600 mr-1.5"></i>
+          Nhập mã phòng do bạn cùng phòng chia sẻ để truy cập toàn bộ dữ liệu chi tiêu và trực nhật của phòng đó.
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mã phòng KTX <span class="text-rose-500">*</span></label>
+          <div class="flex gap-2">
+            <input type="text" id="inputJoinRoomCode" placeholder="VD: ktx-402 hoặc phong-304..." class="flex-grow px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 uppercase placeholder:normal-case focus:ring-2 focus:ring-indigo-500/30" />
+            <button onclick="handleJoinRoomByCode()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shrink-0 flex items-center gap-1.5 shadow-2xs">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i>
+              <span>Vào Phòng</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Lịch sử các phòng đã tham gia gần đây -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">Các phòng gần đây của bạn:</span>
+            <span class="text-[10px] text-slate-400 font-semibold">Bấm để chuyển nhanh</span>
+          </div>
+          <div id="recentRoomsListContainer" class="space-y-1.5">
+            <!-- Dynamic Recent Rooms -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Nội dung Tab 3: Tạo phòng KTX mới -->
+      <div id="roomHubTab-create" class="hidden space-y-3.5 overflow-y-auto pr-1 flex-grow">
+        <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-900">
+          <i class="fa-solid fa-sparkles text-emerald-600 mr-1.5"></i>
+          Tạo không gian phòng KTX riêng biệt với mã phòng mới, không bị trùng lẫn dữ liệu với phòng khác.
+        </div>
+
+        <form onsubmit="handleCreateNewRoomSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tên phòng KTX <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputNewRoomTitleField" required placeholder="VD: Phòng 304 - KTX Khu B" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500/30" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mã phòng rút gọn (ID)</label>
+              <input type="text" id="inputNewRoomCustomId" placeholder="VD: ktx-304" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono uppercase focus:ring-2 focus:ring-indigo-500/30" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tòa nhà / Dãy nhà</label>
+              <input type="text" id="inputNewRoomBuilding" placeholder="VD: Nhà B4..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tên của bạn trong phòng này <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputCreatorName" required placeholder="VD: Nhật Huy..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900" />
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span>Khởi Tạo Phòng KTX Ngay</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Chân Modal -->
+      <div class="pt-3 border-t border-slate-100 flex items-center justify-between shrink-0">
+        <span class="text-[10px] text-slate-400">⚡ Dữ liệu bảo mật & đồng bộ tự động</span>
+        <button onclick="closeModal('modalRoomHub')" class="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 text-xs font-bold transition">Đóng</button>
+      </div>
+
+    </div>
+  </div>
 
   <!-- MODAL: THÊM VIỆC VỆ SINH -->
   <div id="modalAddChecklist" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
@@ -949,25 +1107,6 @@
     </div>
   </div>
 
-  <!-- MODAL: ĐỔI TÊN PHÒNG KTX -->
-  <div id="modalRoomSettings" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-        <h3 class="font-extrabold text-slate-900 text-sm">Đổi Tên Phòng KTX</h3>
-        <button onclick="closeModal('modalRoomSettings')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-xs">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="my-3 space-y-2 text-xs">
-        <label class="block font-bold text-slate-700">Tên phòng mới hiển thị</label>
-        <input type="text" id="inputNewRoomTitle" placeholder="VD: Phòng 402 - KTX B5..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold">
-      </div>
-      <button onclick="saveNewRoomTitle()" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition">
-        Cập Nhật Tên Phòng
-      </button>
-    </div>
-  </div>
-
   <!-- MODAL: VÒNG QUAY RANDOM -->
   <div id="modalSpinWheel" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col text-center">
@@ -1061,7 +1200,7 @@
     <div class="text-xs font-semibold pr-2" id="toastMessage">Thông báo</div>
   </div>
 
-  <!-- ==================== SCRIPT 1: LOGIC TOÀN TRANG ==================== -->
+  <!-- ==================== SCRIPT 1: LOGIC TOÀN TRANG & CHỌN PHÒNG ==================== -->
   <script>
     const defaultState = {
       roomName: "Phòng 402 - KTX",
@@ -1149,6 +1288,7 @@
     };
 
     let appData = JSON.parse(JSON.stringify(defaultState));
+    let currentActiveRoomId = "phong-402";
     let currentNoticeFilter = 'all';
     let isTopNoticeCollapsed = false;
     let currentActiveTab = 'expenses';
@@ -1158,12 +1298,277 @@
     let lastLocalSavedTimestamp = 0;
     let isBroadcasting = false;
 
-    const CLOUD_SYNC_TOPIC = 'ktx_room_402_master_channel_v1';
-    const LOCAL_CACHE_KEY = 'KTX_AUTO_LOCAL_CACHE_v4';
+    const RECENT_ROOMS_KEY = "KTX_RECENT_ROOMS_LIST_v1";
 
-    function initAutoCloudEngine() {
+    function getLocalCacheKey() {
+      return `KTX_CACHE_${currentActiveRoomId}`;
+    }
+
+    function getSyncTopic() {
+      return `ktx_sync_${currentActiveRoomId.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+    }
+
+    // Helper cập nhật URL an toàn, chống lỗi SecurityError trên môi trường blob / sandbox iframe
+    function safeUpdateUrlRoom(roomId) {
       try {
-        const cached = localStorage.getItem(LOCAL_CACHE_KEY);
+        if (!window.history || !window.history.pushState) return;
+        if (window.location.protocol === 'blob:' || window.location.href.startsWith('blob:')) return;
+        const cleanPath = window.location.pathname.startsWith('/') ? window.location.pathname : ('/' + window.location.pathname);
+        const origin = window.location.origin;
+        if (!origin || origin === 'null') return;
+        const newUrl = `${origin}${cleanPath}?room=${encodeURIComponent(roomId)}`;
+        window.history.pushState({ room: roomId }, "", newUrl);
+      } catch (err) {
+        // Bỏ qua lỗi SecurityError trên trình duyệt nhúng iframe/blob
+      }
+    }
+
+    // Helper tạo link chia sẻ phòng hợp lệ
+    function getRoomShareLink(roomId) {
+      try {
+        if (window.location.protocol === 'blob:' || window.location.href.startsWith('blob:')) {
+          return `${window.location.host ? 'https://' + window.location.host : 'https://ktx-splitter.web.app'}/?room=${encodeURIComponent(roomId)}`;
+        }
+        const origin = window.location.origin;
+        const cleanPath = window.location.pathname.startsWith('/') ? window.location.pathname : ('/' + window.location.pathname);
+        if (!origin || origin === 'null') {
+          return `?room=${encodeURIComponent(roomId)}`;
+        }
+        return `${origin}${cleanPath}?room=${encodeURIComponent(roomId)}`;
+      } catch (e) {
+        return `?room=${encodeURIComponent(roomId)}`;
+      }
+    }
+
+    /* QUẢN LÝ VÀ CHỌN PHÒNG (ROOM HUB) */
+    function openRoomHubModal(tab = 'current') {
+      updateRoomHubUI();
+      switchRoomHubTab(tab);
+      renderRecentRoomsList();
+      openModal('modalRoomHub');
+    }
+
+    function switchRoomHubTab(tabName) {
+      ['current', 'join', 'create'].forEach(t => {
+        const content = document.getElementById(`roomHubTab-${t}`);
+        const btn = document.getElementById(`tabBtnRoom${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (content) content.classList.toggle('hidden', t !== tabName);
+        if (btn) {
+          if (t === tabName) {
+            btn.className = "py-2 rounded-xl bg-white text-indigo-700 shadow-xs transition";
+          } else {
+            btn.className = "py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+          }
+        }
+      });
+    }
+
+    function updateRoomHubUI() {
+      const code = appData.roomCode || currentActiveRoomId.toUpperCase();
+      const title = appData.roomName || `Phòng ${code}`;
+      
+      const elTitle = document.getElementById('roomHubDisplayTitle');
+      const elCode = document.getElementById('roomHubDisplayCode');
+      const elCount = document.getElementById('roomHubMemberCount');
+      const elShare = document.getElementById('roomShareLinkInput');
+      const elEdit = document.getElementById('inputEditCurrentRoomName');
+
+      if (elTitle) elTitle.innerText = title;
+      if (elCode) elCode.innerText = code;
+      if (elCount) elCount.innerText = `${(appData.members || []).length} bạn`;
+      if (elEdit) elEdit.value = title;
+
+      const shareUrl = getRoomShareLink(currentActiveRoomId);
+      if (elShare) elShare.value = shareUrl;
+    }
+
+    function copyRoomShareLink() {
+      const elShare = document.getElementById('roomShareLinkInput');
+      if (elShare) {
+        copyToClipboard(elShare.value);
+        showToast("Đã sao chép liên kết phòng vào bộ nhớ tạm!", "success");
+      }
+    }
+
+    function saveEditedCurrentRoomName() {
+      const val = document.getElementById('inputEditCurrentRoomName')?.value.trim();
+      if (!val) return;
+      appData.roomName = val;
+      saveData();
+      updateSessionLabels();
+      updateRoomHubUI();
+      showToast(`Đã đổi tên phòng thành: "${val}"!`, "success");
+    }
+
+    function saveRoomToRecentList(roomId, roomTitle) {
+      try {
+        let list = JSON.parse(localStorage.getItem(RECENT_ROOMS_KEY) || "[]");
+        list = list.filter(r => r.id !== roomId);
+        list.unshift({
+          id: roomId,
+          title: roomTitle || roomId,
+          code: roomId.toUpperCase(),
+          lastUsed: Date.now()
+        });
+        if (list.length > 8) list.pop();
+        localStorage.setItem(RECENT_ROOMS_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function renderRecentRoomsList() {
+      const container = document.getElementById('recentRoomsListContainer');
+      if (!container) return;
+
+      let list = [];
+      try {
+        list = JSON.parse(localStorage.getItem(RECENT_ROOMS_KEY) || "[]");
+      } catch (e) {}
+
+      if (list.length === 0) {
+        list = [
+          { id: "phong-402", title: "Phòng 402 - KTX", code: "KTX402" },
+          { id: "phong-304", title: "Phòng 304 - KTX B3", code: "KTX304" },
+          { id: "phong-501", title: "Phòng 501 - KTX C1", code: "KTX501" }
+        ];
+      }
+
+      container.innerHTML = list.map(r => {
+        const isCurrent = r.id === currentActiveRoomId;
+        return `
+          <div class="p-2.5 rounded-xl border ${isCurrent ? 'border-indigo-300 bg-indigo-50/50' : 'border-slate-200 hover:border-slate-300 bg-white'} flex items-center justify-between gap-2 transition cursor-pointer" onclick="switchActiveRoom('${r.id}', '${r.title}')">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-7 h-7 rounded-lg ${isCurrent ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'} flex items-center justify-center text-xs shrink-0 font-black">
+                <i class="fa-solid fa-hotel"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="font-bold text-xs text-slate-800 truncate">${r.title}</div>
+                <div class="text-[10px] font-mono text-indigo-600">${r.code || r.id}</div>
+              </div>
+            </div>
+            <div>
+              ${isCurrent 
+                ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-indigo-600 text-white">Đang chọn</span>'
+                : '<button class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 text-[11px] font-bold transition">Chọn</button>'
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleJoinRoomByCode() {
+      const codeInput = document.getElementById('inputJoinRoomCode');
+      const raw = codeInput ? codeInput.value.trim() : '';
+      if (!raw) {
+        showToast("Vui lòng nhập mã phòng!", "error");
+        return;
+      }
+      const roomId = raw.toLowerCase().replace(/\s+/g, '-');
+      switchActiveRoom(roomId, `Phòng ${raw.toUpperCase()}`);
+      codeInput.value = '';
+    }
+
+    function handleCreateNewRoomSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('inputNewRoomTitleField').value.trim();
+      const customId = document.getElementById('inputNewRoomCustomId').value.trim();
+      const creatorName = document.getElementById('inputCreatorName').value.trim();
+
+      if (!title) return;
+
+      const roomId = (customId || title).toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-').replace(/-+/g, '-');
+
+      // Khởi tạo trạng thái phòng mới
+      const newRoomState = JSON.parse(JSON.stringify(defaultState));
+      newRoomState.roomName = title;
+      newRoomState.roomCode = roomId.toUpperCase();
+      newRoomState.members = [
+        { id: "m1", name: `${creatorName} (Trưởng Phòng)`, bank: "MB", account: "" },
+        { id: "m2", name: "Bạn Cùng Phòng 2", bank: "", account: "" }
+      ];
+      newRoomState.expenses = [];
+      newRoomState.notices = [
+        {
+          id: "n_init_" + Date.now(),
+          type: "general",
+          authorName: creatorName,
+          title: `Chào mừng bạn đến với ${title}!`,
+          content: `Phòng KTX mới đã được khởi tạo thành công. Hãy chia sẻ mã [${roomId.toUpperCase()}] cho các bạn cùng phòng nhé!`,
+          time: new Date().toLocaleDateString('vi-VN')
+        }
+      ];
+
+      appData = newRoomState;
+      currentActiveRoomId = roomId;
+
+      saveRoomToRecentList(roomId, title);
+      saveData();
+      updateSessionLabels();
+      updateRoomHubUI();
+      closeModal('modalRoomHub');
+
+      // Đồng bộ vào URL an toàn, chống lỗi SecurityError trong blob preview
+      safeUpdateUrlRoom(roomId);
+
+      if (window.firebaseSubscribeRoom) {
+        window.firebaseSubscribeRoom(roomId, title);
+      }
+
+      showToast(`Đã tạo và chuyển sang ${title}!`, "success");
+    }
+
+    function switchActiveRoom(roomId, roomTitle = "") {
+      if (!roomId) return;
+      currentActiveRoomId = roomId;
+
+      // 1. Tải cache của phòng này nếu có
+      try {
+        const cached = localStorage.getItem(getLocalCacheKey());
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed && parsed.data) {
+            appData = parsed.data;
+            lastLocalSavedTimestamp = parsed.timestamp || 0;
+          }
+        } else {
+          appData.roomName = roomTitle || `Phòng ${roomId.toUpperCase()}`;
+          appData.roomCode = roomId.toUpperCase();
+        }
+      } catch (e) {}
+
+      saveRoomToRecentList(roomId, appData.roomName || roomTitle);
+
+      updateUI();
+      renderExpenseInputs();
+      updateRoomHubUI();
+
+      // Cập nhật URL an toàn
+      safeUpdateUrlRoom(roomId);
+
+      // Đồng bộ kênh Firebase
+      if (window.firebaseSubscribeRoom) {
+        window.firebaseSubscribeRoom(roomId, appData.roomName);
+      }
+
+      pullLatestFromCloud();
+      closeModal('modalRoomHub');
+      showToast(`Đã chuyển sang ${appData.roomName}!`, "success");
+    }
+
+    /* HỆ THỐNG ĐỒNG BỘ MÂY TỰ ĐỘNG THỜI GIAN THỰC */
+    function initAutoCloudEngine() {
+      // 1. Kiểm tra tham số URL query ?room=...
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlRoom = urlParams.get('room');
+        if (urlRoom) {
+          currentActiveRoomId = urlRoom.trim().toLowerCase();
+        }
+      } catch (e) {}
+
+      // 2. Khôi phục từ cache cục bộ
+      try {
+        const cached = localStorage.getItem(getLocalCacheKey());
         if (cached) {
           const parsed = JSON.parse(cached);
           if (parsed && parsed.data) {
@@ -1173,8 +1578,13 @@
         }
       } catch (e) {}
 
+      saveRoomToRecentList(currentActiveRoomId, appData.roomName);
+
       updateUI();
       renderExpenseInputs();
+      updateRoomHubUI();
+
+      // 3. Kết nối mây
       pullLatestFromCloud();
       connectLiveEventStream();
 
@@ -1192,7 +1602,7 @@
 
     async function pullLatestFromCloud() {
       try {
-        const res = await fetch(`https://ntfy.sh/${CLOUD_SYNC_TOPIC}/json?poll=1&since=24h`, { cache: 'no-store' });
+        const res = await fetch(`https://ntfy.sh/${getSyncTopic()}/json?poll=1&since=24h`, { cache: 'no-store' });
         if (!res.ok) return;
         const text = await res.text();
         if (!text) return;
@@ -1215,7 +1625,7 @@
 
     function connectLiveEventStream() {
       try {
-        const sse = new EventSource(`https://ntfy.sh/${CLOUD_SYNC_TOPIC}/sse`);
+        const sse = new EventSource(`https://ntfy.sh/${getSyncTopic()}/sse`);
         sse.onmessage = (event) => {
           try {
             const raw = JSON.parse(event.data);
@@ -1236,7 +1646,7 @@
       lastLocalSavedTimestamp = timestamp;
 
       try {
-        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
+        localStorage.setItem(getLocalCacheKey(), JSON.stringify({
           timestamp: lastLocalSavedTimestamp,
           data: appData
         }));
@@ -1244,6 +1654,7 @@
 
       updateUI();
       renderExpenseInputs();
+      updateRoomHubUI();
 
       const dot = document.getElementById('autoSyncDot');
       if (dot) {
@@ -1257,14 +1668,14 @@
       isBroadcasting = true;
 
       try {
-        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify({
+        localStorage.setItem(getLocalCacheKey(), JSON.stringify({
           timestamp: lastLocalSavedTimestamp,
           data: appData
         }));
       } catch (e) {}
 
       try {
-        await fetch(`https://ntfy.sh/${CLOUD_SYNC_TOPIC}`, {
+        await fetch(`https://ntfy.sh/${getSyncTopic()}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1356,12 +1767,21 @@
 
     function updateSessionLabels() {
       const name = appData?.roomName || "Phòng 402 - KTX";
-      const headerTitle = document.getElementById('headerRoomTitle');
-      if (headerTitle) headerTitle.innerText = name;
-      document.title = `${name} - KTX Split & Clean`;
+      const code = appData?.roomCode || currentActiveRoomId.toUpperCase();
 
+      const headerTitle = document.getElementById('headerRoomTitle');
+      const headerCode = document.getElementById('headerRoomCodeTag');
       const drawerName = document.getElementById('drawerRoomNameLabel');
+      const drawerCode = document.getElementById('drawerRoomCodeLabel');
+      const activeBadge = document.getElementById('activeRoomBadge');
+
+      if (headerTitle) headerTitle.innerText = name;
+      if (headerCode) headerCode.innerText = code;
       if (drawerName) drawerName.innerText = name;
+      if (drawerCode) drawerCode.innerText = `Mã: ${code}`;
+      if (activeBadge) activeBadge.innerText = name;
+
+      document.title = `${name} - KTX Split & Clean`;
     }
 
     function computeBalances() {
@@ -1436,7 +1856,7 @@
 
     function toggleTransferPaidStatus(transferKey, fromName, toName, amount) {
       if (!appData.settledTransfers) appData.settledTransfers = {};
-      const isPaid = !!appData.settledTransfers[transferKey];
+      const isPaid = !appData.settledTransfers[transferKey];
       appData.settledTransfers[transferKey] = !isPaid;
 
       const fromId = transferKey.split('_to_')[0];
@@ -1445,7 +1865,7 @@
       const myTransfers = transfers.filter(t => t.fromId === fromId);
       const allMyTransfersPaid = myTransfers.every(t => {
         const key = `${t.fromId}_to_${t.toId}`;
-        return !!appData.settledTransfers[key];
+        return !appData.settledTransfers[key];
       });
 
       if (!appData.paidMembers) appData.paidMembers = {};
@@ -1470,7 +1890,7 @@
 
     function toggleMemberPaidStatus(memberId) {
       if (!appData.paidMembers) appData.paidMembers = {};
-      const current = !!appData.paidMembers[memberId];
+      const current = !appData.paidMembers[memberId];
       const nextState = !current;
       appData.paidMembers[memberId] = nextState;
 
@@ -1511,7 +1931,7 @@
       const toName = getShortName(toMem.name);
       const bank = toMem.bank || 'MB';
       const account = toMem.account || '';
-      const memo = `KTX402 PAY ${Math.random().toString(36).substring(2, 6).toUpperCase()}`.trim();
+      const memo = `${appData.roomCode || 'KTX'} PAY ${Math.random().toString(36).substring(2, 6).toUpperCase()}`.trim();
 
       activeQRTransfer = {
         fromId: fromMemberId,
@@ -1569,7 +1989,7 @@
       const myTransfers = transfers.filter(t => t.fromId === fromId);
       const allDone = myTransfers.every(t => {
         const key = `${t.fromId}_to_${t.toId}`;
-        return !!appData.settledTransfers[key];
+        return !appData.settledTransfers[key];
       });
 
       if (!appData.paidMembers) appData.paidMembers = {};
@@ -1638,7 +2058,7 @@
             const fromShort = fromMem ? getShortName(fromMem.name) : "Bạn A";
             const toShort = toMem ? getShortName(toMem.name) : "Bạn B";
             const transferKey = `${t.fromId}_to_${t.toId}`;
-            const isSettled = !!(appData.settledTransfers && appData.settledTransfers[transferKey]);
+            const isSettled = !(appData.settledTransfers && appData.settledTransfers[transferKey]);
 
             return `
               <div class="p-3 ${isSettled ? 'bg-emerald-950/40 border-emerald-500/40' : 'bg-white/10 hover:bg-white/15 border-white/10'} border rounded-2xl flex items-center justify-between gap-2 transition">
@@ -1683,7 +2103,7 @@
           const p = paid[m.id] || 0;
           const s = share[m.id] || 0;
           const b = Math.round(balances[m.id] || 0);
-          const isMarkedPaid = !!(appData.paidMembers && appData.paidMembers[m.id]);
+          const isMarkedPaid = !(appData.paidMembers && appData.paidMembers[m.id]);
 
           let statusBadge = '';
           let actionButton = '';
@@ -1706,7 +2126,7 @@
             }
           } else if (b > 100) {
             const myIncomingTransfers = transfers.filter(t => t.toId === m.id);
-            const allPaid = myIncomingTransfers.length > 0 && myIncomingTransfers.every(t => !!(appData.settledTransfers && appData.settledTransfers[`${t.fromId}_to_${t.toId}`]));
+            const allPaid = myIncomingTransfers.length > 0 && myIncomingTransfers.every(t => !(appData.settledTransfers && appData.settledTransfers[`${t.fromId}_to_${t.toId}`]));
 
             if (allPaid) {
               statusBadge = `<span class="px-2.5 py-1 rounded-lg text-[11px] font-black bg-teal-600 text-white shadow-2xs whitespace-nowrap flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Đã nhận đủ</span>`;
@@ -1758,7 +2178,7 @@
           const p = paid[m.id] || 0;
           const s = share[m.id] || 0;
           const b = Math.round(balances[m.id] || 0);
-          const isMarkedPaid = !!(appData.paidMembers && appData.paidMembers[m.id]);
+          const isMarkedPaid = !(appData.paidMembers && appData.paidMembers[m.id]);
 
           let statusHtml = '';
           let actionColHtml = '';
@@ -1782,7 +2202,7 @@
             }
           } else if (b > 100) {
             const myIncomingTransfers = transfers.filter(t => t.toId === m.id);
-            const allPaid = myIncomingTransfers.length > 0 && myIncomingTransfers.every(t => !!(appData.settledTransfers && appData.settledTransfers[`${t.fromId}_to_${t.toId}`]));
+            const allPaid = myIncomingTransfers.length > 0 && myIncomingTransfers.every(t => !(appData.settledTransfers && appData.settledTransfers[`${t.fromId}_to_${t.toId}`]));
 
             if (allPaid) {
               statusHtml = `<span class="px-2.5 py-1 rounded-lg text-xs font-black bg-teal-600 text-white shadow-2xs whitespace-nowrap inline-flex items-center gap-1.5"><i class="fa-solid fa-circle-check"></i> Đã nhận đủ</span>`;
@@ -2579,7 +2999,7 @@
           const f = members.find(m => m.id === t.fromId);
           const to = members.find(m => m.id === t.toId);
           const transferKey = `${t.fromId}_to_${t.toId}`;
-          const isDone = !!(appData.settledTransfers && appData.settledTransfers[transferKey]);
+          const isDone = !(appData.settledTransfers && appData.settledTransfers[transferKey]);
           txt += `${i + 1}. ${getShortName(f?.name)} ➡️ chuyển ${formatVND(t.amount)} cho ${getShortName(to?.name)} (${to?.bank} - ${to?.account || ''}) ${isDone ? '[ĐÃ NỘP]' : '[CHƯA NỘP]'}\n`;
         });
       }
@@ -2788,7 +3208,6 @@
       }
     }
 
-    /* Checklist vệ sinh */
     function openAddChecklistModal() {
       document.getElementById('inputChecklistEmoji').value = "🧹";
       document.getElementById('inputChecklistTitle').value = "";
@@ -2847,7 +3266,6 @@
       `).join('');
     }
 
-    /* Quản lý thành viên */
     function renderMembersList() {
       const container = document.getElementById('membersListContainer');
       if (!container) return;
@@ -2937,28 +3355,11 @@
       showToast("Đã xóa thành viên!");
     }
 
-    function openRoomSettingsModal() {
-      const input = document.getElementById('inputNewRoomTitle');
-      if (input) input.value = appData.roomName || "Phòng 402 - KTX";
-      openModal('modalRoomSettings');
-    }
-
-    function saveNewRoomTitle() {
-      const input = document.getElementById('inputNewRoomTitle');
-      const val = input ? input.value.trim() : '';
-      if (!val) return;
-      appData.roomName = val;
-      saveData();
-      updateSessionLabels();
-      closeModal('modalRoomSettings');
-      showToast(`Đã đổi tên phòng thành "${val}"!`, "success");
-    }
-
     function exportDataJson() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `KTX_Backup_${Date.now()}.json`);
+      downloadAnchor.setAttribute("download", `KTX_Backup_${currentActiveRoomId}_${Date.now()}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
@@ -2992,14 +3393,12 @@
     });
   </script>
 
-  <!-- ==================== SCRIPT 2: ĐỒNG BỘ THỜI GIAN THỰC FIREBASE ==================== -->
+  <!-- ==================== SCRIPT 2: ĐỒNG BỘ HOẠT ĐỘNG PHÒNG FIREBASE ==================== -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
       getFirestore,
       collection,
-      doc,
-      setDoc,
       addDoc,
       query,
       orderBy,
@@ -3018,54 +3417,34 @@
       measurementId: "G-BDMRRZLDES"
     };
 
-    const app = initializeApp(firebaseConfig);
+    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
     const db = getFirestore(app);
 
-    let currentRoomId = null;
-    let currentUser = localStorage.getItem("ktx_user") || "";
     let unsubscribeActivities = null;
 
-    const lobbyScreen = document.getElementById("lobbyScreen");
-    const roomScreen = document.getElementById("roomScreen");
-    const userNameInput = document.getElementById("userNameInput");
-    const newRoomName = document.getElementById("newRoomName");
-    const joinRoomId = document.getElementById("joinRoomId");
-    const displayRoomId = document.getElementById("displayRoomId");
-    const displayRoomName = document.getElementById("displayRoomName");
-    const activitiesList = document.getElementById("activitiesList");
+    function firebaseSubscribeRoom(roomId, roomTitle = "") {
+      if (unsubscribeActivities) {
+        unsubscribeActivities();
+      }
 
-    if (currentUser && userNameInput) userNameInput.value = currentUser;
-
-    function enterRoom(roomId, roomTitle = "") {
-      currentRoomId = roomId;
-      currentUser = (userNameInput && userNameInput.value.trim()) || "Thành viên";
-      localStorage.setItem("ktx_user", currentUser);
-
-      const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?room=" + encodeURIComponent(roomId);
-      window.history.pushState({ path: newUrl }, "", newUrl);
-
-      if (lobbyScreen) lobbyScreen.classList.add("ktx-hide");
-      if (roomScreen) roomScreen.classList.remove("ktx-hide");
-      if (displayRoomId) displayRoomId.innerText = roomId;
-      if (displayRoomName) displayRoomName.innerText = roomTitle || roomId;
-
-      listenActivities(roomId);
-    }
-
-    function listenActivities(roomId) {
-      if (unsubscribeActivities) unsubscribeActivities();
+      const activitiesList = document.getElementById("roomActivitiesList");
+      if (!activitiesList) return;
 
       const q = query(
         collection(db, "ktx_rooms", roomId, "activities"),
         orderBy("createdAt", "desc"),
-        limit(40)
+        limit(30)
       );
 
       unsubscribeActivities = onSnapshot(q, (snapshot) => {
-        if (!activitiesList) return;
         activitiesList.innerHTML = "";
         if (snapshot.empty) {
-          activitiesList.innerHTML = "<p class='text-slate-400 text-xs py-2 italic'>Chưa có hoạt động nào trong phòng.</p>";
+          activitiesList.innerHTML = `
+            <div class="p-6 text-center text-slate-400 text-xs italic bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+              <i class="fa-solid fa-seedling text-indigo-400 text-lg mb-1 block"></i>
+              Chưa có hoạt động nào trong phòng này. Hãy gửi tin nhắn đầu tiên!
+            </div>
+          `;
           return;
         }
 
@@ -3073,7 +3452,7 @@
           const data = docSnap.data();
           const div = document.createElement("div");
 
-          let borderCol = "border-slate-200";
+          let borderCol = "border-slate-200 bg-white";
           let badgeCol = "bg-slate-100 text-slate-600";
           let badgeLabel = "Thông báo";
 
@@ -3087,82 +3466,64 @@
             badgeLabel = "Vệ sinh";
           }
 
-          div.className = `p-2.5 rounded-xl border ${borderCol} bg-white flex items-center justify-between gap-2 text-xs`;
+          div.className = `p-3 rounded-2xl border ${borderCol} flex items-center justify-between gap-2.5 text-xs shadow-2xs`;
           const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "Vừa xong";
 
           div.innerHTML = `
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeCol} shrink-0">${badgeLabel}</span>
-              <span class="font-bold text-slate-800 shrink-0">${escapeHtml(data.user)}:</span>
-              <span class="text-slate-600 truncate">${escapeHtml(data.content)}</span>
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="px-2 py-0.5 rounded-lg text-[10px] font-black ${badgeCol} shrink-0">${badgeLabel}</span>
+              <div class="min-w-0">
+                <span class="font-extrabold text-slate-900">${escapeHtml(data.author || 'Bạn cùng phòng')}:</span>
+                <span class="text-slate-700 font-medium ml-1">${escapeHtml(data.description || data.content || '')}</span>
+              </div>
             </div>
             <span class="text-[10px] text-slate-400 font-mono shrink-0">${timeStr}</span>
           `;
           activitiesList.appendChild(div);
         });
+      }, (err) => {
+        console.warn("Lỗi đồng bộ Firebase:", err);
       });
     }
 
-    document.getElementById("createRoomBtn")?.addEventListener("click", async () => {
-      const raw = newRoomName.value.trim();
-      const roomId = raw ? raw.toLowerCase().replace(/\s+/g, "-") : "ktx-" + Math.floor(1000 + Math.random() * 9000);
-      const roomTitle = raw || roomId;
+    window.firebaseSubscribeRoom = firebaseSubscribeRoom;
 
-      await setDoc(doc(db, "ktx_rooms", roomId), {
-        title: roomTitle,
-        createdAt: serverTimestamp()
-      }, { merge: true });
+    window.sendQuickRoomActivity = async function() {
+      const contentInput = document.getElementById("quickActContent");
+      const typeInput = document.getElementById("quickActType");
+      const content = contentInput ? contentInput.value.trim() : "";
+      const type = typeInput ? typeInput.value : "notice";
 
-      enterRoom(roomId, roomTitle);
-    });
-
-    document.getElementById("joinRoomBtn")?.addEventListener("click", () => {
-      const roomId = joinRoomId.value.trim().toLowerCase();
-      if (roomId) enterRoom(roomId);
-    });
-
-    document.getElementById("submitActBtn")?.addEventListener("click", async () => {
-      const contentInput = document.getElementById("actContent");
-      const content = contentInput.value.trim();
-      const type = document.getElementById("actType").value;
-      if (!content || !currentRoomId) return;
-
-      await addDoc(collection(db, "ktx_rooms", currentRoomId, "activities"), {
-        user: currentUser,
-        type: type,
-        content: content,
-        createdAt: serverTimestamp()
-      });
-      contentInput.value = "";
-    });
-
-    document.getElementById("copyLinkBtn")?.addEventListener("click", () => {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Đã sao chép liên kết phòng!");
-    });
-
-    document.getElementById("leaveRoomBtn")?.addEventListener("click", () => {
-      if (unsubscribeActivities) unsubscribeActivities();
-      currentRoomId = null;
-      if (roomScreen) roomScreen.classList.add("ktx-hide");
-      if (lobbyScreen) lobbyScreen.classList.remove("ktx-hide");
-      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-      window.history.pushState({ path: cleanUrl }, "", cleanUrl);
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const roomFromUrl = params.get("room");
-      if (roomFromUrl) {
-        if (joinRoomId) joinRoomId.value = roomFromUrl;
-        enterRoom(roomFromUrl);
+      if (!content) {
+        showToast("Vui lòng nhập nội dung muốn gửi!", "error");
+        return;
       }
-    });
+
+      const activeMember = (appData.members && appData.members[0]) ? getShortName(appData.members[0].name) : "Thành viên";
+
+      try {
+        await addDoc(collection(db, "ktx_rooms", currentActiveRoomId, "activities"), {
+          author: activeMember,
+          type: type,
+          description: content,
+          createdAt: serverTimestamp()
+        });
+        contentInput.value = "";
+        showToast("Đã gửi tin lên bảng hoạt động của phòng!", "success");
+      } catch (e) {
+        console.error("Lỗi khi gửi:", e);
+        showToast("Gửi lên Firebase thất bại, kiểm tra kết nối mạng!", "error");
+      }
+    };
 
     function escapeHtml(str) {
       if (!str) return "";
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      firebaseSubscribeRoom(currentActiveRoomId, appData.roomName);
+    });
   </script>
 </body>
 </html>
