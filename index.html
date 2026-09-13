@@ -192,6 +192,7 @@
       pointer-events: none;
       opacity: 0.55;
       animation: neuFloat1 8s ease-in-out infinite alternate;
+      will-change: transform;
     }
     .neu-orb-2 {
       position: absolute;
@@ -205,6 +206,23 @@
       pointer-events: none;
       opacity: 0.45;
       animation: neuFloat2 9s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+    @media (max-width: 640px) {
+      .neu-orb-1 {
+        width: 130px;
+        height: 130px;
+        top: 2%;
+        left: -20px;
+        opacity: 0.4;
+      }
+      .neu-orb-2 {
+        width: 110px;
+        height: 110px;
+        bottom: 3%;
+        right: -15px;
+        opacity: 0.35;
+      }
     }
     @keyframes neuFloat1 {
       0% { transform: translateY(0) rotate(0deg); }
@@ -269,14 +287,14 @@
 
   <!-- MÀN HÌNH ĐĂNG NHẬP NEUMORPHIC SOFT UI 3D (Thiết kế mềm mại, tinh tế với tương tác vật lý 3D chân thực) -->
   <div id="login-overlay" class="neu-overlay-bg fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden select-none" style="display: none;">
-    <!-- Quả cầu nổi Neumorphic tạo chiều sâu không gian -->
-    <div class="neu-orb-1 hidden sm:block"></div>
-    <div class="neu-orb-2 hidden sm:block"></div>
+    <!-- Quả cầu nổi Neumorphic tạo chiều sâu không gian (Hiển thị và chuyển động tương tác trên cả mobile) -->
+    <div id="neuOrb1" class="neu-orb-1"></div>
+    <div id="neuOrb2" class="neu-orb-2"></div>
 
     <div id="loginCardSurface" class="neu-card-surface w-full max-w-[390px] px-8 pt-9 pb-8 sm:px-9 sm:pt-10 sm:pb-9 text-center relative mx-auto my-auto z-10" style="border: 1px solid rgba(255, 255, 255, 0.45);">
       
-      <!-- Top Extruded Circle (Avatar 3D nổi Neumorphic trên đỉnh) -->
-      <div class="neu-extruded-circle mx-auto mb-5" title="KTX Account">
+      <!-- Top Extruded Circle (Avatar 3D nổi Neumorphic trên đỉnh với phản hồi cảm ứng xúc giác) -->
+      <div id="loginTopAvatarCircle" class="neu-extruded-circle mx-auto mb-5 cursor-pointer touch-target select-none" title="Chạm để tương tác">
         <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
         </svg>
@@ -2607,10 +2625,11 @@
       const visual = document.getElementById("neuCheckVisual");
       if (!cb || !visual) return;
 
+      if (navigator.vibrate) try { navigator.vibrate(8); } catch(err){}
       cb.checked = !cb.checked;
       visual.classList.toggle("checked", cb.checked);
-      visual.style.transform = "scale(0.9)";
-      setTimeout(() => { visual.style.transform = cb.checked ? "scale(1.05)" : "scale(1)"; }, 120);
+      visual.style.transform = "scale(0.88)";
+      setTimeout(() => { visual.style.transform = cb.checked ? "scale(1.06)" : "scale(1)"; }, 120);
     }
     window.toggleRememberMeCheck = toggleRememberMeCheck;
 
@@ -2618,15 +2637,16 @@
     function quickFillRoom(roomId, userName) {
       const roomInput = document.getElementById("login-room-id");
       const nameInput = document.getElementById("login-user-name");
+      if (navigator.vibrate) try { navigator.vibrate([6, 35, 8]); } catch(err){}
       if (roomInput) {
         roomInput.value = roomId;
         roomInput.parentElement.style.borderColor = "rgba(99, 102, 241, 0.4)";
-        roomInput.parentElement.style.transform = "scale(1.01)";
+        roomInput.parentElement.style.transform = "scale(1.02)";
       }
       if (nameInput) {
         nameInput.value = userName;
         nameInput.parentElement.style.borderColor = "rgba(99, 102, 241, 0.4)";
-        nameInput.parentElement.style.transform = "scale(1.01)";
+        nameInput.parentElement.style.transform = "scale(1.02)";
       }
       setTimeout(() => {
         if (roomInput && roomInput.parentElement) {
@@ -2641,45 +2661,166 @@
     }
     window.quickFillRoom = quickFillRoom;
 
-    // Khởi tạo hiệu ứng con trỏ chuột vật lý 3D Parallax & Nguồn sáng chân thực
+    // Khởi tạo hiệu ứng con trỏ chuột vật lý 3D Parallax, Cảm ứng vuốt chạm & Cảm biến nghiêng máy trên điện thoại
     function initNeumorphic3DInteractions() {
       const overlay = document.getElementById("login-overlay");
       const card = document.getElementById("loginCardSurface");
+      const orb1 = document.getElementById("neuOrb1");
+      const orb2 = document.getElementById("neuOrb2");
+      const avatarCircle = document.getElementById("loginTopAvatarCircle");
       if (!overlay || !card) return;
 
       let rafId = null;
+      let isTouching = false;
+      let baseBeta = null; // Đo góc nghiêng cơ sở khi cầm máy
 
+      // Áp dụng góc xoay 3D và bóng đổ động
+      function applyTilt(clampX, clampY, isTouchOrGyro = false) {
+        const maxRot = isTouchOrGyro ? 7.5 : 6;
+        const rotX = (-clampY * maxRot).toFixed(2);
+        const rotY = (clampX * maxRot).toFixed(2);
+
+        const shadowDistX = (18 + clampX * 6).toFixed(1);
+        const shadowDistY = (18 + clampY * 6).toFixed(1);
+
+        card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
+        card.style.boxShadow = `${shadowDistX}px ${shadowDistY}px 40px #cad3df, -${shadowDistX}px -${shadowDistY}px 40px #ffffff`;
+
+        // Chuyển động thị sai (Parallax) cho 2 quả cầu nền
+        if (orb1) orb1.style.transform = `translate3d(${-clampX * 12}px, ${-clampY * 12}px, 0)`;
+        if (orb2) orb2.style.transform = `translate3d(${clampX * 10}px, ${clampY * 10}px, 0)`;
+      }
+
+      // Đưa về trạng thái cân bằng với hiệu ứng đàn hồi mượt mà
+      function resetTilt() {
+        card.style.transition = "transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.45s ease-out";
+        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)";
+        card.style.boxShadow = "20px 20px 48px #cad3df, -20px -20px 48px #ffffff";
+        if (orb1) {
+          orb1.style.transition = "transform 0.45s ease-out";
+          orb1.style.transform = "translate3d(0, 0, 0)";
+        }
+        if (orb2) {
+          orb2.style.transition = "transform 0.45s ease-out";
+          orb2.style.transform = "translate3d(0, 0, 0)";
+        }
+        setTimeout(() => {
+          card.style.transition = "transform 0.15s ease-out, box-shadow 0.2s ease-out";
+          if (orb1) orb1.style.transition = "";
+          if (orb2) orb2.style.transition = "";
+        }, 450);
+      }
+
+      // 1. Tương tác chuột trên máy tính (Mouse Move)
       overlay.addEventListener("mousemove", (e) => {
-        if (window.innerWidth < 640) return; // Bỏ qua trên màn hình cảm ứng nhỏ
+        if (isTouching) return;
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
           const rect = card.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
-
           const deltaX = (e.clientX - centerX) / (rect.width / 2);
           const deltaY = (e.clientY - centerY) / (rect.height / 2);
-
-          const clampX = Math.max(-1, Math.min(1, deltaX));
-          const clampY = Math.max(-1, Math.min(1, deltaY));
-
-          // Độ nghiêng xoay 3D
-          const rotX = (-clampY * 5.5).toFixed(2);
-          const rotY = (clampX * 5.5).toFixed(2);
-
-          // Bóng đổ động 3D mô phỏng góc chiếu sáng thực
-          const shadowDistX = (20 + clampX * 5).toFixed(1);
-          const shadowDistY = (20 + clampY * 5).toFixed(1);
-
-          card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
-          card.style.boxShadow = `${shadowDistX}px ${shadowDistY}px 48px #cad3df, -${shadowDistX}px -${shadowDistY}px 48px #ffffff`;
+          const clampX = Math.max(-1.1, Math.min(1.1, deltaX));
+          const clampY = Math.max(-1.1, Math.min(1.1, deltaY));
+          applyTilt(clampX, clampY, false);
         });
       });
 
       overlay.addEventListener("mouseleave", () => {
-        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)";
-        card.style.boxShadow = "20px 20px 48px #cad3df, -20px -20px 48px #ffffff";
+        if (!isTouching) resetTilt();
       });
+
+      // 2. Tương tác chạm vuốt 3D trên màn hình cảm ứng điện thoại (Touch Events)
+      function handleTouch(touch) {
+        const rect = card.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const deltaX = (touch.clientX - centerX) / (rect.width / 2);
+        const deltaY = (touch.clientY - centerY) / (rect.height / 2);
+        const clampX = Math.max(-1.2, Math.min(1.2, deltaX));
+        const clampY = Math.max(-1.2, Math.min(1.2, deltaY));
+        applyTilt(clampX, clampY, true);
+      }
+
+      overlay.addEventListener("touchstart", (e) => {
+        const isInteractive = e.target.closest("input, button, a, label, #neuCheckVisual");
+        isTouching = true;
+        card.style.transition = "none";
+        if (e.touches && e.touches[0] && !isInteractive) {
+          handleTouch(e.touches[0]);
+        }
+      }, { passive: true });
+
+      overlay.addEventListener("touchmove", (e) => {
+        if (!isTouching || !e.touches || !e.touches[0]) return;
+        const isInteractive = e.target.closest("input, select, textarea");
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          handleTouch(e.touches[0]);
+        });
+      }, { passive: true });
+
+      overlay.addEventListener("touchend", () => {
+        isTouching = false;
+        resetTilt();
+      }, { passive: true });
+
+      overlay.addEventListener("touchcancel", () => {
+        isTouching = false;
+        resetTilt();
+      }, { passive: true });
+
+      // 3. Tương tác Cảm biến con quay hồi chuyển (Nghiêng điện thoại tạo độ sâu 3D tự động)
+      function handleOrientation(e) {
+        if (isTouching) return; // Khi đang chạm vuốt thì ưu tiên ngón tay
+        if (e.beta === null || e.gamma === null) return;
+
+        // Tự động ghi nhận góc cầm tay tự nhiên (thường từ 30-60 độ)
+        if (baseBeta === null) {
+          baseBeta = Math.max(20, Math.min(65, e.beta));
+        }
+
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const tiltX = Math.max(-1, Math.min(1, (e.gamma || 0) / 20));
+          const tiltY = Math.max(-1, Math.min(1, ((e.beta || baseBeta) - baseBeta) / 22));
+          applyTilt(tiltX, tiltY, true);
+        });
+      }
+
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", handleOrientation, { passive: true });
+        // Hỗ trợ xin quyền con quay hồi chuyển trên iOS 13+ khi người dùng chạm vào màn hình
+        const requestOrientationPerm = () => {
+          if (typeof DeviceOrientationEvent.requestPermission === "function") {
+            DeviceOrientationEvent.requestPermission().then(state => {
+              if (state === "granted") {
+                window.addEventListener("deviceorientation", handleOrientation, { passive: true });
+              }
+            }).catch(() => {});
+          }
+        };
+        overlay.addEventListener("click", requestOrientationPerm, { once: true });
+        overlay.addEventListener("touchstart", requestOrientationPerm, { once: true, passive: true });
+      }
+
+      // 4. Phản hồi xúc giác & nảy 3D cho Avatar nổi trên đầu form
+      if (avatarCircle) {
+        avatarCircle.addEventListener("click", () => {
+          if (navigator.vibrate) try { navigator.vibrate(12); } catch(err){}
+          avatarCircle.style.transform = "scale(0.9)";
+          avatarCircle.style.boxShadow = "inset 4px 4px 9px #cad3df, inset -4px -4px 9px #ffffff";
+          setTimeout(() => {
+            avatarCircle.style.transform = "scale(1.08)";
+            avatarCircle.style.boxShadow = "10px 10px 24px #bcc6d2, -10px -10px 24px #ffffff";
+            setTimeout(() => {
+              avatarCircle.style.transform = "scale(1)";
+              avatarCircle.style.boxShadow = "7px 7px 16px #cad3df, -7px -7px 16px #ffffff";
+            }, 180);
+          }, 140);
+        });
+      }
 
       // Tự động viết hoa mã phòng khi nhập
       const roomInput = document.getElementById("login-room-id");
