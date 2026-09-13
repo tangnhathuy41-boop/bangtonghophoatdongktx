@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
 
@@ -198,11 +199,19 @@ Hãy kiểm tra kỹ hình ảnh và trích xuất:
   }
 });
 
-// Serve static assets from project root
+// Serve static assets from dist or project root
+const distPath = path.join(__dirname, 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 app.use(express.static(__dirname));
 
 // SPA fallback for all routes
 app.get('*', (req, res) => {
+  const indexInDist = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexInDist)) {
+    return res.sendFile(indexInDist);
+  }
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
