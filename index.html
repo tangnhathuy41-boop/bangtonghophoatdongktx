@@ -197,11 +197,6 @@
                 </button>
               </div>
             </div>
-            <!-- Trạng thái kết nối ngầm -->
-            <div class="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
-              <span id="autoSyncDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="autoSyncStatusText">Firebase: Đồng bộ thời gian thực</span>
-            </div>
           </div>
         </div>
       </div>
@@ -250,52 +245,6 @@
       <button onclick="toggleSidebar(false)" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
         <i class="fa-solid fa-xmark text-sm"></i>
       </button>
-    </div>
-
-    <!-- Thông tin thành viên & phòng trong Sidebar -->
-    <div class="p-3 bg-slate-50/90 border-b border-slate-100 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <div id="drawerUserAvatar" class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
-          H
-        </div>
-        <div class="min-w-0">
-          <div id="drawerUserName" class="font-extrabold text-slate-900 text-xs truncate">Nhật Huy</div>
-          <div class="text-[10px] font-semibold text-emerald-600 flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span id="drawerUserRoleText">Trưởng Phòng</span>
-          </div>
-        </div>
-      </div>
-      <button onclick="moModalDoiPhongKTX()" class="px-2 py-1 text-[11px] font-bold text-indigo-600 hover:bg-indigo-50 rounded-lg transition border border-indigo-200/80 shrink-0" title="Đổi sang phòng khác (Bắt buộc nhập mã phòng)">
-        <i class="fa-solid fa-arrow-right-arrow-left mr-1"></i>Đổi phòng
-      </button>
-    </div>
-
-    <div class="p-3.5 bg-gradient-to-br from-indigo-50/80 via-white to-teal-50/80 border-b border-indigo-100">
-      <div class="flex items-center justify-between gap-2">
-        <div class="min-w-0">
-          <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Phòng KTX Đang Chọn</div>
-          <div id="drawerRoomNameLabel" class="font-extrabold text-slate-900 text-sm truncate">Phòng 402 - KTX</div>
-          <div class="flex items-center gap-1.5 text-[11px] font-mono text-indigo-600 font-bold mt-0.5">
-            <span>Mã:</span>
-            <span id="drawerRoomCodeLabel" class="tracking-wider">••••••</span>
-            <button type="button" onclick="toggleRoomCodeVisibility(event);" class="text-indigo-500 hover:text-indigo-700 p-0.5 transition" title="Ẩn / Hiện mã phòng">
-              <i id="drawerRoomCodeEyeIcon" class="fa-solid fa-eye-slash text-[10px]"></i>
-            </button>
-            <button type="button" onclick="copyCurrentRoomCode(event);" class="text-slate-400 hover:text-indigo-600 p-0.5 transition" title="Sao chép mã phòng">
-              <i class="fa-solid fa-copy text-[10px]"></i>
-            </button>
-          </div>
-        </div>
-        <button onclick="toggleSidebar(false); moModalDoiPhongKTX();" class="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shrink-0 flex items-center gap-1 shadow-2xs" title="Đổi sang phòng khác (Bắt buộc mã phòng)">
-          <i class="fa-solid fa-repeat text-[10px]"></i>
-          <span>Đổi phòng</span>
-        </button>
-      </div>
-      <div class="mt-2 text-[10px] text-emerald-700 font-semibold flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Firebase: Đồng bộ thời gian thực</span>
-      </div>
     </div>
 
     <!-- Danh sách chức năng chính -->
@@ -359,6 +308,11 @@
         <button onclick="toggleSidebar(false); exportDataJson();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
           <i class="fa-solid fa-file-export w-4 text-center text-slate-400"></i>
           <span>Sao lưu dữ liệu (JSON)</span>
+        </button>
+
+        <button onclick="toggleSidebar(false); openDeleteRoomModal();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition">
+          <i class="fa-solid fa-trash-can w-4 text-center text-rose-500"></i>
+          <span>Xóa phòng KTX này</span>
         </button>
       </div>
     </div>
@@ -800,6 +754,21 @@
             <input type="text" id="inputEditCurrentRoomName" placeholder="VD: Phòng 402 - KTX B5..." class="flex-grow px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold" />
             <button onclick="saveEditedCurrentRoomName()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition shrink-0">Lưu tên</button>
           </div>
+        </div>
+
+        <!-- Khu vực nguy hiểm: Xóa phòng KTX -->
+        <div class="p-3.5 bg-rose-50/80 rounded-2xl border border-rose-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-bold text-rose-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+              <span>Xóa vĩnh viễn phòng KTX</span>
+            </div>
+            <button type="button" onclick="closeModal('modalRoomHub'); openDeleteRoomModal();" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 shadow-2xs">
+              <i class="fa-solid fa-trash-can text-[11px]"></i>
+              <span>Xóa phòng</span>
+            </button>
+          </div>
+          <p class="text-[11px] text-rose-600 leading-relaxed">Xóa toàn bộ dữ liệu chi tiêu, quyết toán, lịch trực nhật và thành viên của phòng này.</p>
         </div>
       </div>
 
@@ -1452,6 +1421,56 @@
     </div>
   </div>
 
+  <!-- MODAL: XÓA PHÒNG KTX (YÊU CẦU NHẬP MÃ PHÒNG, TUYỆT ĐỐI KHÔNG GỢI Ý MÃ DƯỚI BẤT KỲ HÌNH THỨC NÀO) -->
+  <div id="modalDeleteRoom" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-rose-100 flex flex-col relative animate-scaleIn">
+      <!-- Nút đóng -->
+      <button onclick="closeModal('modalDeleteRoom')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Cảnh báo & Tiêu đề -->
+      <div class="text-center mb-4">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 to-red-500 text-white flex items-center justify-center text-2xl mx-auto shadow-md shadow-rose-500/25 mb-3">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="font-black text-slate-900 text-lg">Xóa Vĩnh Viễn Phòng KTX</h3>
+        <p class="text-xs text-rose-600 font-semibold mt-1.5 leading-relaxed">
+          Cảnh báo: Toàn bộ dữ liệu chi tiêu, quyết toán, lịch trực nhật, bảng tin và thành viên của phòng này sẽ bị xóa vĩnh viễn và không thể khôi phục lại.
+        </p>
+      </div>
+
+      <!-- Form nhập mã phòng để xác nhận xóa -->
+      <form id="formDeleteRoom" onsubmit="event.preventDefault(); handleConfirmDeleteRoom();" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
+            Nhập mã phòng KTX để xác nhận <span class="text-rose-600 font-black">*</span>
+          </label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-rose-500 text-sm"></i>
+            <input type="text" id="inputDeleteRoomCodeConfirm" placeholder="Nhập chính xác mã phòng..." required autocomplete="off"
+              class="w-full text-base font-mono font-black py-3 px-4 pl-10 bg-slate-50 border-2 border-rose-200 rounded-2xl focus:border-rose-600 focus:bg-white focus:outline-none transition shadow-2xs text-slate-900 uppercase placeholder:normal-case placeholder:font-sans placeholder:font-normal placeholder:text-xs" />
+          </div>
+          <div id="deleteRoomErrorMessage" class="hidden text-xs font-bold text-rose-600 mt-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+            <span id="deleteRoomErrorText">Mã phòng không chính xác! Không thể xóa phòng.</span>
+          </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button type="button" onclick="closeModal('modalDeleteRoom')" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+            Hủy Bỏ
+          </button>
+          <button type="submit" id="btnSubmitDeleteRoom" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+            <span>Xác Nhận Xóa</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST THÔNG BÁO TỰ ĐỘNG -->
   <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700/80 flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
     <div id="toastIcon" class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 text-xs">
@@ -1474,14 +1493,26 @@
       let savedUserName = localStorage.getItem("current_user_name");
 
       if (!savedRoomId || !savedUserName) {
-        savedRoomId = "KTX402";
-        savedUserName = "Nhật Huy";
-        localStorage.setItem("current_room_id", savedRoomId);
-        localStorage.setItem("current_user_name", savedUserName);
+        // Chưa đăng nhập phòng hoặc vừa xóa phòng -> Hiển thị ngay màn hình đăng nhập
+        if (loginOverlay) {
+          loginOverlay.style.display = "flex";
+          const roomInput = document.getElementById("login-room-id");
+          const nameInput = document.getElementById("login-user-name");
+          if (roomInput) {
+            roomInput.value = "";
+            roomInput.parentElement.style.borderColor = "#e2e8f0";
+            roomInput.parentElement.style.backgroundColor = "#f8fafc";
+          }
+          if (nameInput) {
+            nameInput.value = "";
+            nameInput.parentElement.style.borderColor = "#e2e8f0";
+            nameInput.parentElement.style.backgroundColor = "#f8fafc";
+          }
+        }
+      } else {
+        if (loginOverlay) loginOverlay.style.display = "none";
+        syncUserAndRoomState(savedRoomId, savedUserName);
       }
-
-      if (loginOverlay) loginOverlay.style.display = "none";
-      syncUserAndRoomState(savedRoomId, savedUserName);
 
       // 2. Xử lý khi người dùng điền thông tin và ấn nút "Vào Phòng"
       if (loginForm) {
@@ -1703,10 +1734,173 @@
       if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi phòng và quay lại màn hình đăng nhập ban đầu?")) {
         localStorage.removeItem("current_room_id");
         localStorage.removeItem("current_user_name");
+        try {
+          if (window.history && window.history.replaceState) {
+            const cleanPath = window.location.pathname || '/';
+            window.history.replaceState({}, '', cleanPath);
+          }
+        } catch (e) {}
         location.reload();
       }
     }
     window.dangXuatHanRaNgoai = dangXuatHanRaNgoai;
+
+    function openDeleteRoomModal() {
+      const input = document.getElementById("inputDeleteRoomCodeConfirm");
+      const err = document.getElementById("deleteRoomErrorMessage");
+      const submitBtn = document.getElementById("btnSubmitDeleteRoom");
+
+      if (input) {
+        input.value = "";
+        input.classList.remove("border-rose-500", "bg-rose-50", "animate-shake");
+      }
+      if (err) err.classList.add("hidden");
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i class="fa-solid fa-trash-can text-xs"></i><span>Xác Nhận Xóa</span>`;
+      }
+
+      openModal("modalDeleteRoom");
+      setTimeout(() => {
+        if (input) input.focus();
+      }, 200);
+    }
+    window.openDeleteRoomModal = openDeleteRoomModal;
+
+    async function handleConfirmDeleteRoom() {
+      const input = document.getElementById("inputDeleteRoomCodeConfirm");
+      const err = document.getElementById("deleteRoomErrorMessage");
+      const errText = document.getElementById("deleteRoomErrorText");
+      const submitBtn = document.getElementById("btnSubmitDeleteRoom");
+
+      const entered = (input ? input.value : "").trim();
+      if (!entered) {
+        if (errText) errText.textContent = "Vui lòng nhập mã phòng KTX để xác nhận!";
+        if (err) err.classList.remove("hidden");
+        if (input) input.focus();
+        return;
+      }
+
+      // So sánh chính xác với mã phòng hiện tại (không có bất kỳ gợi ý nào ra giao diện)
+      const currentCode = (localStorage.getItem("current_room_id") || (window.appData && window.appData.roomCode) || currentActiveRoomId || "").trim();
+      const currentCodeUpper = currentCode.toUpperCase();
+      const enteredUpper = entered.toUpperCase();
+      const slugActive = (currentActiveRoomId || "").trim().toUpperCase();
+
+      const isMatch = (
+        enteredUpper === currentCodeUpper ||
+        enteredUpper === slugActive ||
+        enteredUpper.replace(/[^A-Z0-9]/g, '') === currentCodeUpper.replace(/[^A-Z0-9]/g, '') ||
+        enteredUpper.replace(/[^A-Z0-9]/g, '') === slugActive.replace(/[^A-Z0-9]/g, '')
+      );
+
+      if (!isMatch) {
+        if (errText) errText.textContent = "Mã phòng không chính xác! Không thể xóa phòng.";
+        if (err) err.classList.remove("hidden");
+        if (input) {
+          input.classList.add("border-rose-500", "bg-rose-50", "animate-shake");
+          input.focus();
+          input.select();
+          setTimeout(() => input.classList.remove("animate-shake"), 500);
+        }
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i><span>Đang xóa...</span>`;
+      }
+
+      try {
+        // 1. Xóa phòng trên Firestore
+        if (typeof window.firebaseDeleteRoom === "function") {
+          try {
+            await window.firebaseDeleteRoom(currentActiveRoomId || currentCode);
+          } catch (fbErr) {
+            console.warn("Lỗi khi xóa tài liệu Firestore:", fbErr);
+          }
+        }
+
+        // 2. Xóa toàn bộ các dữ liệu cục bộ của phòng này
+        const safeRoomKey = (currentActiveRoomId || "").toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+        const safeCodeKey = (currentCode || "").toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+        const rawCodeKey = (currentCode || "").toLowerCase();
+        [safeRoomKey, safeCodeKey, rawCodeKey, currentActiveRoomId].forEach(k => {
+          if (!k) return;
+          localStorage.removeItem(`ktx_data_${k}`);
+          localStorage.removeItem(`KTX_ROOM_DATA_${k}`);
+          localStorage.removeItem(`KTX_CACHE_${k}`);
+          localStorage.removeItem(`ktx_sync_${k.replace(/[^a-zA-Z0-9_-]/g, '_')}`);
+        });
+        localStorage.removeItem("KTX_SAVED_BILL_ITEMS");
+
+        // 3. Xóa phòng khỏi danh sách phòng gần đây
+        try {
+          let recent = JSON.parse(localStorage.getItem("KTX_RECENT_ROOMS_LIST_v1") || "[]");
+          recent = recent.filter(r => {
+            const rId = (r.id || '').toLowerCase();
+            const rCode = (r.code || '').toLowerCase();
+            return rId !== safeRoomKey && rCode !== safeRoomKey && rId !== safeCodeKey && rCode !== safeCodeKey;
+          });
+          localStorage.setItem("KTX_RECENT_ROOMS_LIST_v1", JSON.stringify(recent));
+        } catch (e) {}
+
+        // 4. Xóa session phòng và thông tin đăng nhập
+        localStorage.removeItem("current_room_id");
+        localStorage.removeItem("current_user_name");
+
+        // Dọn sạch URL param
+        try {
+          if (window.history && window.history.replaceState) {
+            const cleanPath = window.location.pathname || '/';
+            window.history.replaceState({}, '', cleanPath);
+          }
+        } catch (e) {}
+
+        closeModal("modalDeleteRoom");
+        closeModal("modalRoomHub");
+        toggleSidebar(false);
+
+        showToast("Đã xóa vĩnh viễn dữ liệu phòng KTX thành công!", "success");
+
+        // 5. Tự động hiển thị màn hình đăng nhập ngay lập tức
+        const loginOverlay = document.getElementById("login-overlay");
+        if (loginOverlay) {
+          const roomInput = document.getElementById("login-room-id");
+          const nameInput = document.getElementById("login-user-name");
+          if (roomInput) {
+            roomInput.value = "";
+            roomInput.parentElement.style.borderColor = "#e2e8f0";
+            roomInput.parentElement.style.backgroundColor = "#f8fafc";
+          }
+          if (nameInput) {
+            nameInput.value = "";
+            nameInput.parentElement.style.borderColor = "#e2e8f0";
+            nameInput.parentElement.style.backgroundColor = "#f8fafc";
+          }
+          const submitBtn = document.getElementById("login-submit-btn");
+          if (submitBtn) {
+            submitBtn.innerHTML = `<span>VÀO PHÒNG KTX</span> <i class="fa-solid fa-bolt" style="color: #fde047;"></i>`;
+            submitBtn.style.opacity = "1";
+            submitBtn.style.pointerEvents = "auto";
+          }
+          loginOverlay.style.display = "flex";
+        }
+
+        // Tải lại để reset trạng thái sạch hoàn toàn và đưa về màn hình đăng nhập
+        setTimeout(() => {
+          location.reload();
+        }, 600);
+      } catch (err) {
+        console.error("Lỗi khi xóa phòng:", err);
+        showToast("Có lỗi xảy ra trong quá trình xóa phòng!", "error");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<i class="fa-solid fa-trash-can text-xs"></i><span>Xác Nhận Xóa</span>`;
+        }
+      }
+    }
+    window.handleConfirmDeleteRoom = handleConfirmDeleteRoom;
 
     // 4. Hàm điền nhanh phòng mẫu (Quick-fill)
     function quickFillRoom(roomId, userName) {
@@ -2145,12 +2339,14 @@
     /* HỆ THỐNG ĐỒNG BỘ MÂY TỰ ĐỘNG THỜI GIAN THỰC */
     function initAutoCloudEngine() {
       // 0. Khởi tạo mã phòng từ phiên đăng nhập Xác thực phòng (current_room_id)
+      const authRoom = localStorage.getItem("current_room_id");
+      if (!authRoom) {
+        // Chưa có phiên đăng nhập phòng hoặc vừa xóa phòng -> Giữ nguyên trạng thái chờ đăng nhập
+        return;
+      }
       try {
-        const authRoom = localStorage.getItem("current_room_id");
-        if (authRoom) {
-          currentActiveRoomId = authRoom.trim().toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
-          appData.roomCode = authRoom.trim().toUpperCase();
-        }
+        currentActiveRoomId = authRoom.trim().toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+        appData.roomCode = authRoom.trim().toUpperCase();
       } catch (e) {}
 
       // 1. Kiểm tra tham số URL query ?room=...
@@ -2263,7 +2459,7 @@
 
       const syncText = document.getElementById('autoSyncStatusText');
       if (syncText) {
-        syncText.textContent = "Firebase: Đã đồng bộ";
+        syncText.textContent = "";
       }
     }
     window.applyIncomingState = applyIncomingState;
@@ -4024,6 +4220,7 @@
       doc,
       setDoc,
       getDoc,
+      deleteDoc,
       onSnapshot,
       collection,
       addDoc,
@@ -4086,7 +4283,7 @@
 
       const syncText = document.getElementById("autoSyncStatusText");
       const syncDot = document.getElementById("autoSyncDot");
-      if (syncText) syncText.textContent = "Firebase: Đang kết nối...";
+      if (syncText) syncText.textContent = "";
 
       // 1. Lắng nghe toàn bộ dữ liệu phòng KTX qua onSnapshot
       const roomDocRef = doc(db, "ktx_rooms", safeRoomId);
@@ -4095,7 +4292,7 @@
           syncDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
         }
         if (syncText) {
-          syncText.textContent = "Firebase: Đồng bộ thời gian thực";
+          syncText.textContent = "";
         }
 
         if (docSnap.exists()) {
@@ -4111,7 +4308,7 @@
               window.applyIncomingState(remoteData, remoteUpdatedMs);
               const author = remoteData.updatedBy || 'bạn cùng phòng';
               if (typeof showToast === 'function') {
-                showToast(`Đã tự động nhận dữ liệu mới từ ${author} qua Firebase!`, "info");
+                showToast(`Đã tự động nhận dữ liệu mới từ ${author}!`, "info");
               }
             }
           }
@@ -4123,7 +4320,7 @@
         }
       }, (err) => {
         handleFirestoreError(err, "subscribe", `ktx_rooms/${safeRoomId}`);
-        if (syncText) syncText.textContent = "Firebase: Ngoại tuyến (Cache)";
+        if (syncText) syncText.textContent = "";
         if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-amber-500";
       });
 
@@ -4222,10 +4419,7 @@
 
         const syncText = document.getElementById("autoSyncStatusText");
         if (syncText) {
-          syncText.textContent = "Firebase: Đã lưu mây";
-          setTimeout(() => {
-            if (syncText) syncText.textContent = "Firebase: Đồng bộ thời gian thực";
-          }, 2000);
+          syncText.textContent = "";
         }
       } catch (err) {
         handleFirestoreError(err, "write", `ktx_rooms/${safeRoomId}`);
@@ -4234,6 +4428,21 @@
       }
     }
     window.firebaseSyncRoomData = firebaseSyncRoomData;
+
+    // Xóa phòng KTX khỏi Firestore
+    async function firebaseDeleteRoom(roomId) {
+      const safeRoomId = (roomId || window.currentActiveRoomId || "").toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+      if (!safeRoomId) return false;
+      try {
+        const roomDocRef = doc(db, "ktx_rooms", safeRoomId);
+        await deleteDoc(roomDocRef);
+        return true;
+      } catch (err) {
+        handleFirestoreError(err, "delete", `ktx_rooms/${safeRoomId}`);
+        throw err;
+      }
+    }
+    window.firebaseDeleteRoom = firebaseDeleteRoom;
 
     // Gửi tin nhắn / thông báo nhanh của phòng
     window.sendQuickRoomActivity = async function() {
@@ -4258,10 +4467,10 @@
           createdAt: serverTimestamp()
         });
         if (contentInput) contentInput.value = "";
-        showToast("Đã gửi thông báo lên Firebase cho cả phòng!", "success");
+        showToast("Đã gửi thông báo cho cả phòng!", "success");
       } catch (e) {
         handleFirestoreError(e, "create_activity", `ktx_rooms/${safeRoomId}/activities`);
-        showToast("Gửi lên Firebase thất bại, kiểm tra kết nối mạng!", "error");
+        showToast("Gửi thông báo thất bại, vui lòng kiểm tra kết nối mạng!", "error");
       }
     };
 
@@ -4270,10 +4479,13 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    // Tự động kết nối Firebase khi tải trang
+    // Tự động kết nối Firebase khi tải trang nếu đã có phiên đăng nhập phòng
     window.addEventListener("DOMContentLoaded", () => {
-      const initRoomId = window.currentActiveRoomId || localStorage.getItem("current_room_id") || "phong-402";
-      firebaseSubscribeRoom(initRoomId, window.appData ? window.appData.roomName : "");
+      const savedRoom = localStorage.getItem("current_room_id");
+      if (savedRoom) {
+        const initRoomId = savedRoom.trim().toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
+        firebaseSubscribeRoom(initRoomId, window.appData ? window.appData.roomName : "");
+      }
     });
   </script>
 </body>

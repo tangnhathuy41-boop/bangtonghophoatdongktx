@@ -12,7 +12,7 @@ service cloud.firestore {
       allow create, update: if isValidId(roomId)
         && request.resource.data.roomName is string
         && request.resource.data.roomName.size() <= 200;
-      allow delete: if false;
+      allow delete: if isValidId(roomId);
 
       // Subcollection activities
       match /activities/{activityId} {
@@ -22,7 +22,7 @@ service cloud.firestore {
           && request.resource.data.author.size() <= 100
           && request.resource.data.description is string
           && request.resource.data.description.size() <= 1000;
-        allow update, delete: if false;
+        allow update, delete: if isValidId(roomId);
       }
     }
 
