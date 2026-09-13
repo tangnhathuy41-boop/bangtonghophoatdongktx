@@ -7,9 +7,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="Quản lý phòng KTX, chia tiền chi tiêu, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
+  <meta name="description" content="Quản lý phòng KTX, chia tiền chi tiêu, quét hóa đơn tự động bằng AI Gemini, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
   <meta property="og:title" content="KTX Splitter & Clean - Quản Lý Phòng KTX">
-  <meta property="og:description" content="Quản lý phòng KTX, chia tiền chi tiêu, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
+  <meta property="og:description" content="Quản lý phòng KTX, chia tiền chi tiêu, quét hóa đơn tự động bằng AI Gemini, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
 
   <title>KTX Splitter & Clean - Quản Lý Phòng KTX</title>
 
@@ -965,44 +965,57 @@
 
       <div class="overflow-y-auto flex-grow space-y-3.5 my-3 pr-0.5 text-xs">
         <div id="billDropZone" class="border-2 border-dashed border-slate-300 hover:border-amber-500 rounded-2xl p-4 text-center cursor-pointer transition bg-slate-50 relative overflow-hidden">
-          <input type="file" id="billImageInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBillImageSelected(event)">
+          <input type="file" id="billImageInput" accept="image/*" capture="environment" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleBillImageSelected(event)">
           <div id="billScanPlaceholder" class="space-y-1.5 py-4">
             <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
               <i class="fa-solid fa-cloud-arrow-up"></i>
             </div>
             <div class="font-bold text-slate-800 text-xs">Bấm để chụp hoặc chọn ảnh hóa đơn</div>
-            <div class="text-[10px] text-slate-400">Hóa đơn siêu thị, tiền điện, nước uống, đồ dọn phòng...</div>
+            <div class="text-[10px] text-slate-400">Hỗ trợ kéo thả hóa đơn siêu thị, tiền điện, nước uống, đồ dọn phòng...</div>
           </div>
           <div id="billScanPreviewContainer" class="hidden relative">
-            <img id="billImagePreview" src="" alt="Hóa đơn" class="max-h-56 mx-auto rounded-xl shadow-xs object-contain">
+            <img id="billImagePreview" src="" alt="Hóa đơn" class="max-h-60 mx-auto rounded-xl shadow-xs object-contain">
             <div id="billScanLaser" class="laser-line hidden"></div>
+            <button type="button" onclick="event.stopPropagation(); document.getElementById('billImageInput').click();" class="absolute top-2 right-2 px-2.5 py-1 bg-slate-900/75 hover:bg-slate-900 text-white rounded-lg text-[10px] font-bold backdrop-blur-xs transition flex items-center gap-1 shadow-md">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <span>Chọn ảnh khác</span>
+            </button>
           </div>
         </div>
 
-        <div id="billScanStatus" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-xl text-center">
-          <div class="inline-block animate-spin text-amber-600 text-lg mb-1"><i class="fa-solid fa-spinner"></i></div>
-          <div class="text-xs font-bold text-amber-900" id="billScanStatusText">Mắt thần AI đang đọc số tiền trên hóa đơn...</div>
+        <div id="billScanStatus" class="hidden p-3.5 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl text-center">
+          <div class="inline-block animate-spin text-amber-600 text-xl mb-1.5"><i class="fa-solid fa-spinner"></i></div>
+          <div class="text-xs font-bold text-amber-950 flex items-center justify-center gap-1.5" id="billScanStatusText">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+            <span>Mắt thần AI Gemini đang phân tích và đọc số tiền hóa đơn...</span>
+          </div>
+          <div class="text-[10px] text-amber-700/80 mt-1">Đang tự động nhận diện tên hóa đơn, tổng tiền và từng món đồ</div>
         </div>
+
+        <div id="aiScanErrorBox" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-2xl text-rose-900 text-xs"></div>
 
         <div id="billScanResultForm" class="hidden space-y-3 pt-2 border-t border-slate-100">
-          <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-[11px] font-medium">
-            <i class="fa-solid fa-check-circle text-emerald-600 mr-1"></i>
-            Đã nhận diện thành công! Vui lòng kiểm tra lại trước khi tạo:
+          <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-[11px] font-medium flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
+            <span>AI đã nhận diện thành công! Vui lòng kiểm tra và điều chỉnh trước khi lưu:</span>
           </div>
+
+          <!-- Chi tiết đơn vị phát hành & các món hàng AI đọc được -->
+          <div id="aiBillDetailsBox" class="hidden p-3 bg-indigo-50/70 rounded-xl border border-indigo-100 text-[11px] space-y-1.5"></div>
 
           <div>
             <label class="block font-bold text-slate-700 mb-1">Tên khoản chi</label>
-            <input type="text" id="aiExpenseName" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs">
+            <input type="text" id="aiExpenseName" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="VD: Hóa đơn siêu thị WinMart">
           </div>
 
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block font-bold text-slate-700 mb-1">Tổng số tiền (VNĐ)</label>
-              <input type="number" id="aiExpenseAmount" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-extrabold text-xs text-indigo-600">
+              <input type="number" id="aiExpenseAmount" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-extrabold text-xs text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="VD: 85000">
             </div>
             <div>
               <label class="block font-bold text-slate-700 mb-1">Phân loại</label>
-              <select id="aiExpenseCategory" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold">
+              <select id="aiExpenseCategory" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
                 <option value="Sinh hoạt">Sinh hoạt</option>
                 <option value="Ăn uống">Ăn uống</option>
                 <option value="Vệ sinh">Vệ sinh</option>
@@ -1014,18 +1027,18 @@
 
           <div>
             <label class="block font-bold text-slate-700 mb-1">Ai đã ứng tiền?</label>
-            <select id="aiExpensePayer" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs"></select>
+            <select id="aiExpensePayer" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold text-xs focus:ring-2 focus:ring-indigo-500 focus:bg-white transition"></select>
           </div>
 
           <div>
             <div class="flex items-center justify-between mb-1">
               <label class="font-bold text-slate-700">Người cùng chia tiền</label>
-              <button type="button" onclick="toggleAIBeneficiaries()" class="text-[10px] text-indigo-600 font-bold">Chọn tất cả</button>
+              <button type="button" onclick="toggleAIBeneficiaries()" class="text-[10px] text-indigo-600 hover:text-indigo-800 font-bold">Chọn tất cả</button>
             </div>
             <div id="aiBeneficiariesGrid" class="grid grid-cols-2 gap-1.5"></div>
           </div>
 
-          <button type="button" onclick="confirmAICreatedExpense()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+          <button type="button" onclick="confirmAICreatedExpense()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-check"></i>
             <span>Tạo Khoản Chi Ngay</span>
           </button>
@@ -3689,12 +3702,34 @@
       showToast("Đã xóa khoản chi!");
     }
 
+    let currentScannedBillData = null;
+
     function openScanBillModal() {
       selectedBillImageBase64 = null;
+      currentScannedBillData = null;
+      renderExpenseInputs();
+
+      // Tự động chọn người đăng nhập hiện tại nếu có
+      const savedUser = localStorage.getItem("current_user_name");
+      if (savedUser && appData.members && appData.members.length > 0) {
+        const found = appData.members.find(m => 
+          m.name.toLowerCase().includes(savedUser.toLowerCase()) || 
+          savedUser.toLowerCase().includes(m.name.toLowerCase())
+        );
+        if (found) {
+          const aiPayer = document.getElementById('aiExpensePayer');
+          if (aiPayer) aiPayer.value = found.id;
+        }
+      }
+
       document.getElementById('billScanPreviewContainer').classList.add('hidden');
       document.getElementById('billScanPlaceholder').classList.remove('hidden');
       document.getElementById('billScanStatus').classList.add('hidden');
       document.getElementById('billScanResultForm').classList.add('hidden');
+      const errBox = document.getElementById('aiScanErrorBox');
+      if (errBox) errBox.classList.add('hidden');
+      const detailsBox = document.getElementById('aiBillDetailsBox');
+      if (detailsBox) detailsBox.classList.add('hidden');
       document.getElementById('billImageInput').value = '';
       openModal('modalScanBill');
     }
@@ -3702,7 +3737,14 @@
     function handleBillImageSelected(e) {
       const file = e.target.files?.[0];
       if (!file) return;
+      handleBillFile(file);
+    }
 
+    function handleBillFile(file) {
+      if (!file || !file.type.startsWith('image/')) {
+        showToast('Vui lòng chọn tệp hình ảnh!', 'error');
+        return;
+      }
       const reader = new FileReader();
       reader.onload = function(evt) {
         selectedBillImageBase64 = evt.target.result;
@@ -3715,32 +3757,125 @@
       reader.readAsDataURL(file);
     }
 
-    function processBillScanningAI() {
+    async function processBillScanningAI() {
       const statusDiv = document.getElementById('billScanStatus');
       const laser = document.getElementById('billScanLaser');
       const resultForm = document.getElementById('billScanResultForm');
+      const errBox = document.getElementById('aiScanErrorBox');
+      const detailsBox = document.getElementById('aiBillDetailsBox');
+      const statusText = document.getElementById('billScanStatusText');
 
+      if (errBox) errBox.classList.add('hidden');
+      if (detailsBox) detailsBox.classList.add('hidden');
       statusDiv.classList.remove('hidden');
       laser.classList.remove('hidden');
       resultForm.classList.add('hidden');
 
-      setTimeout(() => {
+      if (statusText) {
+        statusText.innerHTML = `
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-500 mr-1.5 animate-pulse"></i>
+          <span>Mắt thần AI Gemini đang phân tích và đọc số tiền hóa đơn...</span>
+        `;
+      }
+
+      try {
+        const response = await fetch('/api/scan-bill', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageBase64: selectedBillImageBase64,
+          }),
+        });
+
+        const result = await response.json();
+
         laser.classList.add('hidden');
         statusDiv.classList.add('hidden');
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || 'AI không thể nhận diện được hóa đơn này.');
+        }
+
+        const data = result.data;
+        currentScannedBillData = data;
         resultForm.classList.remove('hidden');
 
-        const mockPresets = [
-          { name: "Hóa đơn Siêu thị WinMart (Gia vị + Nước mắm)", amount: 86000, category: "Ăn uống" },
-          { name: "Nước xả vải Comfort + Nước lau sàn", amount: 64000, category: "Vệ sinh" },
-          { name: "Tiền điện phòng KTX tháng này", amount: 240000, category: "Điện nước" },
-          { name: "2 Bình nước khoáng Lavie 20L", amount: 44000, category: "Sinh hoạt" }
-        ];
-        const randomPreset = mockPresets[Math.floor(Math.random() * mockPresets.length)];
+        // Điền tự động các trường
+        document.getElementById('aiExpenseName').value = data.expenseName || 'Hóa đơn mua sắm';
+        document.getElementById('aiExpenseAmount').value = data.totalAmount > 0 ? data.totalAmount : '';
+        document.getElementById('aiExpenseCategory').value = data.category || 'Sinh hoạt';
 
-        document.getElementById('aiExpenseName').value = randomPreset.name;
-        document.getElementById('aiExpenseAmount').value = randomPreset.amount;
-        document.getElementById('aiExpenseCategory').value = randomPreset.category;
-      }, 1400);
+        // Hiển thị chi tiết các mặt hàng và cửa hàng nếu nhận diện được
+        if (detailsBox) {
+          let html = '';
+          if (data.merchantName) {
+            html += `<div class="flex items-center gap-1.5 text-indigo-700 font-bold mb-1"><i class="fa-solid fa-store"></i> <span>${escapeHTML(data.merchantName)}</span></div>`;
+          }
+          if (data.items && data.items.length > 0) {
+            html += `<div class="font-semibold text-slate-700 mb-1 flex items-center justify-between">
+              <span>Chi tiết món hàng nhận diện (${data.items.length}):</span>
+              <span class="text-[10px] text-slate-400">AI tự trích xuất</span>
+            </div>`;
+            html += `<div class="max-h-28 overflow-y-auto space-y-1 bg-white p-2 rounded-lg border border-indigo-100 divide-y divide-slate-100">`;
+            data.items.forEach(item => {
+              const priceText = (item.price && item.price > 0) ? formatVND(item.price) : '';
+              html += `<div class="flex items-center justify-between text-[11px] pt-1 first:pt-0">
+                <span class="text-slate-700 truncate pr-2 font-medium">• ${escapeHTML(item.name || 'Món đồ')}</span>
+                <span class="font-bold text-slate-900 shrink-0">${priceText}</span>
+              </div>`;
+            });
+            html += `</div>`;
+          }
+          if (data.notes) {
+            html += `<div class="text-[10px] text-slate-500 italic mt-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info text-indigo-500"></i><span>${escapeHTML(data.notes)}</span></div>`;
+          }
+
+          if (html) {
+            detailsBox.innerHTML = html;
+            detailsBox.classList.remove('hidden');
+          }
+        }
+
+        showToast('AI Gemini đã nhận diện hóa đơn thành công!', 'success');
+      } catch (err) {
+        laser.classList.add('hidden');
+        statusDiv.classList.add('hidden');
+        if (errBox) {
+          errBox.innerHTML = `
+            <div class="flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-exclamation text-rose-500 text-base mt-0.5 shrink-0"></i>
+              <div class="flex-grow">
+                <div class="font-bold text-rose-900">Không thể nhận diện hóa đơn tự động</div>
+                <div class="text-[11px] text-rose-700 mt-0.5 leading-relaxed">${escapeHTML(err.message || 'Lỗi nhận diện')}</div>
+                <div class="mt-2.5 flex items-center gap-2 flex-wrap">
+                  <button type="button" onclick="processBillScanningAI()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-[11px] transition flex items-center gap-1 shadow-xs">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Thử lại</span>
+                  </button>
+                  <button type="button" onclick="document.getElementById('billImageInput').click()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold text-[11px] transition flex items-center gap-1">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>Chọn ảnh khác</span>
+                  </button>
+                  <button type="button" onclick="openManualFromScan()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-bold text-[11px] transition">
+                    Tự nhập tay
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          errBox.classList.remove('hidden');
+        }
+        showToast(err.message || 'Lỗi khi quét hóa đơn!', 'error');
+      }
+    }
+
+    function openManualFromScan() {
+      const errBox = document.getElementById('aiScanErrorBox');
+      if (errBox) errBox.classList.add('hidden');
+      const resultForm = document.getElementById('billScanResultForm');
+      if (resultForm) resultForm.classList.remove('hidden');
+      const nameInput = document.getElementById('aiExpenseName');
+      if (nameInput && !nameInput.value) nameInput.value = "Hóa đơn mua sắm";
     }
 
     function toggleAIBeneficiaries() {
@@ -4478,6 +4613,10 @@
       if (!str) return "";
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
+    window.escapeHTML = escapeHtml;
+    function escapeHTML(str) {
+      return escapeHtml(str);
+    }
 
     // Tự động kết nối Firebase khi tải trang nếu đã có phiên đăng nhập phòng
     window.addEventListener("DOMContentLoaded", () => {
@@ -4485,6 +4624,34 @@
       if (savedRoom) {
         const initRoomId = savedRoom.trim().toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '-');
         firebaseSubscribeRoom(initRoomId, window.appData ? window.appData.roomName : "");
+      }
+
+      // Thiết lập kéo thả ảnh hóa đơn (Drag & Drop)
+      const dropZone = document.getElementById('billDropZone');
+      if (dropZone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+          dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('border-amber-500', 'bg-amber-50/80');
+          }, false);
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+          dropZone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('border-amber-500', 'bg-amber-50/80');
+          }, false);
+        });
+        dropZone.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          const files = dt ? dt.files : null;
+          if (files && files.length > 0 && files[0].type.startsWith('image/')) {
+            if (typeof handleBillFile === 'function') {
+              handleBillFile(files[0]);
+            }
+          }
+        }, false);
       }
     });
   </script>
