@@ -228,14 +228,39 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    /* Touch optimization for mobile tap targets */
+
+    /* Tối ưu hóa kích thước font chữ toàn trang trên điện thoại (nhỏ gọn, vừa vặn như thanh tab) */
     @media (max-width: 640px) {
+      html {
+        font-size: 13.5px;
+      }
+      body {
+        font-size: 0.8125rem;
+        -webkit-text-size-adjust: 100%;
+      }
+      /* Đồng bộ form input, textarea, select và button nhỏ gọn vừa màn hình mobile */
       input, select, textarea {
-        font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+        font-size: 0.8125rem !important;
       }
       .touch-target {
-        min-height: 44px;
-        min-width: 44px;
+        min-height: 40px;
+        min-width: 40px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      html {
+        font-size: 12.5px;
+      }
+      body {
+        font-size: 0.8125rem;
+      }
+      input, select, textarea {
+        font-size: 0.8125rem !important;
+      }
+      .touch-target {
+        min-height: 38px;
+        min-width: 38px;
       }
     }
   </style>
