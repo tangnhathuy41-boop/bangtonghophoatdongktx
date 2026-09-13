@@ -1,6 +1,6 @@
 {
   "name": "KTX Splitter & Clean",
-  "description": "Quản lý phòng KTX, chia tiền chi tiêu, quét hóa đơn tự động bằng AI Gemini, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ",
+  "description": "Quản lý phòng KTX: chia tiền chi tiêu, quét hóa đơn AI Gemini, ngân sách & tiết kiệm hàng tháng, thông báo trình duyệt & cảnh báo buổi sáng nhắc trực nhật, quyết toán VietQR, bảng tin nội bộ",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

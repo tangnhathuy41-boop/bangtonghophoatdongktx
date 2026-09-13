@@ -7,9 +7,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="theme-color" content="#4f46e5">
-  <meta name="description" content="Quản lý phòng KTX, chia tiền chi tiêu, quét hóa đơn tự động bằng AI Gemini, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
+  <meta name="description" content="Quản lý phòng KTX: chia tiền chi tiêu, quét hóa đơn AI Gemini, ngân sách & tiết kiệm hàng tháng, thông báo trình duyệt & cảnh báo buổi sáng nhắc trực nhật, quyết toán VietQR, bảng tin nội bộ">
   <meta property="og:title" content="KTX Splitter & Clean - Quản Lý Phòng KTX">
-  <meta property="og:description" content="Quản lý phòng KTX, chia tiền chi tiêu, quét hóa đơn tự động bằng AI Gemini, quyết toán công nợ VietQR, lịch trực nhật vệ sinh và bảng tin nội bộ">
+  <meta property="og:description" content="Quản lý phòng KTX: chia tiền chi tiêu, quét hóa đơn AI Gemini, ngân sách & tiết kiệm hàng tháng, thông báo trình duyệt & cảnh báo buổi sáng nhắc trực nhật, quyết toán VietQR, bảng tin nội bộ">
 
   <title>KTX Splitter & Clean - Quản Lý Phòng KTX</title>
 
@@ -67,101 +67,227 @@
       box-shadow: 0 0 15px #38bdf8, 0 0 30px #818cf8;
       animation: scanLaser 2s infinite ease-in-out;
     }
+
+    /* =========================================================
+       NEUMORPHIC SOFT UI DESIGN SYSTEM (Theme Đăng Nhập 3D Mềm)
+       ========================================================= */
+    .neu-overlay-bg {
+      background-color: #e6ecf4 !important;
+      background-image: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.75) 0%, rgba(230, 236, 244, 0.95) 75%) !important;
+      perspective: 1200px;
+    }
+    .neu-card-surface {
+      background: #e6ecf4;
+      border-radius: 38px;
+      box-shadow: 20px 20px 48px #cad3df, -20px -20px 48px #ffffff;
+      transition: transform 0.15s ease-out, box-shadow 0.2s ease-out;
+      transform-style: preserve-3d;
+      will-change: transform, box-shadow;
+    }
+    .neu-extruded-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #e6ecf4;
+      box-shadow: 7px 7px 16px #cad3df, -7px -7px 16px #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    .neu-extruded-circle:hover {
+      box-shadow: 9px 9px 22px #bcc6d2, -9px -9px 22px #ffffff;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .neu-extruded-circle:active {
+      box-shadow: inset 4px 4px 8px #cad3df, inset -4px -4px 8px #ffffff;
+      transform: translateY(0) scale(0.97);
+    }
+    .neu-inset-field {
+      background: #e6ecf4;
+      border-radius: 20px;
+      box-shadow: inset 4px 4px 8px #cad3df, inset -4px -4px 8px #ffffff;
+      border: 1.5px solid transparent;
+      transition: all 0.25s ease;
+    }
+    .neu-inset-field:focus-within {
+      box-shadow: inset 5px 5px 11px #bcc6d2, inset -5px -5px 11px #ffffff, 0 0 0 3px rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .neu-main-btn {
+      background: #e6ecf4;
+      border-radius: 20px;
+      box-shadow: 7px 7px 16px #cad3df, -7px -7px 16px #ffffff;
+      color: #1e293b;
+      font-weight: 800;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .neu-main-btn:hover {
+      box-shadow: 10px 10px 22px #bcc6d2, -10px -10px 22px #ffffff;
+      color: #0f172a;
+      transform: translateY(-1.5px);
+    }
+    .neu-main-btn:active {
+      box-shadow: inset 4px 4px 9px #cad3df, inset -4px -4px 9px #ffffff;
+      transform: translateY(0) scale(0.985);
+    }
+    .neu-check-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 7px;
+      background: #e6ecf4;
+      box-shadow: inset 2px 2px 5px #cad3df, inset -2px -2px 5px #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+    }
+    .neu-check-box.checked {
+      box-shadow: 3px 3px 7px #cad3df, -3px -3px 7px #ffffff;
+      background: #e6ecf4;
+      color: #4f46e5;
+      transform: scale(1.05);
+    }
+    .neu-eye-toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      color: #94a3b8;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+    .neu-eye-toggle:hover {
+      color: #4f46e5;
+      background: rgba(255, 255, 255, 0.5);
+      box-shadow: 2px 2px 5px #cad3df, -2px -2px 5px #ffffff;
+    }
+    .neu-eye-toggle:active {
+      box-shadow: inset 2px 2px 4px #cad3df, inset -2px -2px 4px #ffffff;
+      transform: scale(0.92);
+    }
+    /* Ambient Floating 3D Neumorphic Spheres */
+    .neu-orb-1 {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: #e6ecf4;
+      box-shadow: 18px 18px 38px #cad3df, -18px -18px 38px #ffffff;
+      top: 6%;
+      left: 8%;
+      pointer-events: none;
+      opacity: 0.55;
+      animation: neuFloat1 8s ease-in-out infinite alternate;
+    }
+    .neu-orb-2 {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: #e6ecf4;
+      box-shadow: 15px 15px 32px #cad3df, -15px -15px 32px #ffffff;
+      bottom: 8%;
+      right: 9%;
+      pointer-events: none;
+      opacity: 0.45;
+      animation: neuFloat2 9s ease-in-out infinite alternate;
+    }
+    @keyframes neuFloat1 {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-24px) rotate(8deg); }
+    }
+    @keyframes neuFloat2 {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(22px) rotate(-6deg); }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-700">
 
-  <!-- Màn hình Đăng nhập phủ kín - Thiết kế theo phong cách Colorlib Login_v9 Siêu Đẹp -->
-  <div id="login-overlay" style="position: fixed; inset: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(30, 27, 75, 0.82) 0%, rgba(79, 70, 229, 0.76) 48%, rgba(147, 51, 234, 0.80) 100%), url('https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat; z-index: 9999; display: none; justify-content: center; align-items: center; padding: 20px 14px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow-y: auto;">
-    <div style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 42px 32px 32px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6); width: 100%; max-width: 410px; text-align: center; position: relative;">
+  <!-- MÀN HÌNH ĐĂNG NHẬP NEUMORPHIC SOFT UI 3D (Thiết kế mềm mại, tinh tế với tương tác vật lý 3D chân thực) -->
+  <div id="login-overlay" class="neu-overlay-bg fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden select-none" style="display: none;">
+    <!-- Quả cầu nổi Neumorphic tạo chiều sâu không gian -->
+    <div class="neu-orb-1 hidden sm:block"></div>
+    <div class="neu-orb-2 hidden sm:block"></div>
+
+    <div id="loginCardSurface" class="neu-card-surface w-full max-w-[390px] px-8 pt-9 pb-8 sm:px-9 sm:pt-10 sm:pb-9 text-center relative mx-auto my-auto z-10" style="border: 1px solid rgba(255, 255, 255, 0.45);">
       
-      <!-- Top Logo Badge (Login_v9 Signature) -->
-      <div style="width: 66px; height: 66px; margin: 0 auto 16px; border-radius: 22px; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 26px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.42);">
-        <i class="fa-solid fa-hotel"></i>
+      <!-- Top Extruded Circle (Avatar 3D nổi Neumorphic trên đỉnh) -->
+      <div class="neu-extruded-circle mx-auto mb-5" title="KTX Account">
+        <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
       </div>
 
-      <!-- Tiêu đề & Phụ đề -->
-      <h2 style="margin: 0 0 4px; color: #1e1b4b; font-size: 26px; font-weight: 900; letter-spacing: -0.5px;">KTX Split & Clean</h2>
-      <p style="color: #64748b; font-size: 13px; font-weight: 500; margin: 0 0 24px; line-height: 1.5;">Vui lòng kết nối mã phòng để tiếp tục</p>
+      <!-- Tiêu đề & Phụ đề chuẩn thiết kế -->
+      <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-1.5">Welcome back</h2>
+      <p class="text-xs text-slate-400 font-medium mb-6">Please sign in to continue</p>
       
       <!-- Form Đăng Nhập -->
-      <form id="login-form">
-        <!-- Input 1: Mã phòng KTX -->
-        <div style="margin-bottom: 14px; text-align: left;">
-          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
-            Mã phòng KTX <span style="color: #ef4444;">*</span>
-          </label>
-          <div style="position: relative; background: #f8fafc; border-radius: 20px; border: 1.5px solid #e2e8f0; transition: all 0.2s;" onfocusin="this.style.borderColor='#6366f1'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.15)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none';">
-            <i class="fa-solid fa-door-open" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6366f1; font-size: 15px;"></i>
-            <input type="text" id="login-room-id" placeholder="Ví dụ: KTX402" required style="width: 100%; height: 48px; background: transparent; border: none; outline: none; padding: 0 16px 0 44px; font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase; font-family: monospace; letter-spacing: 1px; box-sizing: border-box;">
+      <form id="login-form" class="space-y-3.5 text-left">
+        <!-- Input 1: Mã phòng KTX (Email address style với rãnh chìm inset 3D) -->
+        <div>
+          <div class="neu-inset-field flex items-center h-[52px] px-4 gap-3">
+            <i class="fa-regular fa-envelope text-slate-400 text-sm shrink-0"></i>
+            <input type="text" id="login-room-id" placeholder="Mã phòng KTX (VD: KTX402)" required autocomplete="off"
+              class="w-full bg-transparent border-none outline-none text-xs font-bold text-slate-700 placeholder:text-slate-400 uppercase font-mono tracking-wider">
           </div>
         </div>
         
-        <!-- Input 2: Tên của bạn -->
-        <div style="margin-bottom: 18px; text-align: left;">
-          <label style="display: block; font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
-            Tên của bạn <span style="color: #ef4444;">*</span>
-          </label>
-          <div style="position: relative; background: #f8fafc; border-radius: 20px; border: 1.5px solid #e2e8f0; transition: all 0.2s;" onfocusin="this.style.borderColor='#6366f1'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(99, 102, 241, 0.15)';" onfocusout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none';">
-            <i class="fa-solid fa-user" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6366f1; font-size: 15px;"></i>
-            <input type="text" id="login-user-name" placeholder="Ví dụ: Nhật Huy" required style="width: 100%; height: 48px; background: transparent; border: none; outline: none; padding: 0 16px 0 44px; font-size: 14px; font-weight: 600; color: #0f172a; box-sizing: border-box;">
+        <!-- Input 2: Tên của bạn (Password style với rãnh chìm inset 3D & con mắt tương tác) -->
+        <div>
+          <div class="neu-inset-field flex items-center h-[52px] px-4 gap-3">
+            <i class="fa-solid fa-lock text-slate-400 text-sm shrink-0"></i>
+            <input type="text" id="login-user-name" placeholder="Tên của bạn (VD: Nhật Huy)" required autocomplete="off"
+              class="w-full bg-transparent border-none outline-none text-xs font-semibold text-slate-700 placeholder:text-slate-400">
+            <button type="button" id="toggleLoginNameEyeBtn" onclick="toggleLoginNameVisibility()" class="neu-eye-toggle shrink-0" title="Ẩn/Hiện tên hiển thị">
+              <i id="toggleLoginNameEyeIcon" class="fa-regular fa-eye text-xs"></i>
+            </button>
+          </div>
+          <div class="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium mt-1.5 px-1">
+            <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>
+            <span>Tự động cập nhật bạn vào danh sách thành viên</span>
           </div>
         </div>
 
-        <!-- Hàng Gợi ý & Ghi nhớ -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; font-size: 12px;">
-          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: #64748b; font-weight: 600; user-select: none;">
-            <input type="checkbox" id="login-remember-me" checked style="accent-color: #6366f1; width: 15px; height: 15px; cursor: pointer;">
-            <span>Ghi nhớ phòng này</span>
+        <!-- Hàng Gợi ý & Ghi nhớ (Remember me neumorphic check box) -->
+        <div class="flex items-center justify-between text-xs pt-1 pb-1.5 px-0.5">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none text-slate-500 text-xs font-medium" onclick="toggleRememberMeCheck(event)">
+            <input type="checkbox" id="login-remember-me" checked class="hidden">
+            <div id="neuCheckVisual" class="neu-check-box checked shrink-0">
+              <i class="fa-solid fa-check text-[10px]"></i>
+            </div>
+            <span class="text-[12px] text-slate-500 font-medium">Remember me</span>
           </label>
-          <button type="button" onclick="quickFillRoom('KTX402', 'Nhật Huy')" style="background: none; border: none; color: #6366f1; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline;">
-            Dùng phòng mẫu 402
+          <button type="button" onclick="quickFillRoom('KTX402', 'Nhật Huy')" class="text-xs font-medium text-slate-400 hover:text-indigo-600 transition underline-offset-2 hover:underline">
+            Phòng mẫu 402?
           </button>
         </div>
         
-        <!-- Nút Submit Gradient Đậm Chất Login_v9 -->
-        <button type="submit" id="login-submit-btn" style="width: 100%; height: 50px; border-radius: 25px; border: none; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); transition: all 0.25s;" onmouseover="this.style.background='linear-gradient(135deg, #4338ca 0%, #6d28d9 100%)'; this.style.boxShadow='0 12px 30px rgba(79, 70, 229, 0.55)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)'; this.style.boxShadow='0 10px 25px rgba(79, 70, 229, 0.4)'; this.style.transform='translateY(0)';" onmousedown="this.style.transform='scale(0.98)';" onmouseup="this.style.transform='translateY(-1px)';">
-          <span>VÀO PHÒNG KTX</span>
-          <i class="fa-solid fa-bolt" style="color: #fde047;"></i>
+        <!-- Nút Submit Neumorphic 3D (Sign In button) -->
+        <button type="submit" id="login-submit-btn" class="neu-main-btn w-full h-[50px] flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider text-slate-800 mt-3">
+          <span>Sign In</span>
         </button>
       </form>
 
-      <!-- Phân cách kiểu Login_v9: Or login with / Vào nhanh -->
-      <div style="position: relative; margin: 24px 0 16px; text-align: center;">
-        <div style="position: absolute; inset: 0; display: flex; align-items: center;">
-          <div style="width: 100%; border-top: 1px solid #e2e8f0;"></div>
-        </div>
-        <span style="position: relative; background: #ffffff; padding: 0 10px; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">
-          HOẶC CHỌN NHANH PHÒNG MẪU
-        </span>
-      </div>
-
-      <!-- Các nút thành viên mẫu nhanh (Social style buttons của Login_v9) -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px;">
-        <button type="button" onclick="quickFillRoom('KTX402', 'Nhật Huy')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
-          <div style="font-size: 14px; margin-bottom: 2px;">👑</div>
-          <div>KTX402</div>
-          <div style="font-size: 9px; color: #64748b;">(Huy - T.Phòng)</div>
-        </button>
-
-        <button type="button" onclick="quickFillRoom('KTX402', 'Hoàng Long')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
-          <div style="font-size: 14px; margin-bottom: 2px;">⚡</div>
-          <div>KTX402</div>
-          <div style="font-size: 9px; color: #64748b;">(Hoàng Long)</div>
-        </button>
-
-        <button type="button" onclick="quickFillRoom('KTX305', 'Văn Bảo')" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 10px 4px; font-size: 11px; font-weight: 700; color: #334155; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#6366f1'; this.style.background='#eff6ff'; this.style.color='#4f46e5';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.color='#334155';">
-          <div style="font-size: 14px; margin-bottom: 2px;">🌱</div>
-          <div>KTX305</div>
-          <div style="font-size: 9px; color: #64748b;">(Văn Bảo)</div>
-        </button>
-      </div>
-
-      <!-- Chân trang thẻ đăng nhập -->
-      <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 600; color: #94a3b8; padding-top: 14px; border-top: 1px solid #f1f5f9;">
-        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background-color: #10b981;"></span>
-        <span>Đồng bộ mây & Bảng kê VietQR KTX</span>
-      </div>
+      <!-- Chân trang "Don't have a room? Tạo phòng mới" -->
+      <p class="text-xs text-slate-400 font-medium mt-6 mb-1">
+        Don't have a room? <button type="button" onclick="document.getElementById('login-room-id').focus()" class="text-slate-700 font-bold hover:underline">Tạo phòng mới</button>
+      </p>
 
     </div>
   </div>
@@ -223,6 +349,12 @@
             </div>
             <span id="headerUserName" class="hidden sm:inline max-w-[85px] truncate">Huy</span>
           </button>
+
+          <!-- Nút Đăng Xuất Ra Màn Hình Đăng Nhập -->
+          <button type="button" onclick="dangXuatHanRaNgoai()" class="flex items-center gap-1 text-xs font-bold px-2 sm:px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition shrink-0 shadow-2xs" title="Đăng xuất ra màn hình đăng nhập ban đầu">
+            <i class="fa-solid fa-arrow-right-from-bracket text-xs text-rose-600"></i>
+            <span class="hidden sm:inline">Đăng xuất</span>
+          </button>
         </div>
       </div>
 
@@ -244,6 +376,25 @@
       </div>
       <button onclick="toggleSidebar(false)" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
         <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Thông tin người dùng trong Sidebar -->
+    <div class="px-3 pt-3 pb-1">
+      <button type="button" onclick="toggleSidebar(false); openUserProfileModal();" class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-indigo-50/60 hover:bg-indigo-100/80 border border-indigo-100 transition text-left">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div id="drawerUserAvatar" class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-xs">
+            H
+          </div>
+          <div class="min-w-0">
+            <div id="drawerUserName" class="font-black text-slate-900 text-xs truncate">Nhật Huy</div>
+            <div class="text-[10px] text-indigo-600 font-semibold flex items-center gap-1">
+              <span>Tài khoản cá nhân</span>
+              <i class="fa-solid fa-angle-right text-[9px]"></i>
+            </div>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-white text-indigo-700 border border-indigo-200 shadow-2xs">Xem</span>
       </button>
     </div>
 
@@ -291,6 +442,14 @@
         <span id="sidebarMemberCountBadge" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700 font-extrabold">6</span>
       </button>
 
+      <button onclick="selectTabFromSidebar('budget')" id="navBudgetBtn" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-piggy-bank w-4 text-center text-emerald-600"></i>
+          <span>Ngân Sách & Tiết Kiệm</span>
+        </div>
+        <span id="sidebarBudgetBadge" class="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-extrabold">Hạn mức</span>
+      </button>
+
       <!-- Quản lý & chọn phòng -->
       <div class="pt-3 border-t border-slate-100 mt-2">
         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mb-1">Cài Đặt Phòng KTX</div>
@@ -310,6 +469,11 @@
           <span>Sao lưu dữ liệu (JSON)</span>
         </button>
 
+        <button onclick="toggleSidebar(false); dangXuatHanRaNgoai();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-amber-700 hover:bg-amber-50 transition">
+          <i class="fa-solid fa-arrow-right-from-bracket w-4 text-center text-amber-600"></i>
+          <span>Đăng xuất về màn hình đăng nhập</span>
+        </button>
+
         <button onclick="toggleSidebar(false); openDeleteRoomModal();" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition">
           <i class="fa-solid fa-trash-can w-4 text-center text-rose-500"></i>
           <span>Xóa phòng KTX này</span>
@@ -324,6 +488,9 @@
 
   <!-- MAIN CONTAINER -->
   <main class="max-w-6xl w-full mx-auto p-3 sm:p-6 space-y-4 flex-grow">
+
+    <!-- CẢNH BÁO ĐẨY LÊN ĐẦU TRANG & NHẮC NHỞ TRỰC NHẬT BUỔI SÁNG -->
+    <div id="morningDutyAlertContainer"></div>
 
     <!-- BẢNG THÔNG BÁO PHÒNG -->
     <section id="topNoticeCard" class="bg-gradient-to-r from-amber-50/90 via-orange-50/70 to-rose-50/80 border border-amber-200/90 rounded-2xl p-2.5 sm:p-3 shadow-xs transition-all">
@@ -364,6 +531,11 @@
       <button onclick="switchTab('expenses')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
         <div class="text-[10px] text-slate-400 font-semibold">Tổng chi tiêu</div>
         <div id="compactTotalExpense" class="font-bold text-slate-800 text-xs whitespace-nowrap">145.000&nbsp;₫</div>
+      </button>
+
+      <button onclick="switchTab('budget')" class="px-2.5 py-1 text-left min-w-0 hover:text-emerald-600 transition shrink-0">
+        <div class="text-[10px] text-slate-400 font-semibold">Ngân sách & Tiết kiệm</div>
+        <div id="compactBudgetHealth" class="font-bold text-emerald-600 text-xs whitespace-nowrap">Đang theo dõi</div>
       </button>
 
       <button onclick="switchTab('settlement')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
@@ -411,7 +583,6 @@
 
     <!-- ==================== TAB 1: KHOẢN CHI TIÊU PHÒNG ==================== -->
     <div id="tabContent-expenses" class="space-y-4">
-      
       <!-- Form Thêm Khoản Chi Mới -->
       <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
         <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
@@ -522,6 +693,10 @@
       </div>
 
     </div>
+    <!-- ==================== TAB NGÂN SÁCH & TIẾT KIỆM PHÒNG KTX ==================== -->
+    <div id="tabContent-budget" class="hidden space-y-4">
+      <div id="roomBudgetFullDashboard"></div>
+    </div>
 
     <!-- ==================== TAB 2: QUYẾT TOÁN CÔNG NỢ & VIETQR ==================== -->
     <div id="tabContent-settlement" class="hidden space-y-4">
@@ -582,7 +757,11 @@
             </h3>
             <p class="text-xs text-slate-400">Theo dõi ca trực nhật và bấm vào để xin đổi ca khi bận</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openDutyNotificationModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition flex items-center gap-1.5 border border-indigo-200/80">
+              <i class="fa-solid fa-bell"></i>
+              <span>Cài đặt thông báo</span>
+            </button>
             <button onclick="openSpinWheelModal()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-xs transition flex items-center gap-1.5">
               <i class="fa-solid fa-dharmachakra"></i>
               <span>Vòng quay random</span>
@@ -1198,6 +1377,87 @@
     </div>
   </div>
 
+  <!-- MODAL: CÀI ĐẶT THÔNG BÁO & CẢNH BÁO TRỰC NHẬT TRÌNH DUYỆT -->
+  <div id="modalDutyNotification" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col relative animate-scaleIn">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shadow-xs">
+            <i class="fa-solid fa-bell"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base">Thông Báo Trực Nhật KTX</h3>
+            <p class="text-xs text-slate-400">Nhắc nhở qua thông báo trình duyệt & cảnh báo buổi sáng</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalDutyNotification')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-left">
+        <!-- Trạng thái quyền thông báo hiện tại -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700">Quyền thông báo trình duyệt:</span>
+            <span id="dutyNotifStatusBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-200 text-slate-700">
+              Đang kiểm tra...
+            </span>
+          </div>
+          <p id="dutyNotifStatusDesc" class="text-[11px] text-slate-500 leading-relaxed">
+            Hệ thống sẽ tự động hiển thị dải cảnh báo nổi bật ở đầu trang và gửi thông báo đẩy đến máy của bạn vào buổi sáng ngày đến ca trực nhật.
+          </p>
+          <div class="flex items-center gap-2 pt-1">
+            <button id="btnRequestNotifPerm" onclick="requestDutyNotificationPermission()" class="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-bell"></i>
+              <span>Cấp Quyền / Bật Thông Báo</span>
+            </button>
+            <button onclick="triggerDutyNotificationTest()" class="py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs">
+              <i class="fa-solid fa-vial text-indigo-600"></i>
+              <span>Gửi thử ngay</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cài đặt khung giờ buổi sáng -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">
+            Khung giờ ưu tiên nhắc nhở buổi sáng:
+          </label>
+          <select id="selectDutyNotifHour" onchange="saveDutyNotifPreference()" class="w-full py-2.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition">
+            <option value="6">06:00 Sáng (Dành cho bạn dậy sớm)</option>
+            <option value="7">07:00 Sáng (Khuyên dùng - Chuẩn bị đi học)</option>
+            <option value="8">08:00 Sáng (Đầu giờ sáng)</option>
+            <option value="9">09:00 Sáng</option>
+          </select>
+          <p class="text-[10px] text-slate-400 mt-1">Khi bạn truy cập KTX Splitter, cảnh báo đẩy trực nhật sẽ ghim ngay đầu trang cho đến khi bạn bấm hoàn thành.</p>
+        </div>
+
+        <!-- Nhắc Zalo nhanh bạn cùng phòng -->
+        <div class="p-3.5 bg-amber-50/80 border border-amber-200/70 rounded-2xl space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-amber-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-paper-plane text-amber-600"></i>
+              <span>Mẫu tin nhắn nhắc bạn cùng phòng qua Zalo</span>
+            </span>
+            <button onclick="copyZaloDutyReminder()" class="text-xs font-bold text-amber-700 hover:text-amber-900 underline flex items-center gap-1">
+              <i class="fa-regular fa-copy text-[10px]"></i>
+              <span>Sao chép</span>
+            </button>
+          </div>
+          <div id="dutyZaloTemplatePreview" class="text-[11px] text-amber-900 bg-white/90 p-2.5 rounded-xl border border-amber-200/60 font-sans leading-relaxed select-all">
+            👋 Chào bạn! Hôm nay đến lượt bạn trực nhật phòng KTX...
+          </div>
+        </div>
+
+        <!-- Nút hoàn tất -->
+        <button onclick="closeModal('modalDutyNotification')" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition">
+          Xong & Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: VÒNG QUAY RANDOM -->
   <div id="modalSpinWheel" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full p-4 sm:p-6 shadow-2xl border border-slate-100 flex flex-col text-center">
@@ -1357,6 +1617,153 @@
     </div>
   </div>
 
+  <!-- MODAL: THIẾT LẬP & TẠO NGÂN SÁCH PHÒNG KTX -->
+  <div id="modalBudgetSetup" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col relative max-h-[90vh] overflow-y-auto animate-scaleIn">
+      <button onclick="closeModal('modalBudgetSetup')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 pb-3 mb-4 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-black shadow-xs">
+          <i class="fa-solid fa-piggy-bank"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-slate-900 text-base" id="modalBudgetTitle">Thiết Lập Ngân Sách Phòng</h3>
+          <p class="text-xs text-slate-400">Kiểm soát chi tiêu phòng KTX hàng tháng</p>
+        </div>
+      </div>
+
+      <form id="formBudgetSetup" onsubmit="handleSaveBudget(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tổng hạn mức ngân sách (VNĐ) <span class="text-rose-500">*</span></label>
+          <div class="relative">
+            <input type="number" id="inputBudgetTotal" required min="50000" step="10000" placeholder="VD: 2000000" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-extrabold text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
+            <span class="absolute right-3.5 top-2.5 text-xs font-bold text-slate-400">₫</span>
+          </div>
+          <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+            <span class="text-[10px] text-slate-400 font-bold">Gợi ý nhanh:</span>
+            <button type="button" onclick="setQuickBudget(1000000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-[10px] font-bold text-slate-600 transition">1 Triệu</button>
+            <button type="button" onclick="setQuickBudget(1500000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-[10px] font-bold text-slate-600 transition">1.5 Triệu</button>
+            <button type="button" onclick="setQuickBudget(2000000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-[10px] font-bold text-slate-600 transition">2 Triệu</button>
+            <button type="button" onclick="setQuickBudget(3000000)" class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-[10px] font-bold text-slate-600 transition">3 Triệu</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kỳ / Tháng áp dụng</label>
+            <input type="text" id="inputBudgetMonth" placeholder="VD: 09/2026" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú ngân sách</label>
+            <input type="text" id="inputBudgetNote" placeholder="VD: Quỹ chung phòng KTX" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
+          </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-chart-pie text-emerald-600 text-xs"></i>
+              <span>Phân bổ theo danh mục (tùy chọn)</span>
+            </span>
+            <button type="button" onclick="distributeBudgetEqually()" class="text-[10px] text-indigo-600 hover:underline font-bold">
+              ⚡ Tự chia theo tỷ lệ
+            </button>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-600 font-semibold w-24 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>Ăn uống:</span>
+              <div class="relative flex-grow">
+                <input type="number" id="catBudget_AnUong" step="10000" placeholder="0" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                <span class="absolute right-2 top-1.5 text-[10px] text-slate-400">₫</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-600 font-semibold w-24 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500 inline-block"></span>Sinh hoạt:</span>
+              <div class="relative flex-grow">
+                <input type="number" id="catBudget_SinhHoat" step="10000" placeholder="0" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                <span class="absolute right-2 top-1.5 text-[10px] text-slate-400">₫</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-600 font-semibold w-24 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-teal-500 inline-block"></span>Vệ sinh:</span>
+              <div class="relative flex-grow">
+                <input type="number" id="catBudget_VeSinh" step="10000" placeholder="0" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                <span class="absolute right-2 top-1.5 text-[10px] text-slate-400">₫</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-600 font-semibold w-24 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>Điện nước:</span>
+              <div class="relative flex-grow">
+                <input type="number" id="catBudget_DienNuoc" step="10000" placeholder="0" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                <span class="absolute right-2 top-1.5 text-[10px] text-slate-400">₫</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-slate-600 font-semibold w-24 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>Khác:</span>
+              <div class="relative flex-grow">
+                <input type="number" id="catBudget_Khac" step="10000" placeholder="0" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+                <span class="absolute right-2 top-1.5 text-[10px] text-slate-400">₫</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
+          <button type="button" id="btnDeleteBudget" onclick="handleDeleteBudget()" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-600 font-bold text-xs transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>Xóa</span>
+          </button>
+          <button type="submit" class="flex-grow py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i>
+            <span>Lưu Ngân Sách Phòng</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: BÁO CÁO TIẾT KIỆM PHÒNG KTX GỬI ZALO / MESSENGER -->
+  <div id="modalSavingsReport" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col relative max-h-[90vh] overflow-y-auto animate-scaleIn">
+      <button onclick="closeModal('modalSavingsReport')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-3 pb-3 mb-4 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-black shadow-xs">
+          <i class="fa-solid fa-piggy-bank"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-slate-900 text-base">Báo Cáo Tiết Kiệm Phòng KTX</h3>
+          <p class="text-xs text-slate-400">Sao chép nhanh để gửi vào nhóm chat Zalo/Messenger</p>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div class="text-xs font-semibold text-slate-600 flex items-center justify-between">
+          <span>Nội dung báo cáo tự động:</span>
+          <span class="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-check"></i> Đã đối soát ngân sách
+          </span>
+        </div>
+        <textarea id="savingsReportTextarea" rows="10" readonly class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-mono text-slate-800 leading-relaxed focus:outline-none select-all focus:ring-2 focus:ring-emerald-500/20"></textarea>
+        
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" onclick="copySavingsReportText()" class="flex-grow py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-copy"></i>
+            <span>Sao Chép Báo Cáo Gửi Zalo</span>
+          </button>
+          <button type="button" onclick="closeModal('modalSavingsReport')" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: ĐỔI SANG PHÒNG KTX KHÁC (BẮT BUỘC NHẬP MÃ PHÒNG) -->
   <div id="modalDoiPhongKTX" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
     <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col relative animate-scaleIn">
@@ -1484,6 +1891,34 @@
     </div>
   </div>
 
+  <!-- MODAL: XÁC NHẬN ĐĂNG XUẤT PHÒNG KTX -->
+  <div id="modalLogoutConfirm" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 modal-backdrop hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 sm:p-6 shadow-2xl border border-slate-100 flex flex-col relative animate-scaleIn text-center">
+      <button onclick="closeModal('modalLogoutConfirm')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center text-xs transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center text-2xl mx-auto shadow-md shadow-rose-500/20 mb-3">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </div>
+
+      <h3 class="font-black text-slate-900 text-base sm:text-lg">Đăng Xuất Khỏi Phòng?</h3>
+      <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+        Bạn sẽ quay lại màn hình đăng nhập ban đầu để có thể nhập tên thành viên mới hoặc kết nối vào phòng KTX khác.
+      </p>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-4 mt-2 border-t border-slate-100">
+        <button type="button" onclick="closeModal('modalLogoutConfirm')" class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+          Ở Lại
+        </button>
+        <button type="button" onclick="thucHienDangXuatNgay()" class="py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+          <span>Đăng Xuất</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST THÔNG BÁO TỰ ĐỘNG -->
   <div id="toastNotification" class="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl border border-slate-700/80 flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
     <div id="toastIcon" class="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 text-xs">
@@ -1513,13 +1948,11 @@
           const nameInput = document.getElementById("login-user-name");
           if (roomInput) {
             roomInput.value = "";
-            roomInput.parentElement.style.borderColor = "#e2e8f0";
-            roomInput.parentElement.style.backgroundColor = "#f8fafc";
+            roomInput.parentElement.style.borderColor = "transparent";
           }
           if (nameInput) {
             nameInput.value = "";
-            nameInput.parentElement.style.borderColor = "#e2e8f0";
-            nameInput.parentElement.style.backgroundColor = "#f8fafc";
+            nameInput.parentElement.style.borderColor = "transparent";
           }
         }
       } else {
@@ -1543,15 +1976,57 @@
             // Nút bấm hiển thị trạng thái đang kết nối
             const submitBtn = document.getElementById("login-submit-btn");
             if (submitBtn) {
-              submitBtn.innerHTML = `<span>ĐANG VÀO PHÒNG...</span> <i class="fa-solid fa-spinner fa-spin"></i>`;
+              submitBtn.innerHTML = `<span>Signing In...</span> <i class="fa-solid fa-spinner fa-spin text-xs"></i>`;
               submitBtn.style.opacity = "0.85";
               submitBtn.style.pointerEvents = "none";
             }
 
-            // Tải lại trang để áp dụng phòng mới và đồng bộ
-            setTimeout(() => {
-              location.reload();
-            }, 350);
+            const targetSlug = roomId.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, "-");
+            const isDifferentRoom = (currentActiveRoomId !== targetSlug);
+
+            if (isDifferentRoom) {
+              // Chuyển phòng nếu người dùng nhập mã phòng khác
+              isRoomCodeVerified = true;
+              if (typeof switchActiveRoom === 'function') {
+                switchActiveRoom(targetSlug, `Phòng ${roomId}`);
+              }
+            }
+
+            // Đồng bộ định danh phòng và tên thành viên
+            if (typeof syncUserAndRoomState === 'function') {
+              syncUserAndRoomState(roomId, userName);
+            }
+
+            // Tự động kiểm tra và cập nhật tên đó lên tab thành viên nếu chưa trùng
+            let isNewAdded = false;
+            if (typeof ensureUserInMembersList === 'function') {
+              isNewAdded = ensureUserInMembersList(userName);
+            }
+
+            // Đóng màn hình đăng nhập mượt mà không cần reload
+            if (loginOverlay) {
+              loginOverlay.style.transition = "opacity 0.25s ease-out";
+              loginOverlay.style.opacity = "0";
+              setTimeout(() => {
+                loginOverlay.style.display = "none";
+                loginOverlay.style.opacity = "1";
+                if (submitBtn) {
+                  submitBtn.innerHTML = `<span>Sign In</span>`;
+                  submitBtn.style.opacity = "1";
+                  submitBtn.style.pointerEvents = "auto";
+                }
+              }, 250);
+            }
+
+            if (isNewAdded) {
+              if (typeof showToast === 'function') {
+                showToast(`Chào mừng ${userName}! Đã cập nhật bạn vào danh sách thành viên phòng.`, "success");
+              }
+            } else {
+              if (typeof showToast === 'function') {
+                showToast(`Chào mừng ${userName} đã vào ${appData.roomName || 'phòng'}!`, "info");
+              }
+            }
           }
         });
       }
@@ -1743,20 +2218,119 @@
     }
     window.xacNhanDoiSangPhongMoi = xacNhanDoiSangPhongMoi;
 
+    function openUserProfileModal() {
+      const currentUserName = (localStorage.getItem("current_user_name") || "Bạn cùng phòng").trim();
+      const initial = (typeof getNameInitial === 'function' ? getNameInitial(currentUserName) : (currentUserName.charAt(0) || 'U')).toUpperCase();
+
+      const modalName = document.getElementById("modalUserDisplayName");
+      const modalAvatar = document.getElementById("modalUserAvatarLarge");
+      const modalRole = document.getElementById("modalUserRoleBadge");
+      const modalEmail = document.getElementById("modalUserEmailText");
+
+      if (modalName) modalName.innerText = currentUserName;
+      if (modalAvatar) modalAvatar.innerText = initial;
+
+      if (modalRole) {
+        const members = (window.appData && window.appData.members) || [];
+        const isLeader = members.length > 0 && typeof isSameMemberName === 'function' && isSameMemberName(members[0].name, currentUserName);
+        if (isLeader) {
+          modalRole.innerText = "Trưởng Phòng";
+          modalRole.className = "inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 mt-1";
+        } else {
+          modalRole.innerText = "Thành viên KTX";
+          modalRole.className = "inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 mt-1";
+        }
+      }
+
+      if (modalEmail) {
+        const safeEmail = currentUserName.toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/đ/g, "d").replace(/Đ/g, "D")
+          .replace(/[^a-z0-9]/g, "");
+        modalEmail.innerText = (safeEmail || "user") + "@ktx.vn";
+      }
+
+      const roomNameEl = document.getElementById("profileCurrentRoomName");
+      if (roomNameEl) {
+        roomNameEl.innerText = (window.appData && window.appData.roomName) || "Phòng KTX";
+      }
+
+      if (typeof updateRoomCodeDisplay === 'function') {
+        updateRoomCodeDisplay();
+      }
+
+      if (typeof openModal === 'function') {
+        openModal("modalUserProfile");
+      } else {
+        const modal = document.getElementById("modalUserProfile");
+        if (modal) modal.classList.remove("hidden");
+      }
+    }
+    window.openUserProfileModal = openUserProfileModal;
+
     function dangXuatHanRaNgoai() {
-      if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi phòng và quay lại màn hình đăng nhập ban đầu?")) {
-        localStorage.removeItem("current_room_id");
-        localStorage.removeItem("current_user_name");
-        try {
-          if (window.history && window.history.replaceState) {
-            const cleanPath = window.location.pathname || '/';
-            window.history.replaceState({}, '', cleanPath);
-          }
-        } catch (e) {}
-        location.reload();
+      // Mở modal xác nhận đăng xuất chuyên nghiệp thay vì confirm() có thể bị chặn trong iframe
+      if (typeof openModal === "function") {
+        openModal("modalLogoutConfirm");
+      } else {
+        thucHienDangXuatNgay();
       }
     }
     window.dangXuatHanRaNgoai = dangXuatHanRaNgoai;
+
+    function thucHienDangXuatNgay() {
+      try {
+        closeModal("modalLogoutConfirm");
+        closeModal("modalUserProfile");
+        closeModal("modalDoiPhongKTX");
+        closeModal("modalRoomHub");
+      } catch (e) {}
+
+      // Xóa thông tin phòng và phiên người dùng
+      localStorage.removeItem("current_room_id");
+      localStorage.removeItem("current_user_name");
+      localStorage.removeItem("is_room_verified");
+      try {
+        sessionStorage.clear();
+      } catch (e) {}
+
+      try {
+        if (window.history && window.history.replaceState) {
+          const cleanPath = window.location.pathname || '/';
+          window.history.replaceState({}, '', cleanPath);
+        }
+      } catch (e) {}
+
+      // Hiển thị ngay màn hình đăng nhập loginOverlay
+      const loginOverlay = document.getElementById("login-overlay");
+      if (loginOverlay) {
+        loginOverlay.style.display = "flex";
+        const roomInput = document.getElementById("login-room-id");
+        const nameInput = document.getElementById("login-user-name");
+        if (roomInput) {
+          roomInput.value = "";
+          roomInput.parentElement.style.borderColor = "transparent";
+        }
+        if (nameInput) {
+          nameInput.value = "";
+          nameInput.parentElement.style.borderColor = "transparent";
+        }
+        const submitBtn = document.getElementById("login-submit-btn");
+        if (submitBtn) {
+          submitBtn.innerHTML = `<span>Sign In</span>`;
+          submitBtn.style.opacity = "1";
+          submitBtn.style.pointerEvents = "auto";
+        }
+      }
+
+      showToast("Đã đăng xuất khỏi phòng KTX!", "info");
+
+      // Tải lại trang để reset hoàn toàn bộ nhớ state về màn hình đăng nhập
+      setTimeout(() => {
+        location.reload();
+      }, 350);
+    }
+    window.thucHienDangXuatNgay = thucHienDangXuatNgay;
 
     function openDeleteRoomModal() {
       const input = document.getElementById("inputDeleteRoomCodeConfirm");
@@ -1883,17 +2457,15 @@
           const nameInput = document.getElementById("login-user-name");
           if (roomInput) {
             roomInput.value = "";
-            roomInput.parentElement.style.borderColor = "#e2e8f0";
-            roomInput.parentElement.style.backgroundColor = "#f8fafc";
+            roomInput.parentElement.style.borderColor = "transparent";
           }
           if (nameInput) {
             nameInput.value = "";
-            nameInput.parentElement.style.borderColor = "#e2e8f0";
-            nameInput.parentElement.style.backgroundColor = "#f8fafc";
+            nameInput.parentElement.style.borderColor = "transparent";
           }
           const submitBtn = document.getElementById("login-submit-btn");
           if (submitBtn) {
-            submitBtn.innerHTML = `<span>VÀO PHÒNG KTX</span> <i class="fa-solid fa-bolt" style="color: #fde047;"></i>`;
+            submitBtn.innerHTML = `<span>Sign In</span>`;
             submitBtn.style.opacity = "1";
             submitBtn.style.pointerEvents = "auto";
           }
@@ -1915,32 +2487,120 @@
     }
     window.handleConfirmDeleteRoom = handleConfirmDeleteRoom;
 
-    // 4. Hàm điền nhanh phòng mẫu (Quick-fill)
+    // 4. Các hàm tương tác giao diện Neumorphic Soft UI 3D
+    function toggleLoginNameVisibility() {
+      const nameInput = document.getElementById("login-user-name");
+      const eyeIcon = document.getElementById("toggleLoginNameEyeIcon");
+      const eyeBtn = document.getElementById("toggleLoginNameEyeBtn");
+      if (!nameInput || !eyeIcon) return;
+
+      if (nameInput.type === "password") {
+        nameInput.type = "text";
+        eyeIcon.className = "fa-regular fa-eye-slash text-xs text-indigo-600";
+      } else {
+        nameInput.type = "password";
+        eyeIcon.className = "fa-regular fa-eye text-xs text-slate-400";
+      }
+      if (eyeBtn) {
+        eyeBtn.style.transform = "scale(0.88)";
+        setTimeout(() => { eyeBtn.style.transform = "scale(1)"; }, 150);
+      }
+    }
+    window.toggleLoginNameVisibility = toggleLoginNameVisibility;
+
+    function toggleRememberMeCheck(e) {
+      if (e) e.preventDefault();
+      const cb = document.getElementById("login-remember-me");
+      const visual = document.getElementById("neuCheckVisual");
+      if (!cb || !visual) return;
+
+      cb.checked = !cb.checked;
+      visual.classList.toggle("checked", cb.checked);
+      visual.style.transform = "scale(0.9)";
+      setTimeout(() => { visual.style.transform = cb.checked ? "scale(1.05)" : "scale(1)"; }, 120);
+    }
+    window.toggleRememberMeCheck = toggleRememberMeCheck;
+
+    // Hàm điền nhanh phòng mẫu (Quick-fill) kèm phản hồi thị giác
     function quickFillRoom(roomId, userName) {
       const roomInput = document.getElementById("login-room-id");
       const nameInput = document.getElementById("login-user-name");
       if (roomInput) {
         roomInput.value = roomId;
-        roomInput.parentElement.style.borderColor = "#6366f1";
-        roomInput.parentElement.style.backgroundColor = "#eff6ff";
+        roomInput.parentElement.style.borderColor = "rgba(99, 102, 241, 0.4)";
+        roomInput.parentElement.style.transform = "scale(1.01)";
       }
       if (nameInput) {
         nameInput.value = userName;
-        nameInput.parentElement.style.borderColor = "#6366f1";
-        nameInput.parentElement.style.backgroundColor = "#eff6ff";
+        nameInput.parentElement.style.borderColor = "rgba(99, 102, 241, 0.4)";
+        nameInput.parentElement.style.transform = "scale(1.01)";
       }
       setTimeout(() => {
         if (roomInput && roomInput.parentElement) {
-          roomInput.parentElement.style.borderColor = "#e2e8f0";
-          roomInput.parentElement.style.backgroundColor = "#f8fafc";
+          roomInput.parentElement.style.borderColor = "transparent";
+          roomInput.parentElement.style.transform = "scale(1)";
         }
         if (nameInput && nameInput.parentElement) {
-          nameInput.parentElement.style.borderColor = "#e2e8f0";
-          nameInput.parentElement.style.backgroundColor = "#f8fafc";
+          nameInput.parentElement.style.borderColor = "transparent";
+          nameInput.parentElement.style.transform = "scale(1)";
         }
-      }, 600);
+      }, 350);
     }
     window.quickFillRoom = quickFillRoom;
+
+    // Khởi tạo hiệu ứng con trỏ chuột vật lý 3D Parallax & Nguồn sáng chân thực
+    function initNeumorphic3DInteractions() {
+      const overlay = document.getElementById("login-overlay");
+      const card = document.getElementById("loginCardSurface");
+      if (!overlay || !card) return;
+
+      let rafId = null;
+
+      overlay.addEventListener("mousemove", (e) => {
+        if (window.innerWidth < 640) return; // Bỏ qua trên màn hình cảm ứng nhỏ
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          const rect = card.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          const deltaX = (e.clientX - centerX) / (rect.width / 2);
+          const deltaY = (e.clientY - centerY) / (rect.height / 2);
+
+          const clampX = Math.max(-1, Math.min(1, deltaX));
+          const clampY = Math.max(-1, Math.min(1, deltaY));
+
+          // Độ nghiêng xoay 3D
+          const rotX = (-clampY * 5.5).toFixed(2);
+          const rotY = (clampX * 5.5).toFixed(2);
+
+          // Bóng đổ động 3D mô phỏng góc chiếu sáng thực
+          const shadowDistX = (20 + clampX * 5).toFixed(1);
+          const shadowDistY = (20 + clampY * 5).toFixed(1);
+
+          card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(4px)`;
+          card.style.boxShadow = `${shadowDistX}px ${shadowDistY}px 48px #cad3df, -${shadowDistX}px -${shadowDistY}px 48px #ffffff`;
+        });
+      });
+
+      overlay.addEventListener("mouseleave", () => {
+        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)";
+        card.style.boxShadow = "20px 20px 48px #cad3df, -20px -20px 48px #ffffff";
+      });
+
+      // Tự động viết hoa mã phòng khi nhập
+      const roomInput = document.getElementById("login-room-id");
+      if (roomInput) {
+        roomInput.addEventListener("input", (e) => {
+          e.target.value = e.target.value.toUpperCase();
+        });
+      }
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initNeumorphic3DInteractions);
+    } else {
+      initNeumorphic3DInteractions();
+    }
 
     function syncUserAndRoomState(savedRoomId, savedUserName) {
       if (!savedRoomId || !savedUserName) return;
@@ -1977,6 +2637,11 @@
       if (drawerRoom) drawerRoom.innerText = appData.roomName;
 
       updateRoomCodeDisplay();
+
+      // Đảm bảo tên người dùng đăng nhập có trong danh sách thành viên phòng
+      if (typeof ensureUserInMembersList === 'function') {
+        ensureUserInMembersList(savedUserName);
+      }
     }
     const defaultState = {
       roomName: "Phòng 402 - KTX",
@@ -2060,6 +2725,22 @@
         { dayIndex: 4, dayName: "Thứ 6", memberId: "m5", done: false, task: "Đổ rác & Quét gầm giường", emoji: "🗑️", reason: "" },
         { dayIndex: 5, dayName: "Thứ 7", memberId: "m6", done: false, task: "Tổng vệ sinh ban công", emoji: "🪟", reason: "" },
         { dayIndex: 6, dayName: "Chủ Nhật", memberId: "m1", done: false, task: "Tổng vệ sinh phòng cuối tuần", emoji: "✨", reason: "" }
+      ],
+      budget: {
+        total: 1500000,
+        month: "09/2026",
+        note: "Quỹ phòng KTX sinh hoạt chung",
+        categories: {
+          "Ăn uống": 500000,
+          "Sinh hoạt": 400000,
+          "Vệ sinh": 250000,
+          "Điện nước": 300000,
+          "Khác": 50000
+        }
+      },
+      savingsHistory: [
+        { month: "08/2026", budget: 1500000, spent: 1180000, saved: 320000, rate: 21.3, note: "Tháng hè, tiết kiệm điện nước & nấu ăn chung" },
+        { month: "07/2026", budget: 1500000, spent: 1240000, saved: 260000, rate: 17.3, note: "Ôn thi cuối kỳ, ít liên hoan ngoài quán" }
       ]
     };
 
@@ -2073,6 +2754,75 @@
     let activeQRTransfer = null;
     let lastLocalSavedTimestamp = 0;
     let isBroadcasting = false;
+
+    // ==================== QUẢN LÝ TỰ ĐỘNG THÊM THÀNH VIÊN THEO TÊN ĐĂNG NHẬP ====================
+    function isSameMemberName(existingName, newName) {
+      if (!existingName || !newName) return false;
+      const cleanA = existingName.trim().toLowerCase().replace(/\s+/g, ' ');
+      const cleanB = newName.trim().toLowerCase().replace(/\s+/g, ' ');
+      if (cleanA === cleanB) return true;
+
+      // Loại bỏ chức danh / ghi chú trong ngoặc: ví dụ "Nhật Huy (Trưởng Phòng)" -> "Nhật Huy"
+      const baseA = cleanA.replace(/\(.*?\)/g, '').trim();
+      const baseB = cleanB.replace(/\(.*?\)/g, '').trim();
+      if (baseA && baseB && baseA === baseB) return true;
+
+      // Kiểm tra tên gọi ngắn (First name)
+      const shortA = getShortName(existingName).toLowerCase();
+      const shortB = getShortName(newName).toLowerCase();
+      if ((shortA && cleanB === shortA) || (shortA && baseB === shortA)) return true;
+      if ((shortB && cleanA === shortB) || (shortB && baseA === shortB)) return true;
+
+      return false;
+    }
+    window.isSameMemberName = isSameMemberName;
+
+    function ensureUserInMembersList(customUserName) {
+      const targetName = (customUserName || localStorage.getItem("current_user_name") || "").trim();
+      if (!targetName) return false;
+
+      if (!appData) return false;
+      if (!Array.isArray(appData.members)) appData.members = [];
+
+      // Kiểm tra xem đã có thành viên nào trùng tên trong phòng chưa
+      const exists = appData.members.some(m => isSameMemberName(m.name, targetName));
+      if (!exists) {
+        // Tên chưa có trong danh sách -> Cập nhật tên mới lên tab thành viên phòng
+        const newMember = {
+          id: 'm_' + Date.now(),
+          name: targetName,
+          bank: '',
+          account: ''
+        };
+        appData.members.push(newMember);
+
+        // Lưu dữ liệu vào bộ nhớ cục bộ
+        try {
+          localStorage.setItem(getLocalCacheKey(), JSON.stringify({
+            timestamp: Date.now(),
+            data: appData
+          }));
+        } catch (e) {}
+
+        // Cập nhật lại giao diện ngay lập tức
+        if (typeof renderMembersList === 'function') renderMembersList();
+        if (typeof renderExpenseInputs === 'function') renderExpenseInputs();
+        if (typeof updateStatistics === 'function') updateStatistics();
+        if (typeof updateUI === 'function') updateUI();
+
+        // Đồng bộ dữ liệu mới lên Firebase Firestore và kênh thời gian thực
+        if (typeof broadcastToAllDevices === 'function') {
+          broadcastToAllDevices();
+        } else if (typeof window.firebaseSyncRoomData === 'function') {
+          window.firebaseSyncRoomData(appData);
+        }
+
+        return true;
+      }
+
+      return false;
+    }
+    window.ensureUserInMembersList = ensureUserInMembersList;
 
     const RECENT_ROOMS_KEY = "KTX_RECENT_ROOMS_LIST_v1";
 
@@ -2330,6 +3080,11 @@
         }
       } catch (e) {}
 
+      // Tự động kiểm tra và thêm tên thành viên đăng nhập nếu chưa có trong phòng
+      if (typeof ensureUserInMembersList === 'function') {
+        ensureUserInMembersList(localStorage.getItem("current_user_name"));
+      }
+
       saveRoomToRecentList(roomId, appData.roomName || roomTitle);
 
       updateUI();
@@ -2382,6 +3137,11 @@
           }
         }
       } catch (e) {}
+
+      // Tự động kiểm tra và thêm tên thành viên đăng nhập nếu chưa có trong phòng
+      if (typeof ensureUserInMembersList === 'function') {
+        ensureUserInMembersList(localStorage.getItem("current_user_name"));
+      }
 
       saveRoomToRecentList(currentActiveRoomId, appData.roomName);
 
@@ -2458,6 +3218,11 @@
           data: appData
         }));
       } catch (e) {}
+
+      // Đảm bảo tên người dùng hiện tại không bị ghi đè mất khỏi danh sách
+      if (typeof ensureUserInMembersList === 'function') {
+        ensureUserInMembersList(localStorage.getItem("current_user_name"));
+      }
 
       updateUI();
       renderExpenseInputs();
@@ -3084,7 +3849,7 @@
 
     function switchTab(tabName) {
       currentActiveTab = tabName;
-      const tabs = ['notices', 'expenses', 'settlement', 'duty', 'members'];
+      const tabs = ['notices', 'expenses', 'budget', 'settlement', 'duty', 'members'];
       tabs.forEach(t => {
         const content = document.getElementById(`tabContent-${t}`);
         if (content) content.classList.toggle('hidden', t !== tabName);
@@ -3092,6 +3857,7 @@
 
       const sidebarNavMap = {
         expenses: 'navExpenseBtn',
+        budget: 'navBudgetBtn',
         settlement: 'navSettlementBtn',
         duty: 'navDutyBtn',
         notices: 'navNoticeBtn',
@@ -3130,6 +3896,10 @@
           compactStats.style.display = 'flex';
         }
       }
+
+      if (tabName === 'budget') {
+        renderBudgetTab();
+      }
     }
 
     function toggleTopNoticeBanner() {
@@ -3155,14 +3925,18 @@
 
     function updateUI() {
       updateSessionLabels();
+      renderMorningDutyAlert();
       renderTopNoticeBoard();
       renderFullNotices();
+      renderBudgetCard();
+      renderBudgetTab();
       renderExpenseTable();
       renderSettlement();
       renderCleaningSchedule();
       renderChecklistTasks();
       renderMembersList();
       updateStatistics();
+      checkAndSendMorningDutyNotification();
     }
 
     function updateStatistics() {
@@ -3195,21 +3969,64 @@
       const cAvg = document.getElementById('compactAvgExpense');
       const cDuty = document.getElementById('compactTodayDuty');
       const cTrans = document.getElementById('compactTransfers');
+      const cBudget = document.getElementById('compactBudgetHealth');
 
       if (cTot) cTot.innerHTML = formatVND(total);
       if (cAvg) cAvg.innerHTML = formatVND(avg);
       if (cDuty) cDuty.innerText = todayName;
       if (cTrans) cTrans.innerText = `${transfers.length} lệnh`;
 
+      if (cBudget) {
+        if (appData.budget && appData.budget.total > 0) {
+          const budgetTotal = parseFloat(appData.budget.total) || 0;
+          const savedAmount = budgetTotal - total;
+          if (savedAmount > 0) {
+            cBudget.className = "font-bold text-emerald-600 text-xs whitespace-nowrap";
+            cBudget.innerText = `+${formatVND(savedAmount)} (Tiết kiệm)`;
+          } else if (savedAmount === 0) {
+            cBudget.className = "font-bold text-indigo-600 text-xs whitespace-nowrap";
+            cBudget.innerText = `Vừa đủ 100%`;
+          } else {
+            cBudget.className = "font-bold text-rose-600 text-xs whitespace-nowrap";
+            cBudget.innerText = `Vượt -${formatVND(Math.abs(savedAmount))}`;
+          }
+        } else {
+          cBudget.className = "font-bold text-slate-400 text-xs whitespace-nowrap";
+          cBudget.innerText = "Chưa đặt";
+        }
+      }
+
       const noticeBadge = document.getElementById('sidebarNoticeBadge');
       const expenseBadge = document.getElementById('sidebarExpenseBadge');
       const memberBadge = document.getElementById('sidebarMemberCountBadge');
       const noticeTag = document.getElementById('noticeCountTag');
+      const sidebarBudgetBadge = document.getElementById('sidebarBudgetBadge');
 
       if (noticeBadge) noticeBadge.innerText = (appData.notices || []).length;
       if (noticeTag) noticeTag.innerText = (appData.notices || []).length;
       if (expenseBadge) expenseBadge.innerText = expenses.length;
       if (memberBadge) memberBadge.innerText = members.length;
+      if (sidebarBudgetBadge) {
+        if (appData.budget && appData.budget.total > 0) {
+          const budgetTotal = parseFloat(appData.budget.total) || 0;
+          const savedAmount = budgetTotal - total;
+          if (savedAmount > 0) {
+            const savedPct = Math.round((savedAmount / budgetTotal) * 100);
+            sidebarBudgetBadge.innerText = `+${savedPct}% Tiết kiệm`;
+            sidebarBudgetBadge.className = "text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-extrabold whitespace-nowrap";
+          } else if (savedAmount === 0) {
+            sidebarBudgetBadge.innerText = "Đúng hạn mức";
+            sidebarBudgetBadge.className = "text-[10px] text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full font-extrabold whitespace-nowrap";
+          } else {
+            const overPct = Math.round((Math.abs(savedAmount) / budgetTotal) * 100);
+            sidebarBudgetBadge.innerText = `-${overPct}% Vượt`;
+            sidebarBudgetBadge.className = "text-[10px] text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full font-extrabold whitespace-nowrap";
+          }
+        } else {
+          sidebarBudgetBadge.innerText = "Chưa đặt";
+          sidebarBudgetBadge.className = "text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-extrabold";
+        }
+      }
     }
 
     function renderTopNoticeBoard() {
@@ -3514,6 +4331,843 @@
       updateAmountPreview();
       showToast(`Đã lưu khoản chi: ${name} (${formatVND(amount)})!`, "success");
     }
+
+    /* =========================================================
+       QUẢN LÝ & THEO DÕI NGÂN SÁCH - TỰ ĐỘNG TÍNH TIẾT KIỆM PHÒNG KTX
+       ========================================================= */
+
+    // Card thu nhỏ hiển thị ở Tab Chi Tiêu
+    function renderBudgetCard() {
+      const container = document.getElementById('roomBudgetCardContainer');
+      if (!container) return;
+
+      const budget = appData.budget;
+      const expenses = appData.expenses || [];
+      const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+      // Nếu chưa có ngân sách hoặc total = 0
+      if (!budget || !budget.total || budget.total <= 0) {
+        container.innerHTML = `
+          <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50/50 rounded-3xl p-4 sm:p-5 border border-emerald-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start sm:items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl shrink-0 shadow-sm shadow-emerald-600/30">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Ngân Sách & Tự Động Tính Tiết Kiệm</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Chưa thiết lập</span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5 max-w-xl">
+                  Đặt hạn mức chi tiêu hàng tháng để hệ thống tự động so sánh với thực chi và tính toán số tiền phòng tiết kiệm được mỗi tháng.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="openBudgetSetupModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/25 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Thiết Lập Ngân Sách</span>
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const budgetTotal = parseFloat(budget.total) || 0;
+      const pct = Math.min(Math.round((totalSpent / budgetTotal) * 100), 999);
+      const savedAmount = budgetTotal - totalSpent;
+      const savingsRate = budgetTotal > 0 ? ((savedAmount / budgetTotal) * 100) : 0;
+      const members = appData.members || [];
+      const memberCount = Math.max(members.length, 1);
+      const savedPerMember = Math.round(savedAmount / memberCount);
+
+      let statusBadgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+      let statusIcon = "fa-circle-check";
+      let statusLabel = `Đang tiết kiệm (+${savingsRate.toFixed(1)}%)`;
+      let progressColor = "bg-gradient-to-r from-emerald-500 to-teal-500";
+
+      if (savedAmount < 0) {
+        statusBadgeClass = "bg-rose-100 text-rose-800 border-rose-200 animate-pulse";
+        statusIcon = "fa-triangle-exclamation";
+        statusLabel = `Vượt ngân sách (${Math.abs(savingsRate).toFixed(1)}%)`;
+        progressColor = "bg-gradient-to-r from-rose-500 to-red-600";
+      } else if (pct >= 80) {
+        statusBadgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+        statusIcon = "fa-circle-exclamation";
+        statusLabel = `Sắp chạm trần (${pct}%)`;
+        progressColor = "bg-gradient-to-r from-amber-500 to-orange-500";
+      }
+
+      container.innerHTML = `
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-xs space-y-3.5">
+          <!-- Header Card -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 gap-2 flex-wrap">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-black shrink-0">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Ngân Sách & Tiết Kiệm Phòng</h3>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-700 border border-slate-200">
+                    <i class="fa-regular fa-calendar text-[9px] mr-1"></i>${budget.month || 'Tháng này'}
+                  </span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${statusBadgeClass}">
+                    <i class="fa-solid ${statusIcon} text-[9px]"></i>
+                    <span>${statusLabel}</span>
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-0.5">${budget.note || 'Quỹ chi tiêu sinh hoạt chung phòng KTX'}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="switchTab('budget')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition">
+                <i class="fa-solid fa-chart-pie text-xs"></i>
+                <span>Mở Tab Tiết Kiệm</span>
+              </button>
+              <button onclick="openBudgetSetupModal()" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition" title="Chỉnh sửa ngân sách">
+                <i class="fa-solid fa-pen-to-square text-xs text-slate-500"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Highlight kết quả tính toán tiết kiệm -->
+          <div class="p-3 sm:p-3.5 rounded-2xl ${savedAmount >= 0 ? 'bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/80' : 'bg-gradient-to-r from-rose-50 via-amber-50 to-rose-50 border border-rose-200/80'} flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl ${savedAmount >= 0 ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} flex items-center justify-center text-sm font-black shrink-0">
+                <i class="fa-solid ${savedAmount >= 0 ? 'fa-coins' : 'fa-triangle-exclamation'}"></i>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase font-black tracking-wider ${savedAmount >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                  ${savedAmount >= 0 ? 'Tự động tính: Tiền tiết kiệm tháng này' : 'Tự động tính: Đã chi vượt ngân sách'}
+                </div>
+                <div class="text-lg sm:text-xl font-black ${savedAmount >= 0 ? 'text-emerald-800' : 'text-rose-800'} flex items-baseline gap-2">
+                  <span>${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedAmount))}</span>
+                  <span class="text-xs font-bold ${savedAmount >= 0 ? 'text-emerald-600' : 'text-rose-600'}">(${savedAmount >= 0 ? `+${savingsRate.toFixed(1)}%` : `-${Math.abs(savingsRate).toFixed(1)}%`})</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right text-[11px] ${savedAmount >= 0 ? 'text-emerald-700' : 'text-rose-700'} font-semibold border-t sm:border-t-0 pt-1.5 sm:pt-0 border-emerald-200/60">
+              <div>Bình quân / bạn: <strong class="font-black">${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedPerMember))}</strong></div>
+              <div class="text-[10px] text-slate-500 font-normal">Hạn mức: ${formatVND(budgetTotal)} | Đã chi: ${formatVND(totalSpent)}</div>
+            </div>
+          </div>
+
+          <!-- Thanh tiến độ -->
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-600 flex items-center gap-1.5">
+                <i class="fa-solid fa-gauge-high text-slate-400"></i>
+                <span>Tỷ lệ sử dụng ngân sách phòng</span>
+              </span>
+              <span class="font-black ${pct > 100 ? 'text-rose-600' : pct > 80 ? 'text-amber-600' : 'text-emerald-600'}">${pct}%</span>
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200">
+              <div class="h-full rounded-full transition-all duration-500 ${progressColor}" style="width: ${Math.min(pct, 100)}%"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    window.renderBudgetCard = renderBudgetCard;
+
+    // DASHBOARD TOÀN DIỆN TRONG TAB NGÂN SÁCH & TIẾT KIỆM
+    function renderBudgetTab() {
+      const container = document.getElementById('roomBudgetFullDashboard');
+      if (!container) return;
+
+      const budget = appData.budget;
+      const expenses = appData.expenses || [];
+      const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+      const members = appData.members || [];
+      const memberCount = Math.max(members.length, 1);
+
+      // Nếu chưa có ngân sách
+      if (!budget || !budget.total || budget.total <= 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm text-center space-y-4">
+            <div class="w-16 h-16 rounded-3xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center text-3xl mx-auto shadow-lg shadow-emerald-500/25">
+              <i class="fa-solid fa-piggy-bank"></i>
+            </div>
+            <div class="max-w-md mx-auto">
+              <h3 class="text-lg sm:text-xl font-black text-slate-900">Thiết Lập Ngân Sách Để Tự Động Tính Tiết Kiệm</h3>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed">
+                Khi đặt hạn mức ngân sách chi tiêu phòng, hệ thống sẽ tự động so sánh chi tiêu thực tế từng ngày và tính chính xác số tiền phòng tiết kiệm được hàng tháng!
+              </p>
+            </div>
+            <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button onclick="openBudgetSetupModal()" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md shadow-emerald-600/25 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Thiết Lập Ngân Sách Ngay</span>
+              </button>
+            </div>
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-center gap-2 flex-wrap text-xs text-slate-500">
+              <span>Hạn mức phổ biến:</span>
+              <button onclick="setQuickBudget(1000000); openBudgetSetupModal();" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 font-bold text-slate-700 transition">1.000.000 ₫</button>
+              <button onclick="setQuickBudget(1500000); openBudgetSetupModal();" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 font-bold text-slate-700 transition">1.500.000 ₫</button>
+              <button onclick="setQuickBudget(2000000); openBudgetSetupModal();" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 font-bold text-slate-700 transition">2.000.000 ₫</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const budgetTotal = parseFloat(budget.total) || 0;
+      const savedAmount = budgetTotal - totalSpent;
+      const savingsRate = budgetTotal > 0 ? ((savedAmount / budgetTotal) * 100) : 0;
+      const spentRate = budgetTotal > 0 ? Math.round((totalSpent / budgetTotal) * 100) : 0;
+      const savedPerMember = Math.round(savedAmount / memberCount);
+
+      // Tính tiến độ ngày trong tháng
+      const now = new Date();
+      const currentDay = now.getDate();
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const monthPacePct = Math.round((currentDay / daysInMonth) * 100);
+
+      // Lịch sử tiết kiệm tích lũy
+      const history = appData.savingsHistory || [];
+      const pastSavingsTotal = history.reduce((sum, h) => sum + (parseFloat(h.saved) || 0), 0);
+      const totalCumulativeSaved = pastSavingsTotal + (savedAmount > 0 ? savedAmount : 0);
+
+      // Danh mục chi tiết
+      const categoryMeta = [
+        { name: "Ăn uống", dot: "bg-amber-500", text: "text-amber-700", icon: "fa-utensils" },
+        { name: "Sinh hoạt", dot: "bg-sky-500", text: "text-sky-700", icon: "fa-bath" },
+        { name: "Vệ sinh", dot: "bg-teal-500", text: "text-teal-700", icon: "fa-broom" },
+        { name: "Điện nước", dot: "bg-rose-500", text: "text-rose-700", icon: "fa-bolt" },
+        { name: "Khác", dot: "bg-purple-500", text: "text-purple-700", icon: "fa-tags" }
+      ];
+
+      const categoryCards = categoryMeta.map(c => {
+        const catSpent = expenses.filter(e => e.category === c.name).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+        const catLimit = (budget.categories && budget.categories[c.name]) || 0;
+        const catSaved = catLimit - catSpent;
+        const catSavedRate = catLimit > 0 ? ((catSaved / catLimit) * 100) : 0;
+        const catSpentPct = catLimit > 0 ? Math.min(Math.round((catSpent / catLimit) * 100), 100) : 0;
+
+        return `
+          <div class="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 flex flex-col justify-between hover:bg-slate-50 transition">
+            <div>
+              <div class="flex items-center justify-between gap-1 mb-1.5">
+                <span class="font-extrabold text-xs text-slate-800 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full ${c.dot}"></span>
+                  <span>${c.name}</span>
+                </span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md ${catSaved >= 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                  ${catSaved >= 0 ? `Dư ${catSavedRate.toFixed(0)}%` : `Vượt`}
+                </span>
+              </div>
+
+              <div class="flex items-baseline justify-between text-xs mt-1">
+                <span class="text-[10px] text-slate-400 font-semibold">Đã tiêu:</span>
+                <span class="font-extrabold text-slate-900">${formatVND(catSpent)}</span>
+              </div>
+              <div class="flex items-baseline justify-between text-xs mt-0.5">
+                <span class="text-[10px] text-slate-400 font-semibold">Ngân sách:</span>
+                <span class="font-semibold text-slate-600 text-[11px]">${catLimit > 0 ? formatVND(catLimit) : 'Không giới hạn'}</span>
+              </div>
+            </div>
+
+            <div class="pt-2 mt-2 border-t border-slate-200/60">
+              <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1.5">
+                <div class="h-full rounded-full ${catSpent > catLimit && catLimit > 0 ? 'bg-rose-500' : catSpentPct > 80 ? 'bg-amber-500' : 'bg-emerald-500'}" style="width: ${catSpentPct}%"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] font-bold">
+                <span class="${catSaved >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                  ${catSaved >= 0 ? 'Tiết kiệm: +' : 'Vượt trần: -'}${formatVND(Math.abs(catSaved))}
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render danh sách lịch sử tiết kiệm các tháng
+      const historyRows = history.length > 0 ? history.map((h, idx) => `
+        <tr class="hover:bg-slate-50/80 transition">
+          <td class="py-3 px-3.5 font-bold text-slate-800 whitespace-nowrap flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-black">
+              <i class="fa-solid fa-calendar-check"></i>
+            </span>
+            <span>Tháng ${h.month}</span>
+          </td>
+          <td class="py-3 px-3.5 text-slate-600 font-semibold text-xs whitespace-nowrap">${formatVND(h.budget)}</td>
+          <td class="py-3 px-3.5 text-indigo-600 font-bold text-xs whitespace-nowrap">${formatVND(h.spent)}</td>
+          <td class="py-3 px-3.5 whitespace-nowrap">
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-extrabold ${h.saved >= 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+              <i class="fa-solid ${h.saved >= 0 ? 'fa-arrow-trend-up text-emerald-600' : 'fa-arrow-trend-down text-rose-600'} text-[10px]"></i>
+              <span>${h.saved >= 0 ? '+' : '-'}${formatVND(Math.abs(h.saved))} (${h.rate || 0}%)</span>
+            </span>
+          </td>
+          <td class="py-3 px-3.5 text-slate-500 text-xs truncate max-w-[180px]">${h.note || 'Lưu trữ tự động'}</td>
+          <td class="py-3 px-3.5 text-right whitespace-nowrap">
+            <button onclick="deleteSavingsHistory(${idx})" class="text-slate-400 hover:text-rose-600 text-xs p-1 transition" title="Xóa bản ghi này">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('') : `
+        <tr>
+          <td colspan="6" class="py-6 text-center text-xs text-slate-400">
+            Chưa có tháng nào được chốt sổ lưu trữ. Hãy bấm "Chốt Sổ Tháng Này" ở trên khi hết tháng!
+          </td>
+        </tr>
+      `;
+
+      container.innerHTML = `
+        <!-- HEADER TAB NGÂN SÁCH & TIẾT KIỆM -->
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-3 flex-wrap">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white flex items-center justify-center text-2xl font-black shadow-md shadow-emerald-500/20">
+                <i class="fa-solid fa-piggy-bank"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h2 class="font-black text-slate-900 text-base sm:text-lg">Ngân Sách & Tiết Kiệm Hàng Tháng</h2>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Kỳ ${budget.month || 'Tháng này'}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">
+                  Tự động tính toán số tiền tiết kiệm được dựa trên việc đối soát thực chi với ngân sách đã đặt
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+              <button onclick="openBudgetSetupModal()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-emerald-600"></i>
+                <span>Chỉnh Sửa Ngân Sách</span>
+              </button>
+              <button onclick="openSavingsReportModal()" class="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-share-nodes"></i>
+                <span>Báo Cáo Zalo</span>
+              </button>
+              <button onclick="archiveCurrentMonthSavings()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm shadow-emerald-600/20 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-box-archive"></i>
+                <span>Chốt Sổ Tháng Này</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KHỐI HERO: TỰ ĐỘNG TÍNH TOÁN SỐ TIỀN TIẾT KIỆM THÁNG NÀY -->
+          <div class="p-5 sm:p-6 rounded-3xl ${savedAmount >= 0 ? 'bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 text-white shadow-xl shadow-emerald-600/20' : 'bg-gradient-to-br from-rose-600 via-rose-700 to-amber-700 text-white shadow-xl shadow-rose-600/20'} relative overflow-hidden">
+            <div class="absolute -right-8 -bottom-8 opacity-15 text-9xl pointer-events-none">
+              <i class="fa-solid fa-piggy-bank"></i>
+            </div>
+
+            <div class="relative z-10 space-y-4">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full ${savedAmount >= 0 ? 'bg-white/20 text-emerald-100' : 'bg-white/20 text-rose-100'} text-xs font-extrabold backdrop-blur-xs">
+                  <i class="fa-solid ${savedAmount >= 0 ? 'fa-wand-magic-sparkles text-amber-300' : 'fa-triangle-exclamation text-amber-300'}"></i>
+                  <span>${savedAmount >= 0 ? 'TỰ ĐỘNG TÍNH TOÁN: TIẾT KIỆM THÀNH CÔNG' : 'CẢNH BÁO: CHI TIÊU VƯỢT HẠN MỨC'}</span>
+                </div>
+                <div class="text-xs font-medium text-white/80">
+                  <i class="fa-regular fa-clock mr-1"></i>Cập nhật tức thì theo hóa đơn
+                </div>
+              </div>
+
+              <div>
+                <div class="text-xs uppercase font-bold tracking-wider text-white/80">
+                  ${savedAmount >= 0 ? 'Số tiền phòng đã tiết kiệm được tháng này:' : 'Số tiền phòng đã chi tiêu vượt quá kế hoạch:'}
+                </div>
+                <div class="text-3xl sm:text-5xl font-black tracking-tight text-white mt-1 flex items-baseline gap-3 flex-wrap">
+                  <span>${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedAmount))}</span>
+                  <span class="text-base sm:text-lg font-bold px-3 py-1 rounded-xl bg-white/20 backdrop-blur-xs">
+                    ${savedAmount >= 0 ? `Đạt ${savingsRate.toFixed(1)}% ngân sách` : `Vượt ${Math.abs(savingsRate).toFixed(1)}%`}
+                  </span>
+                </div>
+                <div class="text-xs sm:text-sm text-white/90 mt-2 flex items-center gap-2 flex-wrap">
+                  <span class="bg-black/20 px-2.5 py-1 rounded-lg font-mono">
+                    ${formatVND(budgetTotal)} (Ngân sách) - ${formatVND(totalSpent)} (Đã chi) = ${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedAmount))}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Thẻ chia bình quân cho mỗi bạn -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div class="p-3.5 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15 flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-users"></i>
+                  </div>
+                  <div>
+                    <div class="text-[11px] text-white/75 font-semibold">Bình quân mỗi bạn ${savedAmount >= 0 ? 'để dành được' : 'cần bù thêm'}</div>
+                    <div class="text-base sm:text-lg font-black text-white">
+                      ${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedPerMember))} <span class="text-xs font-normal text-white/80">/ người</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white/10 backdrop-blur-xs border border-white/15 flex items-center justify-between gap-2">
+                  <div>
+                    <div class="text-[11px] text-white/75 font-semibold">Gợi ý phân bổ tiền tiết kiệm:</div>
+                    <div class="text-xs font-bold text-white mt-0.5">
+                      ${savedAmount > 0 ? 'Chuyển vào Quỹ Phòng hoặc liên hoan cuối kỳ!' : 'Cắt giảm các khoản ăn vặt & sinh hoạt ngoài!'}
+                    </div>
+                  </div>
+                  ${savedAmount > 0 ? `
+                    <button onclick="transferSavingsToCommonFund()" class="px-3 py-1.5 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 font-black text-xs shadow-md transition whitespace-nowrap">
+                      ⚡ Nạp Quỹ Chung
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 THẺ ĐỐI SOÁT TÀI CHÍNH TRỰC QUAN -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 mt-5">
+            <!-- Thẻ 1: Ngân Sách Đã Đặt -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">1. Ngân sách kế hoạch</span>
+                <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                  <i class="fa-solid fa-bullseye"></i>
+                </span>
+              </div>
+              <div class="text-xl sm:text-2xl font-black text-slate-900">${formatVND(budgetTotal)}</div>
+              <p class="text-xs text-slate-500 mt-1">Hạn mức chi tiêu tháng ${budget.month || 'này'}</p>
+            </div>
+
+            <!-- Thẻ 2: Thực Tế Đã Chi -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">2. Tổng chi tiêu thực tế</span>
+                <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs">
+                  <i class="fa-solid fa-receipt"></i>
+                </span>
+              </div>
+              <div class="text-xl sm:text-2xl font-black text-indigo-600">${formatVND(totalSpent)}</div>
+              <p class="text-xs text-slate-500 mt-1">Ghi nhận từ ${expenses.length} khoản chi trong phòng</p>
+            </div>
+
+            <!-- Thẻ 3: Số Tiền Tiết Kiệm Được -->
+            <div class="p-4 rounded-2xl ${savedAmount >= 0 ? 'bg-emerald-50 border border-emerald-200' : 'bg-rose-50 border border-rose-200'}">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold uppercase tracking-wider ${savedAmount >= 0 ? 'text-emerald-700' : 'text-rose-700'}">3. Tiết kiệm tự động</span>
+                <span class="w-7 h-7 rounded-lg ${savedAmount >= 0 ? 'bg-emerald-200 text-emerald-800' : 'bg-rose-200 text-rose-800'} flex items-center justify-center text-xs">
+                  <i class="fa-solid ${savedAmount >= 0 ? 'fa-coins' : 'fa-scale-unbalanced'}"></i>
+                </span>
+              </div>
+              <div class="text-xl sm:text-2xl font-black ${savedAmount >= 0 ? 'text-emerald-700' : 'text-rose-700'}">
+                ${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedAmount))}
+              </div>
+              <p class="text-xs ${savedAmount >= 0 ? 'text-emerald-700' : 'text-rose-700'} mt-1 font-semibold">
+                ${savedAmount >= 0 ? `Dư ${savingsRate.toFixed(1)}% so với ngân sách đề ra` : `Thâm hụt ${Math.abs(savingsRate).toFixed(1)}% so với hạn mức`}
+              </p>
+            </div>
+          </div>
+
+          <!-- THƯỚC ĐO TIẾN ĐỘ & DỰ BÁO TỐC ĐỘ CHI TIÊU THEO THỜI GIAN -->
+          <div class="mt-5 p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 space-y-3">
+            <div class="flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-gauge-high text-emerald-600"></i>
+                <span>Tỷ lệ ngân sách đã dùng (${spentRate}%) vs Thời gian tháng (${monthPacePct}%)</span>
+              </span>
+              <span class="text-slate-500 font-semibold text-[11px]">Ngày ${currentDay}/${daysInMonth}</span>
+            </div>
+
+            <!-- Double bar -->
+            <div class="space-y-1.5">
+              <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden p-0.5">
+                <div class="h-full rounded-full transition-all duration-500 ${spentRate > 100 ? 'bg-rose-600' : spentRate > 80 ? 'bg-amber-500' : 'bg-emerald-500'}" style="width: ${Math.min(spentRate, 100)}%"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-slate-500">Đã chi: <strong>${formatVND(totalSpent)}</strong> (${spentRate}%)</span>
+                <span class="${savedAmount >= 0 ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'}">
+                  ${savedAmount >= 0 ? `Tiết kiệm khả dụng: +${formatVND(savedAmount)}` : `Vượt mức: -${formatVND(Math.abs(savedAmount))}`}
+                </span>
+              </div>
+            </div>
+
+            <!-- Đánh giá tốc độ chi tiêu -->
+            <div class="text-xs p-2.5 rounded-xl ${spentRate <= monthPacePct ? 'bg-emerald-100/70 text-emerald-900 border border-emerald-200/60' : 'bg-amber-100/70 text-amber-900 border border-amber-200/60'} flex items-center gap-2">
+              <i class="fa-solid ${spentRate <= monthPacePct ? 'fa-circle-check text-emerald-600' : 'fa-circle-exclamation text-amber-600'} shrink-0 text-sm"></i>
+              <span>
+                ${spentRate <= monthPacePct 
+                  ? `Tuyệt vời! Tốc độ chi tiêu (${spentRate}%) chậm hơn tiến độ ngày trong tháng (${monthPacePct}%). Phòng đang duy trì mức tiết kiệm an toàn!` 
+                  : `Lưu ý: Tốc độ chi tiêu (${spentRate}%) đang nhanh hơn thời gian trôi qua (${monthPacePct}%). Hãy cân đối các khoản chi tiếp theo để giữ tiền tiết kiệm!`}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHÂN TÍCH TIẾT KIỆM TỪNG DANH MỤC -->
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div>
+              <h3 class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-emerald-600"></i>
+                <span>Đối Soát Tiết Kiệm Từng Danh Mục</span>
+              </h3>
+              <p class="text-xs text-slate-400">Tự động đối chiếu chi phí thực tế với định mức phân bổ của từng khoản</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            ${categoryCards}
+          </div>
+        </div>
+
+        <!-- HEO ĐẤT TÍCH LŨY & LỊCH SỬ TIẾT KIỆM CÁC THÁNG -->
+        <div class="bg-white rounded-3xl p-4 sm:p-6 border border-slate-200/80 shadow-xs space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 gap-3 flex-wrap">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg font-black shrink-0">
+                <i class="fa-solid fa-vault"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Heo Đất Tích Lũy & Lịch Sử Các Tháng</h3>
+                <p class="text-xs text-slate-400">Theo dõi thành tích tiết kiệm của cả phòng qua các kỳ học</p>
+              </div>
+            </div>
+
+            <!-- Tổng tích lũy badge -->
+            <div class="px-3.5 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-right">
+              <div class="text-[10px] uppercase font-bold text-emerald-700">Tổng tiền đã tiết kiệm lũy kế:</div>
+              <div class="text-base sm:text-lg font-black text-emerald-800">+${formatVND(totalCumulativeSaved)}</div>
+            </div>
+          </div>
+
+          <!-- Bảng lịch sử các tháng -->
+          <div class="overflow-x-auto rounded-2xl border border-slate-100">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200/80 text-slate-600 font-extrabold text-[11px] uppercase tracking-wider">
+                  <th class="py-3 px-3.5">Kỳ / Tháng</th>
+                  <th class="py-3 px-3.5">Ngân sách</th>
+                  <th class="py-3 px-3.5">Thực chi</th>
+                  <th class="py-3 px-3.5">Tiết kiệm được</th>
+                  <th class="py-3 px-3.5">Ghi chú</th>
+                  <th class="py-3 px-3.5 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${historyRows}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-slate-500 pt-2 flex-wrap gap-2">
+            <span>💡 Mẹo: Khi kết thúc tháng, hãy bấm nút <strong>"Chốt Sổ Tháng Này"</strong> để hệ thống tự động ghi nhận thành tích tiết kiệm vào bảng trên.</span>
+            <button onclick="archiveCurrentMonthSavings()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-bookmark text-emerald-600"></i>
+              <span>Lưu tháng ${budget.month || 'này'} vào lịch sử</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MẸO TIẾT KIỆM PHÒNG KTX -->
+        <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-indigo-50 rounded-3xl p-4 sm:p-5 border border-emerald-200/60 shadow-xs">
+          <div class="flex items-center gap-2 mb-2 text-emerald-900 font-extrabold text-xs">
+            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+            <span>Bí Quyết Tiết Kiệm Chi Phí KTX Hiệu Quả Cho Sinh Viên</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700 mt-2">
+            <div class="p-2.5 rounded-xl bg-white/70 border border-slate-200/50">
+              <strong class="text-slate-900 block mb-0.5">🛒 Đi chợ nấu ăn chung</strong>
+              Nấu cơm chung theo tuần thay vì mua đồ ăn vặt ngoài quán giúp giảm tới 40% chi phí ăn uống phòng.
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/70 border border-slate-200/50">
+              <strong class="text-slate-900 block mb-0.5">⚡ Quản lý điện nước tiết kiệm</strong>
+              Tắt bình nóng lạnh và điều hòa khi không có ai ở phòng để không bị nhảy bậc giá điện sinh viên.
+            </div>
+            <div class="p-2.5 rounded-xl bg-white/70 border border-slate-200/50">
+              <strong class="text-slate-900 block mb-0.5">📱 Quét hóa đơn ngay khi mua</strong>
+              Chụp hóa đơn chia tiền tức thì bằng AI giúp không bỏ sót khoản chi và luôn kiểm soát sát sao số dư.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    window.renderBudgetTab = renderBudgetTab;
+
+    // Xuất báo cáo tiết kiệm để chia sẻ qua Zalo
+    function openSavingsReportModal() {
+      const budget = appData.budget || {};
+      const expenses = appData.expenses || [];
+      const room = appData.roomName || 'Phòng 402 - KTX';
+      const members = appData.members || [];
+      const budgetTotal = parseFloat(budget.total) || 0;
+      const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+      const savedAmount = budgetTotal - totalSpent;
+      const savingsRate = budgetTotal > 0 ? ((savedAmount / budgetTotal) * 100) : 0;
+      const memberCount = Math.max(members.length, 1);
+      const savedPerMember = Math.round(savedAmount / memberCount);
+
+      let msg = `🐷 [BÁO CÁO TIẾT KIỆM PHÒNG KTX - ${room.toUpperCase()}]\n`;
+      msg += `📅 Kỳ áp dụng: ${budget.month || 'Tháng này'}\n`;
+      msg += `🎯 Ngân sách đề ra: ${formatVND(budgetTotal)}\n`;
+      msg += `💸 Tổng chi tiêu thực tế: ${formatVND(totalSpent)} (${expenses.length} hóa đơn)\n`;
+      msg += `------------------------------------\n`;
+
+      if (savedAmount >= 0) {
+        msg += `✨ SỐ TIỀN TIẾT KIỆM ĐƯỢC: +${formatVND(savedAmount)} (+${savingsRate.toFixed(1)}%)\n`;
+        msg += `👥 Bình quân mỗi bạn để dành: +${formatVND(savedPerMember)} / người (Tổng ${memberCount} bạn)\n`;
+        msg += `🎉 Phòng mình quản lý chi tiêu rất xuất sắc!\n\n`;
+      } else {
+        msg += `⚠️ ĐÃ CHI TIÊU VƯỢT NGÂN SÁCH: -${formatVND(Math.abs(savedAmount))} (-${Math.abs(savingsRate).toFixed(1)}%)\n`;
+        msg += `👥 Mỗi bạn cần đóng bù thêm: ${formatVND(Math.abs(savedPerMember))} / người\n`;
+        msg += `🚨 Phòng cần hạn chế chi tiêu các khoản phát sinh còn lại!\n\n`;
+      }
+
+      msg += `📊 CHI TIẾT TỪNG DANH MỤC:\n`;
+      const categories = ["Ăn uống", "Sinh hoạt", "Vệ sinh", "Điện nước", "Khác"];
+      categories.forEach(cat => {
+        const catSpent = expenses.filter(e => e.category === cat).reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+        const catLimit = (budget.categories && budget.categories[cat]) || 0;
+        const catSaved = catLimit - catSpent;
+        if (catLimit > 0) {
+          msg += `- ${cat}: ${formatVND(catSpent)} / ${formatVND(catLimit)} (${catSaved >= 0 ? 'Dư +' + formatVND(catSaved) : 'Vượt -' + formatVND(Math.abs(catSaved))})\n`;
+        } else {
+          msg += `- ${cat}: ${formatVND(catSpent)}\n`;
+        }
+      });
+
+      msg += `\nCác bạn cùng xem và duy trì kế hoạch tài chính phòng nhé! Cảm ơn cả phòng ❤️`;
+
+      const textarea = document.getElementById('savingsReportTextarea');
+      if (textarea) textarea.value = msg;
+      openModal('modalSavingsReport');
+    }
+    window.openSavingsReportModal = openSavingsReportModal;
+
+    function copySavingsReportText() {
+      const textarea = document.getElementById('savingsReportTextarea');
+      if (textarea && textarea.value) {
+        copyToClipboard(textarea.value);
+        showToast("Đã sao chép báo cáo tiết kiệm! Bạn có thể dán vào nhóm Zalo ngay.", "success");
+      }
+    }
+    window.copySavingsReportText = copySavingsReportText;
+
+    // Chốt sổ tháng và lưu kết quả tiết kiệm vào lịch sử
+    function archiveCurrentMonthSavings() {
+      const budget = appData.budget;
+      if (!budget || !budget.total || budget.total <= 0) {
+        showToast("Vui lòng thiết lập ngân sách trước khi chốt sổ!", "error");
+        return;
+      }
+
+      const expenses = appData.expenses || [];
+      const budgetTotal = parseFloat(budget.total) || 0;
+      const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+      const savedAmount = budgetTotal - totalSpent;
+      const savingsRate = budgetTotal > 0 ? Math.round((savedAmount / budgetTotal) * 100 * 10) / 10 : 0;
+      const monthStr = budget.month || `${String(new Date().getMonth() + 1).padStart(2, '0')}/${new Date().getFullYear()}`;
+
+      if (!appData.savingsHistory) appData.savingsHistory = [];
+
+      // Kiểm tra xem tháng này đã chốt chưa
+      const existingIdx = appData.savingsHistory.findIndex(h => h.month === monthStr);
+      const record = {
+        month: monthStr,
+        budget: budgetTotal,
+        spent: totalSpent,
+        saved: savedAmount,
+        rate: savingsRate,
+        note: savedAmount >= 0 ? `Tiết kiệm đạt ${savingsRate}%` : `Vượt trần ${Math.abs(savingsRate)}%`
+      };
+
+      if (existingIdx >= 0) {
+        appData.savingsHistory[existingIdx] = record;
+      } else {
+        appData.savingsHistory.unshift(record);
+      }
+
+      // Đăng thông báo
+      const authorName = localStorage.getItem('current_user_name') || 'Trưởng phòng';
+      if (!appData.notices) appData.notices = [];
+      appData.notices.unshift({
+        id: 'n_save_' + Date.now(),
+        type: 'finance',
+        authorName: authorName,
+        title: `Đã chốt sổ tiết kiệm tháng ${monthStr}: ${savedAmount >= 0 ? '+' : '-'}${formatVND(Math.abs(savedAmount))}`,
+        content: `Tháng ${monthStr} phòng đã chi ${formatVND(totalSpent)} trên ngân sách ${formatVND(budgetTotal)}, ${savedAmount >= 0 ? 'tiết kiệm được +' + formatVND(savedAmount) : 'vượt mức -' + formatVND(Math.abs(savedAmount))}.`,
+        time: new Date().toLocaleDateString('vi-VN')
+      });
+
+      saveData();
+      showToast(`Đã chốt sổ & lưu thành tích tiết kiệm tháng ${monthStr}!`, "success");
+    }
+    window.archiveCurrentMonthSavings = archiveCurrentMonthSavings;
+
+    // Chuyển tiền tiết kiệm vào Quỹ phòng
+    function transferSavingsToCommonFund() {
+      const budget = appData.budget;
+      if (!budget || !budget.total) return;
+
+      const expenses = appData.expenses || [];
+      const budgetTotal = parseFloat(budget.total) || 0;
+      const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+      const savedAmount = budgetTotal - totalSpent;
+
+      if (savedAmount <= 0) {
+        showToast("Tháng này phòng không có số dư tiết kiệm để chuyển vào quỹ.", "info");
+        return;
+      }
+
+      if (confirm(`Bạn có muốn ghi nhận chuyển số tiền tiết kiệm ${formatVND(savedAmount)} vào Quỹ Sinh Hoạt Chung của phòng?`)) {
+        const authorName = localStorage.getItem('current_user_name') || 'Trưởng phòng';
+        if (!appData.notices) appData.notices = [];
+        appData.notices.unshift({
+          id: 'n_fund_' + Date.now(),
+          type: 'finance',
+          authorName: authorName,
+          title: `💰 Đã nạp ${formatVND(savedAmount)} tiền tiết kiệm vào Quỹ Phòng!`,
+          content: `Số tiền tiết kiệm từ ngân sách tháng ${budget.month || 'này'} đã được toàn bộ phòng thống nhất chuyển vào Quỹ chung để liên hoan / dự phòng.`,
+          time: new Date().toLocaleDateString('vi-VN')
+        });
+
+        archiveCurrentMonthSavings();
+        saveData();
+        showToast(`Đã nạp thành công ${formatVND(savedAmount)} tiền tiết kiệm vào Quỹ Phòng!`, "success");
+      }
+    }
+    window.transferSavingsToCommonFund = transferSavingsToCommonFund;
+
+    function deleteSavingsHistory(idx) {
+      if (confirm("Bạn có chắc muốn xóa bản ghi lịch sử tiết kiệm của tháng này?")) {
+        if (appData.savingsHistory && appData.savingsHistory[idx]) {
+          appData.savingsHistory.splice(idx, 1);
+          saveData();
+          showToast("Đã xóa bản ghi lịch sử tiết kiệm!", "info");
+        }
+      }
+    }
+    window.deleteSavingsHistory = deleteSavingsHistory;
+
+    function openBudgetSetupModal() {
+      const budget = appData.budget || {};
+      const totalInput = document.getElementById('inputBudgetTotal');
+      const monthInput = document.getElementById('inputBudgetMonth');
+      const noteInput = document.getElementById('inputBudgetNote');
+      const title = document.getElementById('modalBudgetTitle');
+
+      const now = new Date();
+      const currentMonthStr = `${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+
+      if (totalInput) totalInput.value = budget.total || 1500000;
+      if (monthInput) monthInput.value = budget.month || currentMonthStr;
+      if (noteInput) noteInput.value = budget.note || "Quỹ phòng KTX sinh hoạt chung";
+      if (title) title.textContent = (budget.total && budget.total > 0) ? "Chỉnh Sửa Ngân Sách Phòng" : "Thiết Lập Ngân Sách Phòng Mới";
+
+      const cats = budget.categories || {};
+      const anUong = document.getElementById('catBudget_AnUong');
+      const sinhHoat = document.getElementById('catBudget_SinhHoat');
+      const veSinh = document.getElementById('catBudget_VeSinh');
+      const dienNuoc = document.getElementById('catBudget_DienNuoc');
+      const khac = document.getElementById('catBudget_Khac');
+
+      if (anUong) anUong.value = cats["Ăn uống"] || "";
+      if (sinhHoat) sinhHoat.value = cats["Sinh hoạt"] || "";
+      if (veSinh) veSinh.value = cats["Vệ sinh"] || "";
+      if (dienNuoc) dienNuoc.value = cats["Điện nước"] || "";
+      if (khac) khac.value = cats["Khác"] || "";
+
+      openModal('modalBudgetSetup');
+    }
+    window.openBudgetSetupModal = openBudgetSetupModal;
+
+    function setQuickBudget(amount) {
+      const totalInput = document.getElementById('inputBudgetTotal');
+      if (totalInput) {
+        totalInput.value = amount;
+        distributeBudgetEqually();
+      }
+    }
+    window.setQuickBudget = setQuickBudget;
+
+    function distributeBudgetEqually() {
+      const totalInput = document.getElementById('inputBudgetTotal');
+      const total = parseFloat(totalInput?.value) || 0;
+      if (total <= 0) return;
+
+      const anUong = Math.round((total * 0.35) / 10000) * 10000;
+      const sinhHoat = Math.round((total * 0.25) / 10000) * 10000;
+      const dienNuoc = Math.round((total * 0.20) / 10000) * 10000;
+      const veSinh = Math.round((total * 0.15) / 10000) * 10000;
+      const khac = Math.max(0, total - anUong - sinhHoat - dienNuoc - veSinh);
+
+      const fAn = document.getElementById('catBudget_AnUong');
+      const fSinh = document.getElementById('catBudget_SinhHoat');
+      const fDien = document.getElementById('catBudget_DienNuoc');
+      const fVe = document.getElementById('catBudget_VeSinh');
+      const fKhac = document.getElementById('catBudget_Khac');
+
+      if (fAn) fAn.value = anUong;
+      if (fSinh) fSinh.value = sinhHoat;
+      if (fDien) fDien.value = dienNuoc;
+      if (fVe) fVe.value = veSinh;
+      if (fKhac) fKhac.value = khac;
+    }
+    window.distributeBudgetEqually = distributeBudgetEqually;
+
+    function handleSaveBudget(e) {
+      e.preventDefault();
+      const total = parseFloat(document.getElementById('inputBudgetTotal')?.value) || 0;
+      const month = document.getElementById('inputBudgetMonth')?.value.trim() || "Tháng này";
+      const note = document.getElementById('inputBudgetNote')?.value.trim() || "Quỹ phòng KTX";
+
+      if (total <= 0) {
+        showToast("Vui lòng nhập tổng hạn mức ngân sách hợp lệ!", "error");
+        return;
+      }
+
+      const categories = {
+        "Ăn uống": parseFloat(document.getElementById('catBudget_AnUong')?.value) || 0,
+        "Sinh hoạt": parseFloat(document.getElementById('catBudget_SinhHoat')?.value) || 0,
+        "Vệ sinh": parseFloat(document.getElementById('catBudget_VeSinh')?.value) || 0,
+        "Điện nước": parseFloat(document.getElementById('catBudget_DienNuoc')?.value) || 0,
+        "Khác": parseFloat(document.getElementById('catBudget_Khac')?.value) || 0,
+      };
+
+      appData.budget = {
+        total,
+        month,
+        note,
+        categories
+      };
+
+      const authorName = localStorage.getItem('current_user_name') || 'Trưởng phòng';
+      if (!appData.notices) appData.notices = [];
+      appData.notices.unshift({
+        id: 'n_budget_' + Date.now(),
+        type: 'finance',
+        authorName: authorName,
+        title: `Đã thiết lập ngân sách phòng: ${formatVND(total)}`,
+        content: `Hạn mức chi tiêu phòng KTX ${month} là ${formatVND(total)}. (${note}).`,
+        time: new Date().toLocaleDateString('vi-VN')
+      });
+
+      saveData();
+      closeModal('modalBudgetSetup');
+      showToast(`Đã lưu ngân sách phòng: ${formatVND(total)}!`, "success");
+    }
+    window.handleSaveBudget = handleSaveBudget;
+
+    function handleDeleteBudget() {
+      if (confirm("Bạn có chắc muốn xóa hạn mức ngân sách phòng này?")) {
+        appData.budget = null;
+        saveData();
+        closeModal('modalBudgetSetup');
+        showToast("Đã xóa ngân sách phòng!", "info");
+      }
+    }
+    window.handleDeleteBudget = handleDeleteBudget;
+
+    function scrollToBudgetSection() {
+      switchTab('budget');
+      const el = document.getElementById('roomBudgetFullDashboard');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    window.scrollToBudgetSection = scrollToBudgetSection;
 
     function renderExpenseTable() {
       const mobileContainer = document.getElementById('expenseMobileList');
@@ -4054,10 +5708,25 @@
         };
         if (!appData.notices) appData.notices = [];
         appData.notices.unshift(autoNotice);
+
+        // Hiệu ứng mờ dần thanh thông báo ca trực trên đầu trang khi hoàn thành
+        const alertContainer = document.getElementById('morningDutyAlertContainer');
+        if (alertContainer && alertContainer.firstElementChild) {
+          alertContainer.firstElementChild.style.transition = "all 0.4s ease-out";
+          alertContainer.firstElementChild.style.opacity = "0";
+          alertContainer.firstElementChild.style.transform = "translateY(-10px)";
+        }
       }
 
       saveData();
-      showToast(s.done ? `Đã hoàn thành ca ${s.dayName}!` : `Đã hủy hoàn thành ca ${s.dayName}`);
+      showToast(s.done ? `Đã hoàn thành ca ${s.dayName}! Ca trực đã hoàn tất ✨` : `Đã hủy hoàn thành ca ${s.dayName}`);
+
+      // Cập nhật lại ngay thanh thông báo trên đầu trang
+      setTimeout(() => {
+        if (typeof renderMorningDutyAlert === 'function') {
+          renderMorningDutyAlert();
+        }
+      }, 400);
     }
 
     function openSwapDutyModal(dayIndex) {
@@ -4162,6 +5831,422 @@
       }
     }
 
+    // ==================== TÍNH NĂNG THÔNG BÁO TRÌNH DUYỆT & CẢNH BÁO TRỰC NHẬT BUỔI SÁNG ====================
+    function getCurrentUserMember() {
+      const savedUser = localStorage.getItem("current_user_name");
+      if (!savedUser) return null;
+      const members = appData.members || [];
+      const trimmed = savedUser.trim().toLowerCase();
+      return members.find(m => 
+        m.name.trim().toLowerCase() === trimmed ||
+        m.name.toLowerCase().includes(trimmed) ||
+        trimmed.includes(m.name.toLowerCase()) ||
+        m.id === savedUser
+      ) || null;
+    }
+    window.getCurrentUserMember = getCurrentUserMember;
+
+    function renderMorningDutyAlert() {
+      const container = document.getElementById('morningDutyAlertContainer');
+      if (!container) return;
+
+      const schedule = appData.cleaningSchedule || [];
+      if (schedule.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      const todayDuty = schedule.find(s => s.dayIndex === todayDayIdx) || schedule[0];
+      if (!todayDuty) {
+        container.innerHTML = '';
+        return;
+      }
+
+      // Khi ca trực của ngày hôm nay đã được đánh dấu hoàn thành -> Tự động ẩn thanh thông báo để giao diện sạch sẽ
+      if (todayDuty.done) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const members = appData.members || [];
+      const assignedMember = members.find(m => m.id === todayDuty.memberId);
+      const assignedName = assignedMember ? assignedMember.name : "Chưa xếp";
+      const assignedShort = assignedMember ? getShortName(assignedMember.name) : "Bạn cùng phòng";
+
+      const currentUser = getCurrentUserMember();
+      const isMyDutyToday = !!(currentUser && assignedMember && currentUser.id === assignedMember.id);
+
+      const isDismissed = sessionStorage.getItem('dismissed_morning_duty_' + todayDayIdx) === 'true';
+
+      const now = new Date();
+      const hour = now.getHours();
+      const isMorning = hour >= 5 && hour < 12;
+      const isAfternoon = hour >= 12 && hour < 18;
+      const timeGreeting = isMorning ? "Chào buổi sáng" : (isAfternoon ? "Chào buổi chiều" : "Chào buổi tối");
+
+      // Nếu người dùng đã bấm thu gọn tạm thời trong phiên
+      if (isDismissed) {
+        container.innerHTML = `
+          <div class="p-2.5 px-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/90 shadow-2xs flex items-center justify-between text-xs transition-all">
+            <div class="flex items-center gap-2 text-slate-700 min-w-0">
+              <span class="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] shrink-0 font-black">
+                <i class="fa-solid fa-broom"></i>
+              </span>
+              <span class="truncate font-semibold">
+                ${isMyDutyToday ? '<strong class="text-orange-700">Ca trực hôm nay của bạn:</strong>' : `Lịch trực hôm nay (${todayDuty.dayName}): <strong>${assignedShort}</strong> -`}
+                ${todayDuty.task}
+                ${todayDuty.done ? '<span class="text-emerald-600 font-bold ml-1">(Đã dọn xong ✨)</span>' : '<span class="text-amber-600 font-bold ml-1">(Chưa hoàn thành)</span>'}
+              </span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              ${isMyDutyToday && !todayDuty.done ? `
+                <button onclick="handleDutyCheckToggle(${todayDuty.dayIndex})" class="px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-2xs transition">
+                  <i class="fa-solid fa-check mr-1"></i>Đã xong
+                </button>
+              ` : ''}
+              <button onclick="restoreMorningDutyAlert()" class="text-slate-500 hover:text-indigo-600 text-xs font-bold transition flex items-center gap-1">
+                <span>Mở rộng</span>
+                <i class="fa-solid fa-chevron-down text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // TRƯỜNG HỢP 1: HÔM NAY ĐẾN LƯỢT CHÍNH THÀNH VIÊN ĐANG ĐĂNG NHẬP
+      if (isMyDutyToday) {
+        if (!todayDuty.done) {
+          // CHƯA HOÀN THÀNH -> CẢNH BÁO NỔI BẬT ĐẨY LÊN ĐẦU TRANG VÀO BUỔI SÁNG
+          container.innerHTML = `
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-4 sm:p-5 shadow-xl shadow-orange-500/20 ring-4 ring-orange-400/25 transition-all">
+              <div class="absolute -right-6 -bottom-6 text-8xl opacity-15 pointer-events-none select-none">
+                <i class="fa-solid fa-broom"></i>
+              </div>
+
+              <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black text-amber-100 uppercase tracking-wider">
+                      <i class="fa-solid fa-sun text-amber-300 animate-pulse"></i>
+                      <span>${isMorning ? '🌅 CẢNH BÁO BUỔI SÁNG: ĐẾN CA TRỰC NHẬT CỦA BẠN' : '🔔 NHẮC NHỞ: CA TRỰC NHẬT HÔM NAY CỦA BẠN'}</span>
+                    </span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-black/25 text-white flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+                      <span>Chưa hoàn thành</span>
+                    </span>
+                  </div>
+
+                  <div class="text-lg sm:text-2xl font-black tracking-tight text-white flex items-baseline gap-2 flex-wrap">
+                    <span>${timeGreeting}, ${assignedShort}!</span>
+                    <span class="text-xs sm:text-sm font-semibold text-amber-100">Hôm nay (${todayDuty.dayName}) bạn phụ trách trực phòng</span>
+                  </div>
+
+                  <div class="flex items-center gap-2 text-xs sm:text-sm font-medium text-white/95 flex-wrap">
+                    <span class="bg-white/20 px-3 py-1 rounded-xl font-bold flex items-center gap-1.5 backdrop-blur-xs shadow-2xs">
+                      <span class="text-base">${todayDuty.emoji || '🧹'}</span>
+                      <span class="underline decoration-amber-300 font-black">${todayDuty.task}</span>
+                    </span>
+                    <span class="text-white/90 text-xs hidden sm:inline">Bạn nhớ hoàn thành và bấm xác nhận để phòng KTX luôn sạch sẽ nhé!</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap shrink-0">
+                  <button onclick="handleDutyCheckToggle(${todayDuty.dayIndex})" class="px-4 py-2.5 rounded-2xl bg-white hover:bg-amber-50 text-slate-900 font-black text-xs sm:text-sm shadow-lg shadow-black/10 transition transform active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                    <span>Đã Dọn Xong ✨</span>
+                  </button>
+                  <button onclick="switchTab('duty')" class="px-3 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="hidden xs:inline">Checklist</span>
+                  </button>
+                  <button onclick="openSwapDutyModal(${todayDuty.dayIndex})" class="px-3 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span class="hidden sm:inline">Đổi ca</span>
+                  </button>
+                  <button onclick="openDutyNotificationModal()" class="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold flex items-center justify-center text-xs transition backdrop-blur-xs" title="Cài đặt thông báo trình duyệt">
+                    <i class="fa-solid fa-bell"></i>
+                  </button>
+                  <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-xs transition" title="Thu gọn dải cảnh báo">
+                    <i class="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          // ĐÃ HOÀN THÀNH -> TỰ ĐỘNG ẨN THANH THÔNG BÁO CA TRỰC ĐỂ GIAO DIỆN GỌN GÀNG
+          container.innerHTML = '';
+          return;
+        }
+      } else {
+        // TRƯỜNG HỢP 2: THÀNH VIÊN KHÁC TRỰC NHẬT
+        // Nếu thành viên khác đã dọn xong -> tự động ẩn thanh thông báo để màn hình thông thoáng
+        if (todayDuty.done) {
+          container.innerHTML = '';
+          return;
+        }
+
+        container.innerHTML = `
+          <div class="rounded-3xl bg-gradient-to-r from-sky-50 via-indigo-50/70 to-white border border-indigo-100/90 p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shrink-0">
+                <i class="fa-solid fa-calendar-day"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-xs font-bold text-slate-500">Ca trực nhật hôm nay (${todayDuty.dayName}):</span>
+                  <span class="font-black text-indigo-900 text-xs sm:text-sm truncate">${assignedName}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"><i class="fa-regular fa-clock mr-1"></i>Chưa dọn</span>
+                </div>
+                <div class="text-xs text-slate-600 font-medium flex items-center gap-1.5 mt-0.5">
+                  <span>${todayDuty.emoji || '🧹'} Nhiệm vụ: <strong>${todayDuty.task}</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="copyZaloDutyReminder('${todayDuty.memberId}')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                <span>Nhắc Zalo</span>
+              </button>
+              <button onclick="switchTab('duty')" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition">
+                Xem lịch tuần
+              </button>
+              <button onclick="openDutyNotificationModal()" class="w-8 h-8 rounded-xl bg-white hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 flex items-center justify-center text-xs border border-slate-200 transition" title="Cài đặt thông báo trình duyệt">
+                <i class="fa-solid fa-bell"></i>
+              </button>
+              <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="w-8 h-8 rounded-xl bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs border border-slate-200 transition" title="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+    window.renderMorningDutyAlert = renderMorningDutyAlert;
+
+    function dismissMorningDutyAlert(dayIndex) {
+      sessionStorage.setItem('dismissed_morning_duty_' + dayIndex, 'true');
+      renderMorningDutyAlert();
+    }
+    window.dismissMorningDutyAlert = dismissMorningDutyAlert;
+
+    function restoreMorningDutyAlert() {
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      sessionStorage.removeItem('dismissed_morning_duty_' + todayDayIdx);
+      renderMorningDutyAlert();
+    }
+    window.restoreMorningDutyAlert = restoreMorningDutyAlert;
+
+    function isBrowserNotificationSupported() {
+      return ("Notification" in window);
+    }
+    window.isBrowserNotificationSupported = isBrowserNotificationSupported;
+
+    function requestDutyNotificationPermission() {
+      if (!isBrowserNotificationSupported()) {
+        showToast("Trình duyệt này không hỗ trợ Web Notification API!", "error");
+        return;
+      }
+      try {
+        Notification.requestPermission().then(permission => {
+          updateDutyNotificationModalUI();
+          if (permission === "granted") {
+            localStorage.setItem("ktx_duty_notif_enabled", "true");
+            showToast("Đã cấp quyền nhận thông báo trình duyệt!", "success");
+            triggerDutyNotificationTest();
+            renderMorningDutyAlert();
+          } else if (permission === "denied") {
+            showToast("Quyền thông báo đã bị từ chối trong trình duyệt.", "info");
+            renderMorningDutyAlert();
+          }
+        }).catch(err => {
+          showToast("Không thể yêu cầu quyền thông báo: " + err.message, "error");
+        });
+      } catch (e) {
+        showToast("Lỗi yêu cầu thông báo: " + e.message, "error");
+      }
+    }
+    window.requestDutyNotificationPermission = requestDutyNotificationPermission;
+
+    function triggerDutyNotificationTest() {
+      if (!isBrowserNotificationSupported()) {
+        showToast("Trình duyệt không hỗ trợ Web Notification API!", "error");
+        return;
+      }
+
+      if (Notification.permission !== "granted") {
+        requestDutyNotificationPermission();
+        return;
+      }
+
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      const todayDuty = (appData.cleaningSchedule || []).find(s => s.dayIndex === todayDayIdx);
+      const taskText = todayDuty ? todayDuty.task : "Vệ sinh phòng KTX";
+      const dayText = todayDuty ? todayDuty.dayName : "Hôm nay";
+
+      const currentUser = getCurrentUserMember();
+      const name = currentUser ? getShortName(currentUser.name) : "Bạn";
+
+      try {
+        const notif = new Notification(`🌅 [KTX Splitter] Nhắc nhở trực nhật: ${name}!`, {
+          body: `Hôm nay (${dayText}) là ca trực nhật: ${todayDuty?.emoji || '🧹'} ${taskText}. Hãy nhớ hoàn thành và đánh dấu trên ứng dụng nhé ✨`,
+          icon: 'https://cdn-icons-png.flaticon.com/512/995/995053.png',
+          tag: 'ktx-duty-test-alert'
+        });
+        notif.onclick = function() {
+          window.focus();
+          switchTab('duty');
+          notif.close();
+        };
+        showToast("Đã gửi thông báo trình duyệt mẫu thành công!", "success");
+      } catch (e) {
+        console.warn("Lỗi gửi notification:", e);
+        showToast("Đã gửi lệnh thông báo mẫu (kiểm tra thanh thông báo hệ thống)!", "success");
+      }
+    }
+    window.triggerDutyNotificationTest = triggerDutyNotificationTest;
+
+    function checkAndSendMorningDutyNotification() {
+      if (!isBrowserNotificationSupported() || Notification.permission !== "granted") return;
+
+      const schedule = appData.cleaningSchedule || [];
+      if (schedule.length === 0) return;
+
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      const todayDuty = schedule.find(s => s.dayIndex === todayDayIdx);
+      if (!todayDuty || todayDuty.done) return;
+
+      const currentUser = getCurrentUserMember();
+      if (!currentUser || currentUser.id !== todayDuty.memberId) return;
+
+      const todayDateStr = new Date().toISOString().split('T')[0];
+      const notifKey = `ktx_duty_notified_${currentUser.id}_${todayDateStr}`;
+
+      // Đã gửi thông báo trong ngày hôm nay rồi thì không gửi lại để tránh spam
+      if (localStorage.getItem(notifKey)) return;
+
+      const hour = new Date().getHours();
+      // Nhắc vào buổi sáng từ 5h đến 12h (hoặc bất cứ lúc nào trong ngày nếu mở app lần đầu mà chưa làm)
+      const isMorning = hour >= 5 && hour < 12;
+      const title = isMorning 
+        ? `🌅 Chào buổi sáng ${getShortName(currentUser.name)}! Hôm nay đến ca trực nhật` 
+        : `🧹 Nhắc nhở ca trực KTX: ${getShortName(currentUser.name)}`;
+      
+      const body = `Hôm nay (${todayDuty.dayName}) bạn phụ trách: ${todayDuty.emoji || '🧹'} ${todayDuty.task}. Nhớ hoàn thành để phòng luôn sạch sẽ nhé!`;
+
+      try {
+        const notif = new Notification(title, {
+          body: body,
+          icon: 'https://cdn-icons-png.flaticon.com/512/995/995053.png',
+          tag: 'ktx-morning-duty-daily',
+          requireInteraction: true
+        });
+        notif.onclick = function() {
+          window.focus();
+          switchTab('duty');
+          notif.close();
+        };
+        localStorage.setItem(notifKey, Date.now().toString());
+      } catch (e) {
+        console.warn("Lỗi gửi thông báo trực nhật:", e);
+      }
+    }
+    window.checkAndSendMorningDutyNotification = checkAndSendMorningDutyNotification;
+
+    function openDutyNotificationModal() {
+      updateDutyNotificationModalUI();
+      openModal('modalDutyNotification');
+    }
+    window.openDutyNotificationModal = openDutyNotificationModal;
+
+    function updateDutyNotificationModalUI() {
+      const badge = document.getElementById('dutyNotifStatusBadge');
+      const desc = document.getElementById('dutyNotifStatusDesc');
+      const btn = document.getElementById('btnRequestNotifPerm');
+      const selectHour = document.getElementById('selectDutyNotifHour');
+      const preview = document.getElementById('dutyZaloTemplatePreview');
+
+      const supported = isBrowserNotificationSupported();
+      const perm = supported ? Notification.permission : "unsupported";
+
+      if (badge) {
+        if (!supported) {
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-200 text-slate-600";
+          badge.innerText = "Không hỗ trợ";
+        } else if (perm === "granted") {
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800";
+          badge.innerHTML = `<i class="fa-solid fa-check mr-1"></i>Đã Bật`;
+        } else if (perm === "denied") {
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800";
+          badge.innerHTML = `<i class="fa-solid fa-ban mr-1"></i>Đã Chặn`;
+        } else {
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-100 text-amber-800";
+          badge.innerHTML = `<i class="fa-regular fa-clock mr-1"></i>Chưa Cấp Quyền`;
+        }
+      }
+
+      if (desc) {
+        if (perm === "granted") {
+          desc.innerText = "Tuyệt vời! Bạn sẽ nhận được thông báo đẩy trên thiết bị vào buổi sáng khi đến ca trực nhật của mình.";
+        } else if (perm === "denied") {
+          desc.innerText = "Quyền thông báo hiện đang bị chặn trong trình duyệt. Vui lòng bấm vào biểu tượng ổ khóa cạnh thanh địa chỉ để cho phép lại.";
+        } else {
+          desc.innerText = "Nhấn nút bên dưới để cấp quyền thông báo đẩy cho trình duyệt. Thông báo sẽ tự động gửi vào mỗi buổi sáng ngày bạn trực.";
+        }
+      }
+
+      if (btn) {
+        if (perm === "granted") {
+          btn.innerHTML = `<i class="fa-solid fa-check mr-1.5"></i>Đã Bật Thông Báo`;
+          btn.className = "flex-1 py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 opacity-90 cursor-default";
+        } else {
+          btn.innerHTML = `<i class="fa-solid fa-bell mr-1.5"></i>Cấp Quyền / Bật Thông Báo`;
+          btn.className = "flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-xs";
+        }
+      }
+
+      const savedHour = localStorage.getItem('ktx_morning_duty_hour') || "7";
+      if (selectHour) selectHour.value = savedHour;
+
+      // Zalo Preview template
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      const todayDuty = (appData.cleaningSchedule || []).find(s => s.dayIndex === todayDayIdx);
+      const assigned = (appData.members || []).find(m => m.id === todayDuty?.memberId);
+      const targetName = assigned ? getShortName(assigned.name) : "bạn";
+
+      if (preview) {
+        preview.innerText = `👋 Chào ${targetName} ơi! Hôm nay (${todayDuty?.dayName || 'Thứ'}) đến lượt bạn trực nhật phòng KTX: [${todayDuty?.emoji || '🧹'} ${todayDuty?.task || 'vệ sinh phòng'}]. Bạn nhớ hoàn thành và đánh dấu nhé, cảm ơn bạn nhiều! ❤️`;
+      }
+    }
+    window.updateDutyNotificationModalUI = updateDutyNotificationModalUI;
+
+    function saveDutyNotifPreference() {
+      const selectHour = document.getElementById('selectDutyNotifHour');
+      if (selectHour) {
+        localStorage.setItem('ktx_morning_duty_hour', selectHour.value);
+        showToast("Đã lưu khung giờ nhắc nhở buổi sáng!", "success");
+      }
+    }
+    window.saveDutyNotifPreference = saveDutyNotifPreference;
+
+    function copyZaloDutyReminder(targetMemberId) {
+      const todayDayIdx = (new Date().getDay() + 6) % 7;
+      const todayDuty = (appData.cleaningSchedule || []).find(s => s.dayIndex === todayDayIdx);
+      const target = targetMemberId 
+        ? (appData.members || []).find(m => m.id === targetMemberId)
+        : (appData.members || []).find(m => m.id === todayDuty?.memberId);
+
+      const targetName = target ? getShortName(target.name) : "bạn";
+      const text = `👋 Chào ${targetName} ơi! Hôm nay (${todayDuty?.dayName || 'Thứ'}) đến lượt bạn trực nhật phòng KTX: [${todayDuty?.emoji || '🧹'} ${todayDuty?.task || 'vệ sinh phòng'}]. Bạn nhớ hoàn thành và đánh dấu nhé, cảm ơn bạn nhiều! ❤️`;
+
+      copyToClipboard(text);
+      showToast(`Đã sao chép tin nhắn nhắc ${targetName}! Bạn có thể dán gửi vào Zalo ngay.`, "success");
+    }
+    window.copyZaloDutyReminder = copyZaloDutyReminder;
+
     function openAddChecklistModal() {
       document.getElementById('inputChecklistEmoji').value = "🧹";
       document.getElementById('inputChecklistTitle').value = "";
@@ -4224,16 +6309,22 @@
       const container = document.getElementById('membersListContainer');
       if (!container) return;
       const members = appData.members || [];
+      const currentUserName = localStorage.getItem("current_user_name") || "";
 
-      container.innerHTML = members.map(m => `
-        <div class="p-3.5 bg-white border border-slate-200/80 rounded-2xl shadow-xs space-y-2">
+      container.innerHTML = members.map(m => {
+        const isCurrentUser = currentUserName && typeof isSameMemberName === 'function' && isSameMemberName(m.name, currentUserName);
+        return `
+        <div class="p-3.5 bg-white border ${isCurrentUser ? 'border-indigo-300 ring-2 ring-indigo-500/15' : 'border-slate-200/80'} rounded-2xl shadow-xs space-y-2 transition-all">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2.5 min-w-0">
-              <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 font-extrabold text-sm flex items-center justify-center shrink-0">
+              <div class="w-9 h-9 rounded-xl ${isCurrentUser ? 'bg-indigo-600 text-white shadow-xs' : 'bg-indigo-50 text-indigo-700'} font-extrabold text-sm flex items-center justify-center shrink-0">
                 ${getNameInitial(m.name)}
               </div>
               <div class="min-w-0">
-                <div class="font-bold text-slate-900 text-xs truncate">${m.name}</div>
+                <div class="font-bold text-slate-900 text-xs truncate flex items-center gap-1.5">
+                  <span class="truncate">${m.name}</span>
+                  ${isCurrentUser ? '<span class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-indigo-100 text-indigo-700 uppercase shrink-0">Bạn</span>' : ''}
+                </div>
                 <div class="text-[10px] text-slate-400 font-mono">${m.bank ? `${m.bank} - ${m.account}` : 'Chưa nhập STK'}</div>
               </div>
             </div>
@@ -4247,7 +6338,8 @@
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     function openAddMemberModal() {
@@ -4653,6 +6745,16 @@
           }
         }, false);
       }
+
+      // Kiểm tra và nhắc nhở trực nhật định kỳ mỗi 15 phút
+      setInterval(() => {
+        if (typeof checkAndSendMorningDutyNotification === 'function') {
+          checkAndSendMorningDutyNotification();
+        }
+        if (typeof renderMorningDutyAlert === 'function') {
+          renderMorningDutyAlert();
+        }
+      }, 15 * 60 * 1000);
     });
   </script>
 </body>

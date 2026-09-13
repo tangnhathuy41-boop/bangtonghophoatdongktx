@@ -34,7 +34,7 @@ function getGeminiClient() {
 }
 
 // API: Quét và nhận diện hóa đơn thông minh bằng AI Gemini
-const CANDIDATE_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-3.8-flash'];
+const CANDIDATE_MODELS = ['gemini-3.6-flash', 'gemini-3.8-flash', 'gemini-3.6-pro'];
 
 async function generateContentWithFallback(ai, requestConfig) {
   let lastError = null;

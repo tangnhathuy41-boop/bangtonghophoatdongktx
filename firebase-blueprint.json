@@ -48,6 +48,14 @@
           "type": "array",
           "description": "Common fund balance and transaction history"
         },
+        "budget": {
+          "type": "object",
+          "description": "Monthly dormitory budget limit and category breakdown"
+        },
+        "savingsHistory": {
+          "type": "array",
+          "description": "Historical records of monthly savings compared against room budget"
+        },
         "updatedAt": {
           "type": "string",
           "description": "ISO timestamp of the latest real-time update"
