@@ -214,6 +214,30 @@
       0% { transform: translateY(0) rotate(0deg); }
       100% { transform: translateY(22px) rotate(-6deg); }
     }
+
+    /* Mobile UX & Safe Area optimizations */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .safe-area-bottom {
+        padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+      }
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Touch optimization for mobile tap targets */
+    @media (max-width: 640px) {
+      input, select, textarea, button {
+        font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+      }
+      .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-700">
@@ -294,66 +318,68 @@
 
   <div id="appMainWrapper" class="flex flex-col min-h-screen">
 
-  <!-- HEADER / NAVBAR GỌN GÀNG -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2.5 shadow-xs">
-    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+  <!-- HEADER / NAVBAR GỌN GÀNG (Tối ưu cho điện thoại) -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-2 sm:px-6 py-2 sm:py-2.5 shadow-xs">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-1.5 sm:gap-4">
       
       <!-- Cột Trái: Menu & Bộ Chọn Phòng Nhanh -->
-      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-        <button onclick="toggleSidebar(true)" class="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition shrink-0" title="Mở menu">
-          <i class="fa-solid fa-bars text-lg"></i>
+      <div class="flex items-center gap-1.5 sm:gap-3 min-w-0">
+        <button onclick="toggleSidebar(true)" class="w-9 h-9 flex items-center justify-center text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition shrink-0 touch-target" title="Mở menu tính năng">
+          <i class="fa-solid fa-bars text-base sm:text-lg"></i>
         </button>
 
-        <!-- Nút chọn / đổi phòng KTX -->
-        <div onclick="openRoomHubModal()" role="button" tabindex="0" class="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-indigo-50/70 hover:bg-indigo-100/80 border border-indigo-100 transition min-w-0 group cursor-pointer select-none" title="Bấm để đổi phòng hoặc tạo phòng KTX khác">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-sm shadow-sm shrink-0 group-hover:scale-105 transition-transform">
+        <!-- Nút chọn / đổi phòng KTX (gọn gàng, không bị gãy dòng trên mobile) -->
+        <div onclick="openRoomHubModal()" role="button" tabindex="0" class="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 rounded-2xl bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-100 transition min-w-0 group cursor-pointer select-none" title="Bấm để đổi phòng hoặc quản lý phòng">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs shrink-0 group-hover:scale-105 transition-transform">
             <i class="fa-solid fa-hotel"></i>
           </div>
           <div class="text-left min-w-0">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[130px] xs:max-w-[180px] sm:max-w-[240px]">Phòng 402 - KTX</span>
-              <div class="inline-flex items-center gap-1 text-[10px] bg-indigo-50 border border-indigo-200/80 text-indigo-800 font-bold px-1.5 py-0.5 rounded-lg shrink-0" title="Mã phòng KTX (Bấm biểu tượng mắt để hiện/ẩn)">
-                <i class="fa-solid fa-key text-[9px] text-indigo-500"></i>
-                <span id="headerRoomCodeTag" class="font-mono tracking-wider font-extrabold">••••••</span>
-                <button type="button" onclick="event.stopPropagation(); toggleRoomCodeVisibility(event);" class="text-indigo-600 hover:text-indigo-900 p-0.5 ml-0.5 transition" title="Ẩn / Hiện mã phòng">
-                  <i id="headerRoomCodeEyeIcon" class="fa-solid fa-eye-slash text-[9px]"></i>
-                </button>
-                <button type="button" onclick="event.stopPropagation(); copyCurrentRoomCode(event);" class="text-slate-400 hover:text-indigo-700 p-0.5 transition" title="Sao chép mã phòng">
-                  <i class="fa-solid fa-copy text-[9px]"></i>
-                </button>
-              </div>
+            <div class="flex items-center gap-1">
+              <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[95px] xs:max-w-[150px] sm:max-w-[240px]">Phòng 402</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 shrink-0"></i>
+            </div>
+            <!-- Mã phòng: hiện trên desktop, trên mobile có thể xem nhanh trong modal -->
+            <div class="hidden sm:inline-flex items-center gap-1 text-[10px] bg-white/90 border border-indigo-200/80 text-indigo-800 font-bold px-1.5 py-0.2 rounded-md shrink-0 mt-0.5" title="Mã phòng KTX">
+              <i class="fa-solid fa-key text-[8px] text-indigo-500"></i>
+              <span id="headerRoomCodeTag" class="font-mono tracking-wider font-extrabold">••••••</span>
+              <button type="button" onclick="event.stopPropagation(); toggleRoomCodeVisibility(event);" class="text-indigo-600 hover:text-indigo-900 p-0.5 ml-0.5 transition" title="Ẩn / Hiện mã phòng">
+                <i id="headerRoomCodeEyeIcon" class="fa-solid fa-eye-slash text-[8px]"></i>
+              </button>
+              <button type="button" onclick="event.stopPropagation(); copyCurrentRoomCode(event);" class="text-slate-400 hover:text-indigo-700 p-0.5 transition" title="Sao chép mã phòng">
+                <i class="fa-solid fa-copy text-[8px]"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Cột Phải: Thao Tác Nhanh (Quét Bill & Mời Phòng & User Info) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- Cột Phải: Thao Tác Nhanh (Quét Bill AI & Zalo & User Profile) -->
+      <div class="flex items-center gap-1 sm:gap-2 shrink-0">
         <!-- Nút Quét Bill AI -->
-        <button onclick="openScanBillModal()" class="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-xs hover:opacity-95 transition shrink-0" title="Quét hóa đơn tự động bằng AI">
+        <button onclick="openScanBillModal()" class="w-8 h-8 sm:w-auto sm:px-3 sm:py-2 flex items-center justify-center gap-1.5 text-xs font-bold rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white shadow-xs hover:opacity-95 transition shrink-0 touch-target" title="Quét hóa đơn tự động bằng AI">
           <i class="fa-solid fa-camera text-xs"></i>
-          <span class="hidden xs:inline">Quét Bill</span>
+          <span class="hidden sm:inline">Quét Bill</span>
         </button>
 
         <!-- Nút Báo cáo Zalo -->
-        <button onclick="openShareReportModal()" class="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition shrink-0" title="Xuất báo cáo gửi nhóm Zalo/Messenger">
+        <button onclick="openShareReportModal()" class="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-2 flex items-center justify-center gap-1 text-xs font-bold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition shrink-0 touch-target" title="Xuất báo cáo gửi nhóm Zalo/Messenger">
           <i class="fa-solid fa-share-nodes text-xs"></i>
-          <span class="hidden xs:inline">Zalo</span>
+          <span class="hidden sm:inline">Zalo</span>
         </button>
 
         <!-- User profile widget in Header -->
-        <div id="headerUserSection" class="flex items-center gap-1 sm:gap-1.5 pl-1.5 sm:pl-2 border-l border-slate-200">
-          <button type="button" onclick="openUserProfileModal()" class="flex items-center gap-1.5 px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition text-xs font-bold shrink-0" title="Thông tin tài khoản">
-            <div id="headerUserAvatar" class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-black text-[11px] flex items-center justify-center shrink-0">
+        <div id="headerUserSection" class="flex items-center gap-1 sm:gap-1.5 pl-1 sm:pl-2 border-l border-slate-200">
+          <button type="button" onclick="openUserProfileModal()" class="flex items-center gap-1.5 p-1 sm:px-2 sm:py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition text-xs font-bold shrink-0 touch-target" title="Thông tin tài khoản & Đổi phòng">
+            <div id="headerUserAvatar" class="w-7 h-7 rounded-lg bg-indigo-600 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">
               H
             </div>
             <span id="headerUserName" class="hidden sm:inline max-w-[85px] truncate">Huy</span>
           </button>
 
-          <!-- Nút Đăng Xuất Ra Màn Hình Đăng Nhập -->
-          <button type="button" onclick="dangXuatHanRaNgoai()" class="flex items-center gap-1 text-xs font-bold px-2 sm:px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition shrink-0 shadow-2xs" title="Đăng xuất ra màn hình đăng nhập ban đầu">
+          <!-- Nút Đăng Xuất (Chỉ hiện trên desktop để thanh header mobile thoáng đãng) -->
+          <button type="button" onclick="dangXuatHanRaNgoai()" class="hidden sm:flex items-center gap-1 text-xs font-bold px-2 sm:px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition shrink-0 shadow-2xs" title="Đăng xuất ra màn hình đăng nhập ban đầu">
             <i class="fa-solid fa-arrow-right-from-bracket text-xs text-rose-600"></i>
-            <span class="hidden sm:inline">Đăng xuất</span>
+            <span>Đăng xuất</span>
           </button>
         </div>
       </div>
@@ -486,70 +512,68 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-6xl w-full mx-auto p-3 sm:p-6 space-y-4 flex-grow">
+  <!-- MAIN CONTAINER (pb-24 để không bị Bottom Nav che trên mobile) -->
+  <main class="max-w-6xl w-full mx-auto p-2.5 sm:p-6 pb-24 sm:pb-8 space-y-3.5 sm:space-y-4 flex-grow">
 
     <!-- CẢNH BÁO ĐẨY LÊN ĐẦU TRANG & NHẮC NHỞ TRỰC NHẬT BUỔI SÁNG -->
     <div id="morningDutyAlertContainer"></div>
 
-    <!-- BẢNG THÔNG BÁO PHÒNG -->
+    <!-- BẢNG THÔNG BÁO PHÒNG (Tối ưu tiêu đề và nút bấm không bị cắt) -->
     <section id="topNoticeCard" class="bg-gradient-to-r from-amber-50/90 via-orange-50/70 to-rose-50/80 border border-amber-200/90 rounded-2xl p-2.5 sm:p-3 shadow-xs transition-all">
-      <div class="flex items-center justify-between gap-2 cursor-pointer select-none" onclick="toggleTopNoticeBanner()">
+      <div class="flex items-center justify-between gap-1.5 cursor-pointer select-none" onclick="toggleTopNoticeBanner()">
         <div class="flex items-center gap-2 min-w-0">
           <div class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs shrink-0 shadow-xs">
             <i class="fa-solid fa-bullhorn"></i>
           </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5">
-              <span class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">Bảng Thông Báo Phòng</span>
-              <span id="noticeCountTag" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-200 text-amber-900">3</span>
-            </div>
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span class="font-extrabold text-slate-900 text-xs sm:text-sm whitespace-nowrap">Bảng tin phòng</span>
+            <span id="noticeCountTag" class="px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-200 text-amber-900 shrink-0">3</span>
           </div>
         </div>
 
         <div class="flex items-center gap-1 shrink-0" onclick="event.stopPropagation()">
-          <button onclick="openCreateNoticeModal()" class="px-2 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold transition flex items-center gap-1">
-            <i class="fa-solid fa-plus text-[9px]"></i>
-            <span class="hidden xs:inline">Đăng tin</span>
+          <button onclick="openCreateNoticeModal()" class="h-7 px-2 sm:px-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold transition flex items-center justify-center gap-1 shadow-2xs" title="Đăng tin mới">
+            <i class="fa-solid fa-plus text-[10px]"></i>
+            <span class="hidden sm:inline">Đăng tin</span>
           </button>
-          <button onclick="switchTab('notices')" class="px-2 py-1 rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold transition">
+          <button onclick="switchTab('notices')" class="hidden xs:inline-flex h-7 px-2 items-center rounded-lg bg-white hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold transition">
             Chi tiết
           </button>
-          <button onclick="toggleTopNoticeBanner()" id="btnToggleNoticeIcon" class="w-7 h-7 rounded-lg bg-white/80 hover:bg-white text-slate-600 flex items-center justify-center text-xs transition border border-amber-200/60" title="Thu gọn / Mở rộng">
+          <button onclick="toggleTopNoticeBanner()" id="btnToggleNoticeIcon" class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-slate-600 flex items-center justify-center text-xs transition border border-amber-200/60 shadow-2xs" title="Thu gọn / Mở rộng">
             <i class="fa-solid fa-chevron-up"></i>
           </button>
         </div>
       </div>
 
-      <div id="noticeBannerContent" class="mt-2.5 pt-2 border-t border-amber-200/60 space-y-1.5">
+      <div id="noticeBannerContent" class="mt-2 pt-2 border-t border-amber-200/60 space-y-1.5">
         <div id="topNoticeList" class="space-y-1.5 max-h-48 overflow-y-auto pr-0.5"></div>
       </div>
     </section>
 
-    <!-- THANH THỐNG KÊ GỌN GÀNG -->
-    <div id="compactStatsStrip" class="bg-white border border-slate-200/80 rounded-2xl p-2 sm:p-2.5 shadow-xs flex items-center justify-between text-xs divide-x divide-slate-100 overflow-x-auto no-scrollbar">
-      <button onclick="switchTab('expenses')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
-        <div class="text-[10px] text-slate-400 font-semibold">Tổng chi tiêu</div>
+    <!-- THANH THỐNG KÊ GỌN GÀNG (Tối ưu cuộn ngang mượt mà, nhãn ngắn gọn trên điện thoại) -->
+    <div id="compactStatsStrip" class="bg-white border border-slate-200/80 rounded-2xl p-1.5 sm:p-2.5 shadow-xs flex items-center gap-1 sm:gap-0 sm:divide-x divide-slate-100 overflow-x-auto no-scrollbar scroll-smooth">
+      <button onclick="switchTab('expenses')" class="px-2.5 py-1.5 text-left min-w-[92px] sm:min-w-0 hover:text-indigo-600 transition shrink-0 bg-slate-50/80 sm:bg-transparent rounded-xl sm:rounded-none">
+        <div class="text-[10px] text-slate-400 font-semibold">Tổng chi</div>
         <div id="compactTotalExpense" class="font-bold text-slate-800 text-xs whitespace-nowrap">145.000&nbsp;₫</div>
       </button>
 
-      <button onclick="switchTab('budget')" class="px-2.5 py-1 text-left min-w-0 hover:text-emerald-600 transition shrink-0">
-        <div class="text-[10px] text-slate-400 font-semibold">Ngân sách & Tiết kiệm</div>
+      <button onclick="switchTab('budget')" class="px-2.5 py-1.5 text-left min-w-[96px] sm:min-w-0 hover:text-emerald-600 transition shrink-0 bg-slate-50/80 sm:bg-transparent rounded-xl sm:rounded-none">
+        <div class="text-[10px] text-slate-400 font-semibold">Ngân sách</div>
         <div id="compactBudgetHealth" class="font-bold text-emerald-600 text-xs whitespace-nowrap">Đang theo dõi</div>
       </button>
 
-      <button onclick="switchTab('settlement')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
-        <div class="text-[10px] text-slate-400 font-semibold">Bình quân / bạn</div>
+      <button onclick="switchTab('settlement')" class="px-2.5 py-1.5 text-left min-w-[92px] sm:min-w-0 hover:text-indigo-600 transition shrink-0 bg-slate-50/80 sm:bg-transparent rounded-xl sm:rounded-none">
+        <div class="text-[10px] text-slate-400 font-semibold">Bình quân</div>
         <div id="compactAvgExpense" class="font-bold text-indigo-600 text-xs whitespace-nowrap">24.167&nbsp;₫</div>
       </button>
 
-      <button onclick="switchTab('duty')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
-        <div class="text-[10px] text-slate-400 font-semibold">Trực hôm nay</div>
-        <div id="compactTodayDuty" class="font-bold text-emerald-600 text-xs truncate max-w-[90px]">Huy</div>
+      <button onclick="switchTab('duty')" class="px-2.5 py-1.5 text-left min-w-[85px] sm:min-w-0 hover:text-indigo-600 transition shrink-0 bg-slate-50/80 sm:bg-transparent rounded-xl sm:rounded-none">
+        <div class="text-[10px] text-slate-400 font-semibold">Trực nhật</div>
+        <div id="compactTodayDuty" class="font-bold text-emerald-600 text-xs truncate max-w-[80px]">Huy</div>
       </button>
 
-      <button onclick="switchTab('settlement')" class="px-2.5 py-1 text-left min-w-0 hover:text-indigo-600 transition shrink-0">
-        <div class="text-[10px] text-slate-400 font-semibold">Lệnh bù trừ</div>
+      <button onclick="switchTab('settlement')" class="px-2.5 py-1.5 text-left min-w-[76px] sm:min-w-0 hover:text-teal-600 transition shrink-0 bg-slate-50/80 sm:bg-transparent rounded-xl sm:rounded-none">
+        <div class="text-[10px] text-slate-400 font-semibold">Bù trừ</div>
         <div id="compactTransfers" class="font-bold text-teal-600 text-xs whitespace-nowrap">4 lệnh</div>
       </button>
     </div>
@@ -841,6 +865,51 @@
     </div>
 
   </main>
+
+  <!-- THANH ĐIỀU HƯỚNG DƯỚI ĐÁY CHO ĐIỆN THOẠI (BOTTOM NAVIGATION BAR) -->
+  <nav id="mobileBottomNav" class="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/90 px-2 py-1 flex items-center justify-around shadow-xl safe-area-bottom select-none">
+    <!-- Tab Chi tiêu -->
+    <button onclick="switchTab('expenses')" id="mobileNav-expenses" class="flex flex-col items-center justify-center flex-1 py-1 text-indigo-600 font-extrabold transition-all min-w-0" title="Chi tiêu phòng">
+      <div class="relative flex items-center justify-center w-6 h-6">
+        <i class="fa-solid fa-receipt text-base"></i>
+      </div>
+      <span class="text-[10px] tracking-tight mt-0.5 truncate">Chi tiêu</span>
+    </button>
+
+    <!-- Tab Quyết toán / VietQR -->
+    <button onclick="switchTab('settlement')" id="mobileNav-settlement" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-bold transition-all min-w-0" title="Quyết toán công nợ">
+      <div class="relative flex items-center justify-center w-6 h-6">
+        <i class="fa-solid fa-scale-balanced text-base"></i>
+      </div>
+      <span class="text-[10px] tracking-tight mt-0.5 truncate">Quyết toán</span>
+    </button>
+
+    <!-- Nút Nổi Bật Chính Giữa: Quét Hóa Đơn AI (Camera Action Button) -->
+    <div class="flex flex-col items-center justify-center px-1 -mt-5 shrink-0">
+      <button onclick="openScanBillModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-center shadow-lg shadow-orange-500/35 active:scale-90 transition-transform cursor-pointer" title="Quét hóa đơn bằng AI">
+        <i class="fa-solid fa-camera text-lg"></i>
+      </button>
+      <span class="text-[9px] font-black text-orange-600 mt-1">Quét Bill</span>
+    </div>
+
+    <!-- Tab Trực nhật -->
+    <button onclick="switchTab('duty')" id="mobileNav-duty" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-bold transition-all min-w-0" title="Lịch trực nhật">
+      <div class="relative flex items-center justify-center w-6 h-6">
+        <i class="fa-solid fa-broom text-base"></i>
+        <span id="mobileNavDutyDot" class="hidden absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-amber-500 ring-2 ring-white"></span>
+      </div>
+      <span class="text-[10px] tracking-tight mt-0.5 truncate">Trực nhật</span>
+    </button>
+
+    <!-- Tab Bản tin -->
+    <button onclick="switchTab('notices')" id="mobileNav-notices" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-bold transition-all min-w-0" title="Bảng tin phòng">
+      <div class="relative flex items-center justify-center w-6 h-6">
+        <i class="fa-solid fa-bullhorn text-base"></i>
+      </div>
+      <span class="text-[10px] tracking-tight mt-0.5 truncate">Bản tin</span>
+    </button>
+  </nav>
+
   </div> <!-- HẾT #appMainWrapper -->
 
   <!-- ==================== MODAL MỚI: TRUNG TÂM CHỌN & QUẢN LÝ PHÒNG KTX ==================== -->
@@ -3875,6 +3944,19 @@
         }
       });
 
+      // Cập nhật trạng thái active cho Mobile Bottom Navigation Bar
+      const mobileNavKeys = ['expenses', 'settlement', 'duty', 'notices'];
+      mobileNavKeys.forEach(t => {
+        const mBtn = document.getElementById(`mobileNav-${t}`);
+        if (mBtn) {
+          if (t === tabName) {
+            mBtn.className = "flex flex-col items-center justify-center flex-1 py-1 text-indigo-600 font-extrabold transition-all min-w-0 scale-105";
+          } else {
+            mBtn.className = "flex flex-col items-center justify-center flex-1 py-1 text-slate-400 font-bold transition-all min-w-0 scale-100 hover:text-slate-600";
+          }
+        }
+      });
+
       const fullStats = document.getElementById('fullStatsContainer');
       const compactStats = document.getElementById('compactStatsStrip');
       if (tabName === 'notices') {
@@ -4061,19 +4143,17 @@
         const authorShort = getShortName(n.authorName);
 
         return `
-          <div class="p-2 bg-white/90 rounded-xl border border-amber-200/60 flex items-center justify-between gap-2 shadow-2xs">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-bold ${badgeColor} shrink-0">
-                <i class="fa-solid ${badgeIcon} text-[9px]"></i>
+          <div class="p-2 sm:p-2.5 bg-white/95 rounded-xl border border-amber-200/60 flex items-center justify-between gap-2 shadow-2xs hover:border-amber-300 transition min-w-0">
+            <div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] sm:text-[10px] font-black ${badgeColor} shrink-0">
+                <i class="fa-solid ${badgeIcon} text-[8px] sm:text-[9px]"></i>
                 <span>${badgeLabel}</span>
               </span>
-              <div class="min-w-0">
-                <span class="font-bold text-slate-800 text-xs truncate inline-block max-w-[200px] xs:max-w-[280px] sm:max-w-[450px] align-middle">${n.title}</span>
-              </div>
+              <span class="font-bold text-slate-800 text-[11px] sm:text-xs truncate flex-1 min-w-0" title="${n.title}">${n.title}</span>
             </div>
-            <div class="flex items-center gap-2 shrink-0 text-[10px] text-slate-400">
-              <span class="font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded-md">${authorShort}</span>
-              <span class="hidden sm:inline">${n.time}</span>
+            <div class="flex items-center gap-1.5 shrink-0 text-[10px] text-slate-400">
+              <span class="font-bold text-slate-700 bg-slate-100/90 px-1.5 py-0.5 rounded-md text-[10px]">${authorShort}</span>
+              <span class="hidden md:inline">${n.time}</span>
             </div>
           </div>
         `;
@@ -5918,58 +5998,57 @@
       // TRƯỜNG HỢP 1: HÔM NAY ĐẾN LƯỢT CHÍNH THÀNH VIÊN ĐANG ĐĂNG NHẬP
       if (isMyDutyToday) {
         if (!todayDuty.done) {
-          // CHƯA HOÀN THÀNH -> CẢNH BÁO NỔI BẬT ĐẨY LÊN ĐẦU TRANG VÀO BUỔI SÁNG
+          // CHƯA HOÀN THÀNH -> CẢNH BÁO NỔI BẬT ĐẨY LÊN ĐẦU TRANG VÀO BUỔI SÁNG (Tối ưu cho mobile)
           container.innerHTML = `
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-4 sm:p-5 shadow-xl shadow-orange-500/20 ring-4 ring-orange-400/25 transition-all">
-              <div class="absolute -right-6 -bottom-6 text-8xl opacity-15 pointer-events-none select-none">
+            <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white p-3.5 sm:p-5 shadow-xl shadow-orange-500/20 ring-2 sm:ring-4 ring-orange-400/25 transition-all">
+              <div class="absolute -right-6 -bottom-6 text-7xl sm:text-8xl opacity-15 pointer-events-none select-none">
                 <i class="fa-solid fa-broom"></i>
               </div>
 
-              <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="space-y-1.5 min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-xs text-[11px] font-black text-amber-100 uppercase tracking-wider">
-                      <i class="fa-solid fa-sun text-amber-300 animate-pulse"></i>
-                      <span>${isMorning ? '🌅 CẢNH BÁO BUỔI SÁNG: ĐẾN CA TRỰC NHẬT CỦA BẠN' : '🔔 NHẮC NHỞ: CA TRỰC NHẬT HÔM NAY CỦA BẠN'}</span>
+              <!-- Nút đóng / thu gọn cố định góc trên bên phải, không bao giờ bị rớt dòng -->
+              <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 w-7 h-7 rounded-full bg-black/20 hover:bg-black/35 text-white/90 flex items-center justify-center text-xs transition z-20 touch-target" title="Thu gọn dải cảnh báo">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+
+              <div class="relative z-10 flex flex-col gap-2.5 sm:gap-3">
+                <div class="space-y-1 pr-8 min-w-0">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[10px] sm:text-[11px] font-black text-amber-100 uppercase tracking-wider">
+                      <i class="fa-solid fa-sun text-amber-300"></i>
+                      <span>${isMorning ? 'Ca sáng của bạn' : 'Ca trực hôm nay của bạn'}</span>
                     </span>
-                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-black/25 text-white flex items-center gap-1.5">
-                      <span class="w-2 h-2 rounded-full bg-amber-300 animate-ping"></span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-extrabold bg-black/25 text-white flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-ping"></span>
                       <span>Chưa hoàn thành</span>
                     </span>
                   </div>
 
-                  <div class="text-lg sm:text-2xl font-black tracking-tight text-white flex items-baseline gap-2 flex-wrap">
+                  <div class="text-base sm:text-xl font-black tracking-tight text-white flex items-baseline gap-1.5 flex-wrap pt-0.5">
                     <span>${timeGreeting}, ${assignedShort}!</span>
-                    <span class="text-xs sm:text-sm font-semibold text-amber-100">Hôm nay (${todayDuty.dayName}) bạn phụ trách trực phòng</span>
+                    <span class="text-xs font-medium text-amber-100 hidden sm:inline">Hôm nay (${todayDuty.dayName}) bạn phụ trách trực phòng</span>
                   </div>
 
-                  <div class="flex items-center gap-2 text-xs sm:text-sm font-medium text-white/95 flex-wrap">
-                    <span class="bg-white/20 px-3 py-1 rounded-xl font-bold flex items-center gap-1.5 backdrop-blur-xs shadow-2xs">
-                      <span class="text-base">${todayDuty.emoji || '🧹'}</span>
-                      <span class="underline decoration-amber-300 font-black">${todayDuty.task}</span>
-                    </span>
-                    <span class="text-white/90 text-xs hidden sm:inline">Bạn nhớ hoàn thành và bấm xác nhận để phòng KTX luôn sạch sẽ nhé!</span>
+                  <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/20 backdrop-blur-xs font-bold text-xs text-white shadow-2xs">
+                    <span class="text-sm">${todayDuty.emoji || '🧹'}</span>
+                    <span class="underline decoration-amber-300 font-black">${todayDuty.task}</span>
                   </div>
                 </div>
 
-                <div class="flex items-center gap-2 flex-wrap shrink-0">
-                  <button onclick="handleDutyCheckToggle(${todayDuty.dayIndex})" class="px-4 py-2.5 rounded-2xl bg-white hover:bg-amber-50 text-slate-900 font-black text-xs sm:text-sm shadow-lg shadow-black/10 transition transform active:scale-95 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap pt-1">
+                  <button onclick="handleDutyCheckToggle(${todayDuty.dayIndex})" class="flex-1 sm:flex-initial px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white hover:bg-amber-50 text-slate-900 font-black text-xs sm:text-sm shadow-md transition active:scale-95 flex items-center justify-center gap-1.5 touch-target">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm sm:text-base"></i>
                     <span>Đã Dọn Xong ✨</span>
                   </button>
-                  <button onclick="switchTab('duty')" class="px-3 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center gap-1.5">
+                  <button onclick="switchTab('duty')" class="h-9 px-2.5 sm:px-3 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center justify-center gap-1 touch-target" title="Xem checklist trực nhật">
                     <i class="fa-solid fa-list-check"></i>
-                    <span class="hidden xs:inline">Checklist</span>
+                    <span class="hidden sm:inline">Checklist</span>
                   </button>
-                  <button onclick="openSwapDutyModal(${todayDuty.dayIndex})" class="px-3 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center gap-1.5">
+                  <button onclick="openSwapDutyModal(${todayDuty.dayIndex})" class="h-9 px-2.5 sm:px-3 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs transition backdrop-blur-xs flex items-center justify-center gap-1 touch-target" title="Đổi ca trực nhật">
                     <i class="fa-solid fa-rotate"></i>
                     <span class="hidden sm:inline">Đổi ca</span>
                   </button>
-                  <button onclick="openDutyNotificationModal()" class="w-9 h-9 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold flex items-center justify-center text-xs transition backdrop-blur-xs" title="Cài đặt thông báo trình duyệt">
+                  <button onclick="openDutyNotificationModal()" class="w-9 h-9 rounded-xl sm:rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold flex items-center justify-center text-xs transition backdrop-blur-xs touch-target" title="Cài đặt thông báo">
                     <i class="fa-solid fa-bell"></i>
-                  </button>
-                  <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-xs transition" title="Thu gọn dải cảnh báo">
-                    <i class="fa-solid fa-xmark"></i>
                   </button>
                 </div>
               </div>
@@ -5989,35 +6068,38 @@
         }
 
         container.innerHTML = `
-          <div class="rounded-3xl bg-gradient-to-r from-sky-50 via-indigo-50/70 to-white border border-indigo-100/90 p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shrink-0">
+          <div class="relative rounded-2xl sm:rounded-3xl bg-gradient-to-r from-sky-50 via-indigo-50/70 to-white border border-indigo-100/90 p-3 sm:p-3.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 transition-all">
+            <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="sm:hidden absolute top-2 right-2 w-6 h-6 rounded-full bg-slate-200/80 hover:bg-slate-300 text-slate-500 flex items-center justify-center text-xs transition" title="Đóng">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-2.5 min-w-0 pr-6 sm:pr-0">
+              <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm sm:text-base font-black shrink-0">
                 <i class="fa-solid fa-calendar-day"></i>
               </div>
               <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-xs font-bold text-slate-500">Ca trực nhật hôm nay (${todayDuty.dayName}):</span>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-xs font-bold text-slate-500">Trực hôm nay (${todayDuty.dayName}):</span>
                   <span class="font-black text-indigo-900 text-xs sm:text-sm truncate">${assignedName}</span>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"><i class="fa-regular fa-clock mr-1"></i>Chưa dọn</span>
+                  <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"><i class="fa-regular fa-clock mr-0.5"></i>Chưa dọn</span>
                 </div>
-                <div class="text-xs text-slate-600 font-medium flex items-center gap-1.5 mt-0.5">
-                  <span>${todayDuty.emoji || '🧹'} Nhiệm vụ: <strong>${todayDuty.task}</strong></span>
+                <div class="text-[11px] sm:text-xs text-slate-600 font-medium flex items-center gap-1.5 mt-0.5">
+                  <span>${todayDuty.emoji || '🧹'} <strong>${todayDuty.task}</strong></span>
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0">
-              <button onclick="copyZaloDutyReminder('${todayDuty.memberId}')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5">
+            <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <button onclick="copyZaloDutyReminder('${todayDuty.memberId}')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 touch-target">
                 <i class="fa-solid fa-paper-plane text-[10px]"></i>
                 <span>Nhắc Zalo</span>
               </button>
-              <button onclick="switchTab('duty')" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition">
-                Xem lịch tuần
+              <button onclick="switchTab('duty')" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 transition touch-target">
+                Lịch tuần
               </button>
-              <button onclick="openDutyNotificationModal()" class="w-8 h-8 rounded-xl bg-white hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 flex items-center justify-center text-xs border border-slate-200 transition" title="Cài đặt thông báo trình duyệt">
+              <button onclick="openDutyNotificationModal()" class="w-8 h-8 rounded-xl bg-white hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 flex items-center justify-center text-xs border border-slate-200 transition touch-target" title="Cài đặt thông báo trình duyệt">
                 <i class="fa-solid fa-bell"></i>
               </button>
-              <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="w-8 h-8 rounded-xl bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs border border-slate-200 transition" title="Đóng">
+              <button onclick="dismissMorningDutyAlert(${todayDuty.dayIndex})" class="hidden sm:flex w-8 h-8 rounded-xl bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-600 items-center justify-center text-xs border border-slate-200 transition" title="Đóng">
                 <i class="fa-solid fa-xmark"></i>
               </button>
             </div>
