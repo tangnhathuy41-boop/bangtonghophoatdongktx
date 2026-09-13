@@ -328,28 +328,27 @@
           <i class="fa-solid fa-bars text-base sm:text-lg"></i>
         </button>
 
-        <!-- Nút chọn / đổi phòng KTX (gọn gàng, không bị gãy dòng trên mobile) -->
-        <div onclick="openRoomHubModal()" role="button" tabindex="0" class="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 rounded-2xl bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-100 transition min-w-0 group cursor-pointer select-none" title="Bấm để đổi phòng hoặc quản lý phòng">
-          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+        <!-- Nút chọn / đổi phòng KTX (gọn gàng, vừa vặn hoàn hảo, không thể tràn) -->
+        <div onclick="openRoomHubModal()" role="button" tabindex="0" class="flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl bg-indigo-50/80 hover:bg-indigo-100/90 border border-indigo-100/90 transition shrink-0 group cursor-pointer select-none" title="Bấm để đổi phòng hoặc xem mã phòng">
+          <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-2xs shrink-0 group-hover:scale-105 transition-transform">
             <i class="fa-solid fa-hotel"></i>
           </div>
-          <div class="text-left min-w-0">
-            <div class="flex items-center gap-1">
-              <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[95px] xs:max-w-[150px] sm:max-w-[240px]">Phòng 402</span>
-              <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 shrink-0"></i>
-            </div>
-            <!-- Mã phòng: hiện trên desktop, trên mobile có thể xem nhanh trong modal -->
-            <div class="hidden sm:inline-flex items-center gap-1 text-[10px] bg-white/90 border border-indigo-200/80 text-indigo-800 font-bold px-1.5 py-0.2 rounded-md shrink-0 mt-0.5" title="Mã phòng KTX">
-              <i class="fa-solid fa-key text-[8px] text-indigo-500"></i>
-              <span id="headerRoomCodeTag" class="font-mono tracking-wider font-extrabold">••••••</span>
-              <button type="button" onclick="event.stopPropagation(); toggleRoomCodeVisibility(event);" class="text-indigo-600 hover:text-indigo-900 p-0.5 ml-0.5 transition" title="Ẩn / Hiện mã phòng">
-                <i id="headerRoomCodeEyeIcon" class="fa-solid fa-eye-slash text-[8px]"></i>
-              </button>
-              <button type="button" onclick="event.stopPropagation(); copyCurrentRoomCode(event);" class="text-slate-400 hover:text-indigo-700 p-0.5 transition" title="Sao chép mã phòng">
-                <i class="fa-solid fa-copy text-[8px]"></i>
-              </button>
-            </div>
+          <div class="flex items-center gap-1 sm:gap-1.5 min-w-0">
+            <span id="headerRoomTitle" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate max-w-[85px] xs:max-w-[130px] sm:max-w-[180px]">Phòng 402</span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-400 group-hover:text-indigo-600 transition-colors shrink-0"></i>
           </div>
+        </div>
+
+        <!-- Mã phòng KTX: Hiển thị tách biệt, sang trọng trên màn hình lớn khi rộng rãi -->
+        <div id="headerRoomCodeContainer" class="hidden lg:inline-flex items-center gap-1.5 text-xs bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 font-semibold px-2.5 py-1 rounded-xl shrink-0 transition" title="Mã phòng KTX">
+          <i class="fa-solid fa-key text-[10px] text-indigo-500"></i>
+          <span id="headerRoomCodeTag" class="font-mono tracking-wider font-extrabold text-slate-900">••••••</span>
+          <button type="button" onclick="event.stopPropagation(); toggleRoomCodeVisibility(event);" class="text-slate-400 hover:text-slate-700 p-0.5 ml-0.5 transition rounded hover:bg-white" title="Ẩn / Hiện mã phòng">
+            <i id="headerRoomCodeEyeIcon" class="fa-solid fa-eye-slash text-[10px]"></i>
+          </button>
+          <button type="button" onclick="event.stopPropagation(); copyCurrentRoomCode(event);" class="text-slate-400 hover:text-indigo-600 p-0.5 transition rounded hover:bg-white" title="Sao chép mã phòng">
+            <i class="fa-solid fa-copy text-[10px]"></i>
+          </button>
         </div>
       </div>
 
