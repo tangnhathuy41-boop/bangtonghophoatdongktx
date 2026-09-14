@@ -56,6 +56,14 @@
           "type": "array",
           "description": "Historical records of monthly savings compared against room budget"
         },
+        "settledTransfers": {
+          "type": "object",
+          "description": "Map of settled debt transfer keys and their completion status"
+        },
+        "settlementHistory": {
+          "type": "array",
+          "description": "Chronological audit log of completed debt payments and AI reconciliations"
+        },
         "updatedAt": {
           "type": "string",
           "description": "ISO timestamp of the latest real-time update"

@@ -1,0 +1,186 @@
+{
+  "rooms": {
+    "a0210": {
+      "roomId": "phong-402",
+      "roomName": "A0210",
+      "roomCode": "A0210",
+      "updatedAtMs": 1789290590891,
+      "updatedBy": "Đạt",
+      "senderDeviceId": "dev_ur225zrx4_1789290413749",
+      "members": [
+        {
+          "id": "m1",
+          "name": "Nhật Huy (Trưởng Phòng)",
+          "bank": "MB",
+          "account": ""
+        },
+        {
+          "id": "m2",
+          "name": "Bạn Cùng Phòng 2",
+          "bank": "",
+          "account": ""
+        },
+        {
+          "id": "m_1789278173234",
+          "name": "Văn Bảo",
+          "bank": "",
+          "account": ""
+        },
+        {
+          "id": "m_1789280983246",
+          "name": "Đạt",
+          "bank": "",
+          "account": ""
+        }
+      ],
+      "expenses": [
+        {
+          "id": "e_1789290590880",
+          "name": "Túi rác 3 cuộn",
+          "amount": 35000,
+          "category": "Vệ sinh",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2",
+            "m_1789278173234",
+            "m_1789280983246"
+          ],
+          "date": "2026-09-13T09:09:50.880Z"
+        },
+        {
+          "id": "e_1789269792914",
+          "name": "Ổ cắm điện đa năng Deli",
+          "amount": 378250,
+          "category": "Sinh hoạt",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2"
+          ],
+          "date": "2026-09-13T03:23:12.914Z"
+        },
+        {
+          "id": "e_1789263775951",
+          "name": "Túi rác 3 cuộn",
+          "amount": 35000,
+          "category": "Vệ sinh",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2"
+          ],
+          "date": "2026-09-13T01:42:55.951Z"
+        },
+        {
+          "id": "e_1789241629247",
+          "name": "Bình nước Lavie 20L",
+          "amount": 22000,
+          "category": "Sinh hoạt",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2",
+            "m3",
+            "m4",
+            "m5",
+            "m6"
+          ],
+          "date": "2026-09-12T19:33:49.247Z"
+        }
+      ]
+    },
+    "phong-402": {
+      "roomId": "phong-402",
+      "roomName": "A0210",
+      "roomCode": "A0210",
+      "updatedAtMs": 1789290590891,
+      "updatedBy": "Đạt",
+      "senderDeviceId": "dev_ur225zrx4_1789290413749",
+      "members": [
+        {
+          "id": "m1",
+          "name": "Nhật Huy (Trưởng Phòng)",
+          "bank": "MB",
+          "account": ""
+        },
+        {
+          "id": "m2",
+          "name": "Bạn Cùng Phòng 2",
+          "bank": "",
+          "account": ""
+        },
+        {
+          "id": "m_1789278173234",
+          "name": "Văn Bảo",
+          "bank": "",
+          "account": ""
+        },
+        {
+          "id": "m_1789280983246",
+          "name": "Đạt",
+          "bank": "",
+          "account": ""
+        }
+      ],
+      "expenses": [
+        {
+          "id": "e_1789290590880",
+          "name": "Túi rác 3 cuộn",
+          "amount": 35000,
+          "category": "Vệ sinh",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2",
+            "m_1789278173234",
+            "m_1789280983246"
+          ],
+          "date": "2026-09-13T09:09:50.880Z"
+        },
+        {
+          "id": "e_1789269792914",
+          "name": "Ổ cắm điện đa năng Deli",
+          "amount": 378250,
+          "category": "Sinh hoạt",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2"
+          ],
+          "date": "2026-09-13T03:23:12.914Z"
+        },
+        {
+          "id": "e_1789263775951",
+          "name": "Túi rác 3 cuộn",
+          "amount": 35000,
+          "category": "Vệ sinh",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2"
+          ],
+          "date": "2026-09-13T01:42:55.951Z"
+        },
+        {
+          "id": "e_1789241629247",
+          "name": "Bình nước Lavie 20L",
+          "amount": 22000,
+          "category": "Sinh hoạt",
+          "payerId": "m1",
+          "beneficiaries": [
+            "m1",
+            "m2",
+            "m3",
+            "m4",
+            "m5",
+            "m6"
+          ],
+          "date": "2026-09-12T19:33:49.247Z"
+        }
+      ]
+    }
+  },
+  "activities": {},
+  "lastSaved": 1789290887744
+}
